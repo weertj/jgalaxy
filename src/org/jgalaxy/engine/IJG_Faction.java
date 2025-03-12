@@ -1,4 +1,6 @@
 package org.jgalaxy.engine;
 
-public interface IJG_Faction {
+import org.jgalaxy.IEntity;
+
+public interface IJG_Faction extends IEntity {
 }

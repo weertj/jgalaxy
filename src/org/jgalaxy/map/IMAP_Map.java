@@ -9,6 +9,8 @@ public interface IMAP_Map extends ITimeProgression {
 
   void addPlanet( IJG_Planet pPlanet );
 
+  IJG_Planet planetById( String pID );
+  IJG_Planet planetByName( String pName );
   List<IJG_Planet> planets();
 
 }

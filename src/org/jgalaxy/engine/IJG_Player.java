@@ -1,4 +1,4 @@
 package org.jgalaxy.engine;
 
-public class IJG_Player {
+public interface IJG_Player {
 }

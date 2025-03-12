@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<root>
+    <game name="test1">
+        <map xs="0.0" ys="0.0" xe="20.0" ye="20.0">
+            <planet id="p0" x="2" y="2">
+            </planet>
+            <planet id="p1" x="10" y="10">
+            </planet>
+        </map>
+    </game>
+</root>

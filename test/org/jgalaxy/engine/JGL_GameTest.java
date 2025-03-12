@@ -1,6 +1,5 @@
-package org.jgalaxy.planets;
+package org.jgalaxy.engine;
 
-import org.jgalaxy.JG_Position;
 import org.jgalaxy.tech.IJG_Tech;
 import org.jgalaxy.tech.JG_Tech;
 import org.jgalaxy.units.IJG_Unit;
@@ -9,9 +8,9 @@ import org.jgalaxy.units.JG_Unit;
 import org.jgalaxy.units.JG_UnitDesign;
 import org.junit.*;
 
-import java.time.Duration;
+import java.io.File;
 
-public class JGL_PlanetTest {
+public class JGL_GameTest {
 
   @BeforeClass
   public static void setUpClass() {
@@ -30,13 +29,9 @@ public class JGL_PlanetTest {
   }
 
   @Test
-  public void testPlanetTest() {
-    IJG_Planet planet = JG_Planet.of("p0", JG_Position.of(1,1));
-    planet.setPopulation(10000);
-    for( int i = 0; i < 10; i++ ) {
-      System.out.println(planet);
-      planet.timeProgression(Duration.ofDays(1));
-    }
+  public void testGameTest() throws Throwable {
+    IJG_Game game = JG_Game.of( new File("workdir/games/test1") );
+    System.out.println(game.reportForPlayerAs(null,"plain"));
   }
 
 }

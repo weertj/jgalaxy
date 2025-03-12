@@ -23,9 +23,7 @@ public class MAP_Map implements IMAP_Map {
     double ye = Double.parseDouble(pParent.getAttributes().getNamedItem("ye").getNodeValue());
     map = new MAP_Map( xs, ys, xe, ye );
     for(Element xmlpl : XML_Utils.childElementsByName(pParent,"planet")) {
-      double x = Double.parseDouble(xmlpl.getAttributes().getNamedItem("x").getNodeValue());
-      double y = Double.parseDouble(xmlpl.getAttributes().getNamedItem("y").getNodeValue());
-      map.addPlanet(JG_Planet.of(JG_Position.of(x,y)));
+      map.addPlanet(JG_Planet.of( xmlpl ));
     }
     return map;
   }
@@ -49,6 +47,16 @@ public class MAP_Map implements IMAP_Map {
   public void addPlanet(IJG_Planet pPlanet) {
     mPlanets.add( pPlanet );
     return;
+  }
+
+  @Override
+  public IJG_Planet planetById(String pID) {
+    return mPlanets.stream().filter(planet -> planet.id().equals(pID)).findFirst().orElse(null);
+  }
+
+  @Override
+  public IJG_Planet planetByName(String pName) {
+    return mPlanets.stream().filter(planet -> planet.name().equals(pName)).findFirst().orElse(null);
   }
 
   @Override
