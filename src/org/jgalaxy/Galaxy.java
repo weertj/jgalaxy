@@ -1,7 +1,9 @@
 package org.jgalaxy;
 
 import org.jgalaxy.map.IMAP_Map;
+import org.w3c.dom.Node;
 
+import java.io.File;
 import java.time.Duration;
 
 public class Galaxy implements IGalaxy {
@@ -25,6 +27,12 @@ public class Galaxy implements IGalaxy {
   @Override
   public void timeProgression(Duration pTimeStep) {
     mMap.timeProgression(pTimeStep);
+    return;
+  }
+
+  @Override
+  public void storeObject(File pPath, Node pParent, String pName) {
+    mMap.storeObject( pPath, pParent, pName );
     return;
   }
 

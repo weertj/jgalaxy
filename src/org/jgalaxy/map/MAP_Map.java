@@ -8,6 +8,7 @@ import org.jgalaxy.utils.XML_Utils;
 import org.w3c.dom.Element;
 import org.w3c.dom.Node;
 
+import java.io.File;
 import java.time.Duration;
 import java.util.ArrayList;
 import java.util.Collections;
@@ -61,16 +62,22 @@ public class MAP_Map implements IMAP_Map {
 
   @Override
   public List<IJG_Planet> planets() {
-    return Collections.unmodifiableList(mPlanets );
+    return new ArrayList<>(mPlanets );
   }
 
   @Override
   public void timeProgression(Duration pTimeStep) {
-
-    for( IJG_Planet planet : planets() ) {
-      planet.timeProgression(pTimeStep);
-    }
-
     return;
   }
+
+  @Override
+  public void storeObject(File pPath, Node pParent, String pName) {
+    Element mapnode = pParent.getOwnerDocument().createElement( "map" );
+    for( var planet : planets() ) {
+      planet.storeObject(pPath, mapnode, pName);
+    }
+    pParent.appendChild(mapnode);
+    return;
+  }
+
 }

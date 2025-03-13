@@ -1,12 +1,17 @@
 package org.jgalaxy.utils;
 
-import java.io.BufferedReader;
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.InputStreamReader;
+import java.io.*;
 import java.nio.charset.Charset;
+import java.nio.charset.StandardCharsets;
+import java.nio.file.Files;
 
 public class GEN_Streams {
+
+
+  static public void writeStringToFile( String pContents, File pF ) throws IOException {
+    Files.write( pF.toPath(), pContents.getBytes(StandardCharsets.UTF_8) );
+    return;
+  }
 
   static public String readAsString(final InputStream pInput, final Charset pEncoding) throws IOException {
     if (pInput==null) {

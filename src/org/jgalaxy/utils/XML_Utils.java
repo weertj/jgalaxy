@@ -6,14 +6,45 @@ import org.xml.sax.SAXException;
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
 import javax.xml.parsers.ParserConfigurationException;
+import javax.xml.transform.*;
+import javax.xml.transform.dom.DOMSource;
+import javax.xml.transform.stream.StreamResult;
 import java.io.ByteArrayInputStream;
 import java.io.IOException;
+import java.io.StringWriter;
 import java.nio.charset.Charset;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
 public class XML_Utils {
+
+  static public Document newXMLDocument() {
+    try {
+      DocumentBuilderFactory docFactory = DocumentBuilderFactory.newInstance();
+      DocumentBuilder docBuilder = docFactory.newDocumentBuilder();
+      Document doc = docBuilder.newDocument();
+      return doc;
+    } catch(ParserConfigurationException e) {
+      throw new RuntimeException(e);
+    }
+  }
+
+  static public String documentToString( Document pD ) throws TransformerException {
+    StringWriter sw = new StringWriter();
+    createTransformFactory().transform( new DOMSource(pD), new StreamResult(sw) );
+    return sw.toString();
+  }
+
+  static public Transformer createTransformFactory() throws TransformerConfigurationException {
+    TransformerFactory transformerFactory = TransformerFactory.newInstance();
+    Transformer transformer = transformerFactory.newTransformer();
+    transformer.setOutputProperty(OutputKeys.ENCODING, "UTF-8" );
+    transformer.setOutputProperty(OutputKeys.INDENT, "yes");
+    transformer.setOutputProperty("{http://xml.apache.org/xslt}indent-amount", "2");
+    return transformer;
+  }
+
 
   static public String attr( Node pN, String pItem ) {
     if (pN.hasAttributes()) {
