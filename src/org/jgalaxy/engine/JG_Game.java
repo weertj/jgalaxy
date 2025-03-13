@@ -142,6 +142,14 @@ public class JG_Game implements IJG_Game {
     }
 
     // ****
+    report += "\t\t\tYour Ship Types\n";
+    report += "\n";
+    report += "N\t\t\tD\tA\tW\tS\tC\tMass\tSpeed\tDef\n";
+    for( IJG_Planet planet : galaxy().map().planets() ) {
+      report += planet.name() + "\n";
+    }
+
+    // ****
     report += "\t\t\tYour Planets\n";
     report += "\n";
     report += "N\t\t\tX\tY\tS\tP\tI\tR\tP\t$\tM\tC\tL\n";

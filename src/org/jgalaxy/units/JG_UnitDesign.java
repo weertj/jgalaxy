@@ -1,11 +1,26 @@
 package org.jgalaxy.units;
 
+import org.jgalaxy.Entity;
 import org.jgalaxy.tech.IJG_Tech;
+import org.jgalaxy.utils.XML_Utils;
+import org.w3c.dom.Node;
 
-public class JG_UnitDesign implements IJG_UnitDesign {
+public class JG_UnitDesign extends Entity implements IJG_UnitDesign {
 
-  static public IJG_UnitDesign of( double pDrive,double pWeapons,int pNrWeapons,double pShields,double pCargo, IJG_Tech pTech ) {
-    return new JG_UnitDesign(pDrive,pWeapons,pNrWeapons,pShields,pCargo,pTech);
+  static public IJG_UnitDesign of( Node pParent ) {
+    return of(
+      XML_Utils.attr(pParent,"id"),
+      XML_Utils.attr(pParent,"name"),
+      Double.parseDouble(XML_Utils.attr(pParent,"drive")),
+      Double.parseDouble(XML_Utils.attr(pParent,"weapons")),
+      Integer.parseInt(XML_Utils.attr(pParent,"nrweapons")),
+      Double.parseDouble(XML_Utils.attr(pParent,"shields")),
+      Double.parseDouble(XML_Utils.attr(pParent,"cargo"))
+    );
+  }
+
+  static public IJG_UnitDesign of( String pId, String pName, double pDrive,double pWeapons,int pNrWeapons,double pShields,double pCargo ) {
+    return new JG_UnitDesign( pId, pName, pDrive,pWeapons,pNrWeapons,pShields,pCargo);
   }
 
   private final double mDrive;
@@ -13,15 +28,14 @@ public class JG_UnitDesign implements IJG_UnitDesign {
   private final int    mNrWeapons;
   private final double mShields;
   private final double mCargo;
-  private final IJG_Tech mTech;
 
-  private JG_UnitDesign( double pDrive,double pWeapons,int pNrWeapons,double pShields,double pCargo, IJG_Tech pTech) {
+  private JG_UnitDesign( String pId, String pName, double pDrive,double pWeapons,int pNrWeapons,double pShields,double pCargo) {
+    super(pId,pName);
     mDrive = pDrive;
     mWeapons = pWeapons;
     mNrWeapons = pNrWeapons;
     mShields = pShields;
     mCargo = pCargo;
-    mTech = pTech;
     return;
   }
 
@@ -48,11 +62,6 @@ public class JG_UnitDesign implements IJG_UnitDesign {
   @Override
   public double cargo() {
     return mCargo;
-  }
-
-  @Override
-  public IJG_Tech tech() {
-    return mTech;
   }
 
   @Override

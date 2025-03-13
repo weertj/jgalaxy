@@ -24,8 +24,7 @@ public class JGL_UnitTest {
 
   @Test
   public void testUnitTest() {
-    IJG_Tech tech = JG_Tech.of(1,1,1,1);
-    IJG_UnitDesign design = JG_UnitDesign.of(10,10,2,10,10, tech);
+    IJG_UnitDesign design = JG_UnitDesign.of("id","goat",10,10,2,10,10);
     IJG_Unit unit = JG_Unit.of( design );
     unit.setNumberOf(1);
     System.out.println(design.mass());

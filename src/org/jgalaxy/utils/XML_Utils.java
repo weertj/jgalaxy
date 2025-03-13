@@ -1,9 +1,6 @@
 package org.jgalaxy.utils;
 
-import org.w3c.dom.Document;
-import org.w3c.dom.Element;
-import org.w3c.dom.Node;
-import org.w3c.dom.NodeList;
+import org.w3c.dom.*;
 import org.xml.sax.SAXException;
 
 import javax.xml.parsers.DocumentBuilder;
@@ -17,6 +14,23 @@ import java.util.List;
 import java.util.Optional;
 
 public class XML_Utils {
+
+  static public String attr( Node pN, String pItem ) {
+    if (pN.hasAttributes()) {
+      return attr( pN.getAttributes(), pItem );
+    }
+    return "";
+  }
+
+  static public String attr(NamedNodeMap pNNM, String pItem ) {
+    Node n = pNNM.getNamedItem(pItem);
+    if (n==null) {
+      return "";
+    } else {
+      return n.getNodeValue();
+    }
+  }
+
 
   static public List<Element> childElementsByName(Node pN, String pName ) {
     List<Element> nodes = new ArrayList<>(8);

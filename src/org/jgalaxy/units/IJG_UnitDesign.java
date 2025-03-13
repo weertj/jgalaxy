@@ -1,16 +1,14 @@
 package org.jgalaxy.units;
 
-import org.jgalaxy.tech.IJG_Tech;
+import org.jgalaxy.IEntity;
 
-public interface IJG_UnitDesign {
+public interface IJG_UnitDesign extends IEntity {
 
   double drive();
   double weapons();
   int    nrweapons();
   double shields();
   double cargo();
-
-  IJG_Tech tech();
 
   double mass();
 
