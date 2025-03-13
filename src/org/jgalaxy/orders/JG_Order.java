@@ -17,4 +17,11 @@ public record JG_Order(EJG_Order order, List<String> parameters ) implements IJG
     return new JG_Order( order, parameters );
   }
 
+  @Override
+  public String param(int pIx) {
+    if (pIx<parameters().size()) {
+      return parameters().get(pIx);
+    }
+    return "";
+  }
 }

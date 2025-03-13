@@ -2,7 +2,8 @@ package org.jgalaxy.orders;
 
 public enum EJG_Order {
 
-  RENAME("n");
+  RENAME("n"),
+  PRODUCE( "p" );
 
   private final String mOrder;
 

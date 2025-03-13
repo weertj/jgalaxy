@@ -6,6 +6,7 @@ public interface IJG_Order {
 
   EJG_Order order();
 
+  String param( int pIx );
   List<String> parameters();
 
 }

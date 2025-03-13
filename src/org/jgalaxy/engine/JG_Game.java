@@ -56,15 +56,15 @@ public class JG_Game extends Entity implements IJG_Game {
           Node root = XML_Utils.rootNodeBy(xml);
           IJG_Faction faction = JG_Faction.of(game,XML_Utils.childNodeByPath(root, "faction").get());
           game.addFaction(faction);
-        }
-      }
-      File orderxml = new File(nf,"orders_" + pTurnNumber + ".xml");
-      if (orderxml.exists()) {
-        try (FileInputStream fis = new FileInputStream(orderxml)) {
-          String xml = GEN_Streams.readAsString(fis, Charset.defaultCharset());
-          Node root = XML_Utils.rootNodeBy(xml);
-          IJG_Orders orders = JG_Orders.of( game.turnNumber(), XML_Utils.childNodeByPath(root, "orders").get());
-
+          File orderxml = new File(nf,"orders_" + pTurnNumber + ".xml");
+          if (orderxml.exists()) {
+            try (FileInputStream ofis = new FileInputStream(orderxml)) {
+              String oxml = GEN_Streams.readAsString(ofis, Charset.defaultCharset());
+              Node oroot = XML_Utils.rootNodeBy(oxml);
+              IJG_Orders orders = JG_Orders.of( game.turnNumber(), XML_Utils.childNodeByPath(oroot, "orders").get());
+              faction.setOrders(orders);
+            }
+          }
         }
       }
     }
@@ -126,6 +126,11 @@ public class JG_Game extends Entity implements IJG_Game {
   }
 
   @Override
+  public IJG_Player getPlayerByName(String pName) {
+    return mPlayers.stream().filter( p -> p.name().equals(pName)).findFirst().orElse(null);
+  }
+
+  @Override
   public List<IJG_Faction> factions() {
     return mFactions;
   }
@@ -135,22 +140,37 @@ public class JG_Game extends Entity implements IJG_Game {
     return mGalaxy;
   }
 
-  @Override
-  public void executeOrder(IJG_Order pOrder) {
-
-    SJG_OrderExecutor.exec( pOrder,this );
-
-    return;
-  }
 
   @Override
   public void timeProgression(Duration pTimeStep) {
     mGalaxy.timeProgression(pTimeStep);
 
+    // Planetary production orders are assigned. Note that production occurs later in the turn.
+    factions().stream().forEach( f -> f.doOrders(1));
 
+    // Messages are sent.
+    // Alliances and war are declared.
+    // Groups with weapons attack enemy ships, causing combat. This can happen if a player declares war on the current turn. It can also happen if a player built a ship with weapons at a planet with enemy ships in orbit at the end of the previous turn.
+    // Groups with weapons bomb enemy planets. This can happen if a player declares war on the current turn.
+    // Groups load or unload cargo.
+    // Groups are upgraded.
+    // Groups and fleets sent to planets enter hyperspace.
+    // Routes are assigned to planets. Cargo ships are assigned cargos and destinations, load cargo (if necessary) and enter hyperspace.
+    // Groups and fleets with intercept orders are assigned destinations and enter hyperspace.
+    // Groups and fleets move through hyperspace, possibly arriving at planets.
+    // Groups with weapons attack enemy ships, causing combat.
+    // Groups with weapons bomb enemy planets.
+
+    // Planets produce materials or capital, conduct research, or build ships.
+    // Population growth occurs.
     for( IJG_Planet planet : mGalaxy.map().planets() ) {
       planet.timeProgression(pTimeStep);
     }
+    // All ships unload cargo if the autounload option is turned on.
+    // For players with the autounload option turned off, ships that are at route destinations unload cargo.
+    // Identical groups are merged.
+    // Groups are renumbered if the sortgroups option is turned on.
+    // Races, planets, ships and fleets are renamed.
 
 
     mTurnNumber++;

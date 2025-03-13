@@ -3,7 +3,11 @@ package org.jgalaxy.units;
 import org.jgalaxy.Entity;
 import org.jgalaxy.tech.IJG_Tech;
 import org.jgalaxy.utils.XML_Utils;
+import org.w3c.dom.Document;
+import org.w3c.dom.Element;
 import org.w3c.dom.Node;
+
+import java.io.File;
 
 public class JG_UnitDesign extends Entity implements IJG_UnitDesign {
 
@@ -69,4 +73,17 @@ public class JG_UnitDesign extends Entity implements IJG_UnitDesign {
     return drive() + weapons()*0.5*(nrweapons()-1) + shields() + cargo();
   }
 
+  @Override
+  public void storeObject(File pPath, Node pParent, String pName) {
+    Element unitdesign = pParent.getOwnerDocument().createElement("unitdesign");
+    unitdesign.setAttribute("id", id() );
+    unitdesign.setAttribute("name", name() );
+    unitdesign.setAttribute("drive", ""+drive() );
+    unitdesign.setAttribute("weapons", ""+weapons() );
+    unitdesign.setAttribute("nrweapons", ""+nrweapons() );
+    unitdesign.setAttribute("shields", ""+shields() );
+    unitdesign.setAttribute("cargo", ""+cargo() );
+    pParent.appendChild(unitdesign);
+    return;
+  }
 }

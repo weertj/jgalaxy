@@ -19,10 +19,9 @@ public interface IJG_Game extends ITimeProgression, IStorage {
 
   List<IJG_Faction> factions();
   List<IJG_Player> players();
+  IJG_Player getPlayerByName( String pName );
 
   IGalaxy galaxy();
-
-  void executeOrder(IJG_Order pOrder);
 
   String reportForPlayerAs( IJG_Player pPlayer, String pFormat );
 

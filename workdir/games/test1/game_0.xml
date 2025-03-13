@@ -5,6 +5,7 @@
             <planet id="p0" name="p0" size="100" population="0.0" x="2.0" y="2.0"/>
             <planet id="p1" name="p1" size="100" population="0.0" x="10.0" y="10.0"/>
             <planet id="home0" name="home0" size="1000" population="1000.0" x="2.0" y="3.0"/>
+            <planet id="home1" name="home1" size="1000" population="1000.0" x="8.0" y="3.3"/>
         </map>
     </game>
 </root>
