@@ -18,6 +18,8 @@ public interface IJG_Game extends ITimeProgression, IStorage {
   void addPlayer(IJG_Player pPlayer);
 
   List<IJG_Faction> factions();
+  IJG_Faction getFactionById( String pId );
+
   List<IJG_Player> players();
   IJG_Player getPlayerByName( String pName );
 

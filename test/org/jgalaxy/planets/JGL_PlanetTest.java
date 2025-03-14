@@ -1,12 +1,6 @@
 package org.jgalaxy.planets;
 
 import org.jgalaxy.JG_Position;
-import org.jgalaxy.tech.IJG_Tech;
-import org.jgalaxy.tech.JG_Tech;
-import org.jgalaxy.units.IJG_Unit;
-import org.jgalaxy.units.IJG_UnitDesign;
-import org.jgalaxy.units.JG_Unit;
-import org.jgalaxy.units.JG_UnitDesign;
 import org.junit.*;
 
 import java.time.Duration;
@@ -31,11 +25,11 @@ public class JGL_PlanetTest {
 
   @Test
   public void testPlanetTest() {
-    IJG_Planet planet = JG_Planet.of("p0", JG_Position.of(1,1));
+    IJG_Planet planet = JG_Planet.of(null,"p0", JG_Position.of(1,1));
     planet.setPopulation(10000);
     for( int i = 0; i < 10; i++ ) {
       System.out.println(planet);
-      planet.timeProgression(Duration.ofDays(1));
+      planet.timeProgression(null, Duration.ofDays(1));
     }
   }
 

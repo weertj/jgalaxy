@@ -5,10 +5,8 @@ import org.jgalaxy.Galaxy;
 import org.jgalaxy.IGalaxy;
 import org.jgalaxy.map.IMAP_Map;
 import org.jgalaxy.map.MAP_Map;
-import org.jgalaxy.orders.IJG_Order;
 import org.jgalaxy.orders.IJG_Orders;
 import org.jgalaxy.orders.JG_Orders;
-import org.jgalaxy.orders.SJG_OrderExecutor;
 import org.jgalaxy.planets.IJG_Planet;
 import org.jgalaxy.utils.GEN_Streams;
 import org.jgalaxy.utils.XML_Utils;
@@ -40,7 +38,7 @@ public class JG_Game extends Entity implements IJG_Game {
       Node root = XML_Utils.rootNodeBy(xml);
       Node gameNode = XML_Utils.childNodeByPath(root,"game").get();
       name = XML_Utils.attr(gameNode,"name");
-      IMAP_Map map = MAP_Map.of( XML_Utils.childNodeByPath(gameNode, "map" ).get());
+      IMAP_Map map = MAP_Map.of( null, XML_Utils.childNodeByPath(gameNode, "map" ).get());
       galaxy = Galaxy.of(map);
     }
 
@@ -136,14 +134,19 @@ public class JG_Game extends Entity implements IJG_Game {
   }
 
   @Override
+  public IJG_Faction getFactionById(String pId) {
+    return mFactions.stream().filter( p -> p.id().equals(pId)).findFirst().orElse(null);
+  }
+
+  @Override
   public IGalaxy galaxy() {
     return mGalaxy;
   }
 
 
   @Override
-  public void timeProgression(Duration pTimeStep) {
-    mGalaxy.timeProgression(pTimeStep);
+  public void timeProgression(IJG_Game pGame, Duration pTimeStep) {
+    mGalaxy.timeProgression(pGame, pTimeStep);
 
     // Planetary production orders are assigned. Note that production occurs later in the turn.
     factions().stream().forEach( f -> f.doOrders(1));
@@ -155,20 +158,25 @@ public class JG_Game extends Entity implements IJG_Game {
     // Groups load or unload cargo.
     // Groups are upgraded.
     // Groups and fleets sent to planets enter hyperspace.
+
     // Routes are assigned to planets. Cargo ships are assigned cargos and destinations, load cargo (if necessary) and enter hyperspace.
     // Groups and fleets with intercept orders are assigned destinations and enter hyperspace.
     // Groups and fleets move through hyperspace, possibly arriving at planets.
+    mFactions.stream().forEach( f -> f.groups().moveGroups(f));
+
     // Groups with weapons attack enemy ships, causing combat.
     // Groups with weapons bomb enemy planets.
 
     // Planets produce materials or capital, conduct research, or build ships.
     // Population growth occurs.
-    for( IJG_Planet planet : mGalaxy.map().planets() ) {
-      planet.timeProgression(pTimeStep);
+    for( IJG_Planet planet : mGalaxy.map().planets().planets() ) {
+      planet.timeProgression(this, pTimeStep);
     }
     // All ships unload cargo if the autounload option is turned on.
     // For players with the autounload option turned off, ships that are at route destinations unload cargo.
     // Identical groups are merged.
+    mFactions.stream().forEach( f -> f.groups().combineGroups() );
+
     // Groups are renumbered if the sortgroups option is turned on.
     // Races, planets, ships and fleets are renamed.
 
@@ -242,7 +250,7 @@ public class JG_Game extends Entity implements IJG_Game {
     report += "N\t\t\tD\tA\tW\tS\tC\tMass\tSpeed\tDef\n";
     report += "\n";
 
-    List<IJG_Planet> planets = galaxy().map().planets();
+    List<IJG_Planet> planets = galaxy().map().planets().planets();
 
     // ****
     report += "\t\t\tYour Planets\n";

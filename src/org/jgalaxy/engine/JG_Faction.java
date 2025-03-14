@@ -8,8 +8,9 @@ import org.jgalaxy.orders.SJG_OrderExecutor;
 import org.jgalaxy.planets.IJG_Planet;
 import org.jgalaxy.planets.IJG_Planets;
 import org.jgalaxy.planets.JG_Planets;
-import org.jgalaxy.units.IJG_UnitDesign;
-import org.jgalaxy.units.JG_UnitDesign;
+import org.jgalaxy.tech.IJG_Tech;
+import org.jgalaxy.tech.JG_Tech;
+import org.jgalaxy.units.*;
 import org.jgalaxy.utils.GEN_Streams;
 import org.jgalaxy.utils.XML_Utils;
 import org.w3c.dom.Document;
@@ -20,7 +21,9 @@ import javax.xml.transform.TransformerException;
 import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
+import java.util.stream.Collectors;
 
 public class JG_Faction extends Entity implements IJG_Faction {
 
@@ -29,11 +32,18 @@ public class JG_Faction extends Entity implements IJG_Faction {
     String name = XML_Utils.attr(pParent,"name");
     IJG_Faction faction = of(pGame,id,name);
 
+    String atWarWith = XML_Utils.attr(pParent,"atWarWith");
+    Arrays.stream(atWarWith.split("\\|")).forEach(faction::addWarWith);
+
     for(Element ud : XML_Utils.childElementsByName(pParent,"unitdesign")) {
       faction.addUnitDesign(JG_UnitDesign.of(ud));
     }
     for(Element ud : XML_Utils.childElementsByName(pParent,"planet")) {
-      faction.addPlanet( pGame.galaxy().map().planetById(XML_Utils.attr(ud, "id")));
+      var p = pGame.galaxy().map().planets().findPlanetById(XML_Utils.attr(ud, "id"));
+      faction.planets().addPlanet(p);
+    }
+    for(Element ud : XML_Utils.childElementsByName(pParent,"group")) {
+      faction.groups().addGroup( JG_Group.of(ud));
     }
 
     return faction;
@@ -44,15 +54,38 @@ public class JG_Faction extends Entity implements IJG_Faction {
     return faction;
   }
 
-  private final IJG_Game             mGame;
-  private final IJG_Planets          mPlanets = new JG_Planets(List.of());
-  private final List<IJG_UnitDesign> mUnitDesigns = new ArrayList<>(8);
+  private final IJG_Game              mGame;
+  private final List<String>          mAtWarWith = new ArrayList<>(4);
+  private final IJG_Tech              mTech = JG_Tech.of();
+  private final IJG_Planets           mPlanets = new JG_Planets(List.of());
+  private final List<IJG_UnitDesign>  mUnitDesigns = new ArrayList<>(8);
+  private final IJG_Groups            mGroups = JG_Groups.of();
 
   private       IJG_Orders           mOrders;
 
   private JG_Faction( IJG_Game pGame, String pID, String pName ) {
     super(pID,pName);
     mGame = pGame;
+    return;
+  }
+
+  @Override
+  public List<String> atWarWith() {
+    return new ArrayList<>(mAtWarWith);
+  }
+
+  @Override
+  public void addWarWith(String pFactionid) {
+    if (!pFactionid.isBlank()) {
+      removeWarWith(pFactionid);
+      mAtWarWith.add(pFactionid);
+    }
+    return;
+  }
+
+  @Override
+  public void removeWarWith(String pFactionid) {
+    mAtWarWith.remove(pFactionid);
     return;
   }
 
@@ -73,12 +106,6 @@ public class JG_Faction extends Entity implements IJG_Faction {
   }
 
   @Override
-  public void addPlanet(IJG_Planet pPlanet) {
-    mPlanets.addPlanet(pPlanet);
-    return;
-  }
-
-  @Override
   public void setOrders(IJG_Orders pOrders) {
     mOrders = pOrders;
     return;
@@ -89,18 +116,55 @@ public class JG_Faction extends Entity implements IJG_Faction {
     return mOrders;
   }
 
+//  orderinfo phase1orders[] = {
+//  {"@", &at_order},           /* send message */
+//  {"=", &eq_order},           /* FS 1999/12 set real name */
+//  {"a", &a_order},            /* alliance */
+//  {"b", &b_order},            /* break off ships */
+//  {"d", &d_order},            /* design ship */
+//  {"e", &e_order},            /* eliminate ship type */
+//  {"f", &f_order},            /* get Race's email address */
+//  {"h", &h_order},            /* CB-19980923, to recall (halt) a group */
+//  {"i", &i_order},            /* intercept */
+//  {"j", &j_order},            /* group join fleet */
+//  {"l", &l_order},            /* load cargo */
+//  {"m", &m_order},            /* change map area */
+//  {"o", &o_order},            /* set options */
+//  {"p", &p_order},            /* set production */
+//  {"q", &q_order},            /* quit */
+//  {"r", &r_order},            /* set route */
+//  {"s", &s_order},            /* send group/fleet to planet */
+//  {"u", &u_order},            /* unload cargo */
+//  {"v", &v_order},            /* claim victory */
+//  {"w", &w_order},            /* cancel alliance */
+//  {"x", &x_order},            /* scrap group */
+//  {"y", &y_order},            /* change password */
+//  {"z", &z_order},            /* change email */
+//  {NULL, NULL}
+//};
+
   @Override
   public void doOrders(int pPhase) {
     if (mOrders!=null) {
       switch (pPhase) {
         case 1 -> {
-          for (var order : mOrders.ordersBy(EJG_Order.PRODUCE)) {
-            SJG_OrderExecutor.exec(this, order, mGame);
-          }
+          for (var order : mOrders.ordersBy(EJG_Order.PRODUCE)) { SJG_OrderExecutor.exec(this, order, mGame);          }
+          for (var order : mOrders.ordersBy(EJG_Order.SEND))    { SJG_OrderExecutor.exec(this, order, mGame);          }
+          for (var order : mOrders.ordersBy(EJG_Order.WAR))     { SJG_OrderExecutor.exec(this, order, mGame);          }
         }
       }
     }
     return;
+  }
+
+  @Override
+  public IJG_Groups groups() {
+    return mGroups;
+  }
+
+  @Override
+  public IJG_Tech tech() {
+    return mTech;
   }
 
   @Override
@@ -111,12 +175,16 @@ public class JG_Faction extends Entity implements IJG_Faction {
     Element factionnode = doc.createElement( "faction" );
     factionnode.setAttribute("id", id() );
     factionnode.setAttribute("name", name() );
+    factionnode.setAttribute( "atWarWith", atWarWith().stream().collect(Collectors.joining("|")));
 
     for( IJG_UnitDesign ud : mUnitDesigns) {
       ud.storeObject(pPath,factionnode,"");
     }
     for( IJG_Planet planet : mPlanets.planets()) {
       planet.storeObject(pPath,factionnode,"");
+    }
+    for( IJG_Group group : mGroups.getGroups()) {
+      group.storeObject(pPath,factionnode,"");
     }
 
     root.appendChild(factionnode);

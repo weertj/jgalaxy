@@ -74,6 +74,11 @@ public class JG_UnitDesign extends Entity implements IJG_UnitDesign {
   }
 
   @Override
+  public double speed(IJG_Tech pTech) {
+    return drive() + pTech.drive() * 20/mass();
+  }
+
+  @Override
   public void storeObject(File pPath, Node pParent, String pName) {
     Element unitdesign = pParent.getOwnerDocument().createElement("unitdesign");
     unitdesign.setAttribute("id", id() );

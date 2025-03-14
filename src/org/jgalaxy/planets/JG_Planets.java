@@ -24,8 +24,13 @@ public class JG_Planets implements IJG_Planets {
   }
 
   @Override
+  public IJG_Planet findPlanetByName(String pName) {
+    return mPlanets.stream().filter(p -> p.name().equals(pName)).findFirst().orElse(null);
+  }
+
+  @Override
   public List<IJG_Planet> planets() {
-    return mPlanets;
+    return new ArrayList<>(mPlanets);
   }
 
 

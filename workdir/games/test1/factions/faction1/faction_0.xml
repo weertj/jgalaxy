@@ -1,5 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no"?>
 <root>
     <faction id="faction1" name="Faction 1">
+        <unitdesign id="JoatRed" name="JoatRed" drive="10" weapons="10" nrweapons="2" shields="10" cargo="10"/>
+        <planet id="home1" name="home1"/>
     </faction>
 </root>

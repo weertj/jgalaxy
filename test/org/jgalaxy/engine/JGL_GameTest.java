@@ -1,11 +1,5 @@
 package org.jgalaxy.engine;
 
-import org.jgalaxy.tech.IJG_Tech;
-import org.jgalaxy.tech.JG_Tech;
-import org.jgalaxy.units.IJG_Unit;
-import org.jgalaxy.units.IJG_UnitDesign;
-import org.jgalaxy.units.JG_Unit;
-import org.jgalaxy.units.JG_UnitDesign;
 import org.junit.*;
 
 import java.io.File;
@@ -34,7 +28,13 @@ public class JGL_GameTest {
     IJG_Game game = JG_Game.of( new File("workdir/games/test1"), 0 );
     IJG_Player player = game.getPlayerByName("Player 1");
     System.out.println(game.reportForPlayerAs(player,"plain"));
-    game.timeProgression(Duration.ofDays(4));
+    game.timeProgression(game, Duration.ofDays(4));
+    game.storeObject(new File("workdir/games/test1"), null, null);
+    game = JG_Game.of( new File("workdir/games/test1"), game.turnNumber() );
+    game.timeProgression(game, Duration.ofDays(4));
+    game.storeObject(new File("workdir/games/test1"), null, null);
+    game = JG_Game.of( new File("workdir/games/test1"), game.turnNumber() );
+    game.timeProgression(game, Duration.ofDays(4));
     game.storeObject(new File("workdir/games/test1"), null, null);
   }
 

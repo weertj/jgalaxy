@@ -1,5 +1,6 @@
 package org.jgalaxy;
 
+import org.jgalaxy.engine.IJG_Game;
 import org.jgalaxy.map.IMAP_Map;
 import org.w3c.dom.Node;
 
@@ -25,8 +26,8 @@ public class Galaxy implements IGalaxy {
   }
 
   @Override
-  public void timeProgression(Duration pTimeStep) {
-    mMap.timeProgression(pTimeStep);
+  public void timeProgression(IJG_Game pGame, Duration pTimeStep) {
+    mMap.timeProgression(pGame, pTimeStep);
     return;
   }
 

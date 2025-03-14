@@ -13,7 +13,7 @@ public class startGame {
     try {
       IJG_Game game = JG_Game.of(new File("games/test1"), 0);
 
-      game.timeProgression(Duration.ofHours(24));
+      game.timeProgression(game, Duration.ofHours(24));
       System.out.println(game);
     } catch (Throwable e) {
       e.printStackTrace();

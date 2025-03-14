@@ -45,18 +45,21 @@ public class XML_Utils {
     return transformer;
   }
 
-
-  static public String attr( Node pN, String pItem ) {
+  static public String attr( Node pN, String pItem, String pDefault) {
     if (pN.hasAttributes()) {
-      return attr( pN.getAttributes(), pItem );
+      return attr( pN.getAttributes(), pItem, pDefault );
     }
-    return "";
+    return pDefault;
   }
 
-  static public String attr(NamedNodeMap pNNM, String pItem ) {
+  static public String attr( Node pN, String pItem ) {
+    return attr(pN,pItem,"");
+  }
+
+  static public String attr(NamedNodeMap pNNM, String pItem, String pDefault ) {
     Node n = pNNM.getNamedItem(pItem);
     if (n==null) {
-      return "";
+      return pDefault;
     } else {
       return n.getNodeValue();
     }

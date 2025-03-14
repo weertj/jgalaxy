@@ -1,0 +1,6 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<root>
+    <orders>
+        <order order="SEND" param0="group_1" param1="home1"/>
+    </orders>
+</root>

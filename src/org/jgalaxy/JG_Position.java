@@ -24,4 +24,17 @@ public class JG_Position implements IJG_Position {
   public double y() {
     return mY;
   }
+
+  @Override
+  public void setX(double x) {
+    mX = x;
+    return;
+  }
+
+  @Override
+  public void setY(double y) {
+    mY = y;
+    return;
+  }
+
 }

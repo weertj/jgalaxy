@@ -2,5 +2,6 @@
 <root>
     <orders>
         <order order="PRODUCE" param0="home0" param1="Joat"/>
+        <order order="WAR" param0="faction1"/>
     </orders>
 </root>
