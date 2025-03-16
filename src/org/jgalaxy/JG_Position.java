@@ -16,6 +16,20 @@ public class JG_Position implements IJG_Position {
   }
 
   @Override
+  public boolean equals(Object o) {
+    if (o == null || getClass() != o.getClass()) return false;
+    JG_Position that = (JG_Position) o;
+    return Double.compare(mX, that.mX) == 0 && Double.compare(mY, that.mY) == 0;
+  }
+
+  @Override
+  public int hashCode() {
+    int result = Double.hashCode(mX);
+    result = 31 * result + Double.hashCode(mY);
+    return result;
+  }
+
+  @Override
   public double x() {
     return mX;
   }
@@ -37,4 +51,11 @@ public class JG_Position implements IJG_Position {
     return;
   }
 
+  @Override
+  public String toString() {
+    return "JG_Position{" +
+      "mX=" + mX +
+      ", mY=" + mY +
+      '}';
+  }
 }

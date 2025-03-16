@@ -24,6 +24,23 @@ public class JG_Tech implements IJG_Tech {
   }
 
   @Override
+  public boolean equals(Object o) {
+    if (o == null || getClass() != o.getClass()) return false;
+
+    JG_Tech jgTech = (JG_Tech) o;
+    return Double.compare(mDrive, jgTech.mDrive) == 0 && Double.compare(mWeapons, jgTech.mWeapons) == 0 && Double.compare(mShields, jgTech.mShields) == 0 && Double.compare(mCargo, jgTech.mCargo) == 0;
+  }
+
+  @Override
+  public int hashCode() {
+    int result = Double.hashCode(mDrive);
+    result = 31 * result + Double.hashCode(mWeapons);
+    result = 31 * result + Double.hashCode(mShields);
+    result = 31 * result + Double.hashCode(mCargo);
+    return result;
+  }
+
+  @Override
   public double drive() {
     return mDrive;
   }

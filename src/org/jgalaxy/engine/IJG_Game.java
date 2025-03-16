@@ -1,9 +1,8 @@
 package org.jgalaxy.engine;
 
-import org.jgalaxy.IGalaxy;
-import org.jgalaxy.IStorage;
-import org.jgalaxy.ITimeProgression;
+import org.jgalaxy.*;
 import org.jgalaxy.orders.IJG_Order;
+import org.jgalaxy.units.IJG_Groups;
 
 import java.io.File;
 import java.util.List;
@@ -26,5 +25,7 @@ public interface IJG_Game extends ITimeProgression, IStorage {
   IGalaxy galaxy();
 
   String reportForPlayerAs( IJG_Player pPlayer, String pFormat );
+
+  IJG_Groups groupsByPosition(IJG_Position pPosition);
 
 }

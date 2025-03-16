@@ -1,5 +1,7 @@
 package org.jgalaxy.planets;
 
+import org.jgalaxy.IJG_Position;
+
 import java.util.ArrayList;
 import java.util.List;
 
@@ -9,6 +11,12 @@ public class JG_Planets implements IJG_Planets {
 
   public JG_Planets(List<IJG_Planet> pPlanets) {
     mPlanets.addAll(pPlanets);
+    return;
+  }
+
+  @Override
+  public void clear() {
+    mPlanets.clear();
     return;
   }
 
@@ -26,6 +34,11 @@ public class JG_Planets implements IJG_Planets {
   @Override
   public IJG_Planet findPlanetByName(String pName) {
     return mPlanets.stream().filter(p -> p.name().equals(pName)).findFirst().orElse(null);
+  }
+
+  @Override
+  public IJG_Planet findPlanetByPosition(IJG_Position pPosition) {
+    return mPlanets.stream().filter(p -> p.position().equals(pPosition)).findFirst().orElse(null);
   }
 
   @Override

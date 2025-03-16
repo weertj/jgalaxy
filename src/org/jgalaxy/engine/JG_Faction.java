@@ -43,7 +43,9 @@ public class JG_Faction extends Entity implements IJG_Faction {
       faction.planets().addPlanet(p);
     }
     for(Element ud : XML_Utils.childElementsByName(pParent,"group")) {
-      faction.groups().addGroup( JG_Group.of(ud));
+      IJG_Group group = JG_Group.of(ud);
+      group.setFaction(faction.id());
+      faction.groups().addGroup( group );
     }
 
     return faction;
@@ -152,6 +154,12 @@ public class JG_Faction extends Entity implements IJG_Faction {
           for (var order : mOrders.ordersBy(EJG_Order.SEND))    { SJG_OrderExecutor.exec(this, order, mGame);          }
           for (var order : mOrders.ordersBy(EJG_Order.WAR))     { SJG_OrderExecutor.exec(this, order, mGame);          }
         }
+        case 2 -> {
+          for (var order : mOrders.ordersBy(EJG_Order.LOAD))    { SJG_OrderExecutor.exec(this, order, mGame);          }
+        }
+        case 3 -> {
+          for (var order : mOrders.ordersBy(EJG_Order.UNLOAD))  { SJG_OrderExecutor.exec(this, order, mGame);          }
+        }
       }
     }
     return;
@@ -165,6 +173,16 @@ public class JG_Faction extends Entity implements IJG_Faction {
   @Override
   public IJG_Tech tech() {
     return mTech;
+  }
+
+  @Override
+  public void removeTurnNumber(File pPath, long pTurnNumber) {
+    File factiondir = new File(pPath,id());
+    File f = new File(factiondir, "faction_" + pTurnNumber + ".xml");
+    f.delete();
+    f = new File(factiondir, "orders_" + pTurnNumber + ".xml");
+    f.delete();
+    return;
   }
 
   @Override

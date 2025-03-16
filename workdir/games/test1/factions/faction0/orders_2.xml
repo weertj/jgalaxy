@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<root>
+    <orders>
+        <order order="PRODUCE" param0="home0" param1="CAP"/>
+        <order order="LOAD" param0="group_3" param1="COL"/>
+        <order order="SEND" param0="group_3" param1="second0"/>
+    </orders>
+</root>

@@ -19,7 +19,13 @@ public class JG_Player extends Entity implements IJG_Player {
   static public IJG_Player of(IJG_Game pGame,Node pParent ) {
     String id = pParent.getAttributes().getNamedItem("id").getNodeValue();
     String name = pParent.getAttributes().getNamedItem("name").getNodeValue();
-    return of(pGame,id,name);
+    IJG_Player player = of(pGame,id,name);
+    for( Element factionnode : XML_Utils.childElementsByName(pParent,"faction")) {
+      String factionid = XML_Utils.attr(factionnode, "id", "");
+      IJG_Faction faction = pGame.getFactionById(factionid);
+      player.addFaction(faction);
+    }
+    return player;
   }
 
   static public IJG_Player of( IJG_Game pGame, String pID, String pName ) {
@@ -29,7 +35,6 @@ public class JG_Player extends Entity implements IJG_Player {
 
   private final IJG_Game          mGame;
   private final List<IJG_Faction> mFactions = new ArrayList<>(8);
-  private final List<IJG_Planet>  mPlanets = new ArrayList<>(8);
 
   private JG_Player( IJG_Game pGame, String pID, String pName ) {
     super(pID,pName);
@@ -49,7 +54,15 @@ public class JG_Player extends Entity implements IJG_Player {
 
   @Override
   public List<IJG_Planet> planets() {
-    return mPlanets;
+    return mFactions.stream().flatMap(f -> f.planets().planets().stream()).toList();
+  }
+
+  @Override
+  public void removeTurnNumber(File pPath, long pTurnNumber) {
+    File playerdir = new File(pPath,id());
+    File f = new File(playerdir, "player_" + pTurnNumber + ".xml");
+    f.delete();
+    return;
   }
 
   @Override

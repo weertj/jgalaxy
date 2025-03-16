@@ -1,11 +1,20 @@
 package org.jgalaxy.units;
 
+import org.jgalaxy.IJG_Position;
 import org.jgalaxy.engine.IJG_Faction;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
+import java.util.stream.Collectors;
 
 public class JG_Groups implements IJG_Groups {
+
+  static public IJG_Groups of(List<IJG_Group> pGroups) {
+    IJG_Groups groups = new JG_Groups();
+    pGroups.stream().forEach(groups::addGroup);
+    return groups;
+  }
 
   static public IJG_Groups of() {
     return new JG_Groups();
@@ -30,12 +39,74 @@ public class JG_Groups implements IJG_Groups {
 
   @Override
   public List<IJG_Group> getGroups() {
-    return mGroups;
+    return new ArrayList<>(mGroups);
+  }
+
+  @Override
+  public IJG_Groups groupsByPosition(IJG_Position pPosition) {
+    return of( mGroups.stream().filter(g->g.position().equals(pPosition)).collect(Collectors.toList()));
+  }
+
+  @Override
+  public IJG_Groups groupsByFaction(IJG_Faction pFaction) {
+    return of( mGroups.stream().filter(g->g.faction().equals(pFaction.id())).collect(Collectors.toList()));
+  }
+
+  @Override
+  public IJG_Groups groupsByFactions(List<String> pFactions) {
+    return of( mGroups.stream().filter(g-> pFactions.contains(g.faction())).collect(Collectors.toList()));
   }
 
   @Override
   public void combineGroups() {
-    // **** TODO
+    boolean rerun = true;
+    while (rerun) {
+      rerun = false;
+      for (IJG_Group group : new ArrayList<>(mGroups)) {
+        for (IJG_Group innergroup : new ArrayList<>(mGroups)) {
+          if (group != innergroup &&
+            group.position().equals(innergroup.position()) &&
+            group.tech().equals(innergroup.tech())) {
+            group.setNumberOf(group.numberOf() + innergroup.numberOf());
+            mGroups.remove(innergroup);
+            rerun = true;
+            break;
+          }
+        }
+        if (rerun) {
+          break;
+        }
+      }
+    }
+    return;
+  }
+
+  @Override
+  public void shuffle() {
+    Collections.shuffle(mGroups);
+    return;
+  }
+
+  @Override
+  public int totalNumberOfUnits() {
+    return mGroups.stream().mapToInt( IJG_Group::numberOf ).sum();
+  }
+
+  @Override
+  public IJG_Group getGroupByIndex(int pIndex) {
+    int ix = 0;
+    for( IJG_Group group : mGroups ) {
+      ix += group.numberOf();
+      if (pIndex<ix) {
+        return group;
+      }
+    }
+    return null;
+  }
+
+  @Override
+  public void removeGroup(IJG_Group pGroup) {
+    mGroups.remove(pGroup);
     return;
   }
 
@@ -65,5 +136,12 @@ public class JG_Groups implements IJG_Groups {
       }
     }
     return;
+  }
+
+  @Override
+  public String toString() {
+    return "JG_Groups{" +
+      "mGroups=" + mGroups +
+      '}';
   }
 }

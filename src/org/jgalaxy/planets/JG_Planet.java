@@ -2,7 +2,10 @@ package org.jgalaxy.planets;
 
 import org.jgalaxy.IJG_Position;
 import org.jgalaxy.JG_Position;
+import org.jgalaxy.engine.IJG_Faction;
 import org.jgalaxy.engine.IJG_Game;
+import org.jgalaxy.engine.IJG_Player;
+import org.jgalaxy.los.FLOS_Visibility;
 import org.jgalaxy.units.IJG_Group;
 import org.jgalaxy.units.JG_Group;
 import org.jgalaxy.utils.XML_Utils;
@@ -232,6 +235,24 @@ public class JG_Planet implements IJG_Planet {
   }
 
   @Override
+  public double visibilityFor(IJG_Game pGame, IJG_Player pPlayer) {
+    double vis = FLOS_Visibility.VIS_NOT;
+    for( IJG_Faction faction : pPlayer.factions() ) {
+      vis = Math.max(vis,visibilityFor(pGame,faction));
+    }
+    return vis;
+  }
+
+  @Override
+  public double visibilityFor(IJG_Game pGame, IJG_Faction pFaction) {
+    if (pFaction.id().equals(owner())) {
+      return FLOS_Visibility.VIS_FULL;
+    } else {
+      return FLOS_Visibility.VIS_MINIMUM;
+    }
+  }
+
+  @Override
   public EProduceType produceType() {
     return mProducing;
   }
@@ -357,6 +378,23 @@ public class JG_Planet implements IJG_Planet {
     producePhase(pGame,pDuration);
     producePopulation(pDuration);
     convertcap();
+    afterAction();
+    return;
+  }
+
+  private void afterAction() {
+    // **** Check cols
+    if (population()<size() && cols()>0) {
+      double extrapop = size()-population();
+      double extracol = extrapop/mPopulationPerCol;
+      if (cols()<extracol) {
+        setPopulation(population()+cols()*mPopulationPerCol);
+        setCols(0.0);
+      } else {
+        setPopulation(population()+extrapop);
+        setCols(cols()-extracol);
+      }
+    }
     return;
   }
 

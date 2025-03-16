@@ -3,6 +3,7 @@ package org.jgalaxy.units;
 import org.jgalaxy.Entity;
 import org.jgalaxy.IJG_Position;
 import org.jgalaxy.JG_Position;
+import org.jgalaxy.engine.IJG_Faction;
 import org.jgalaxy.tech.IJG_Tech;
 import org.jgalaxy.tech.JG_Tech;
 import org.jgalaxy.utils.XML_Utils;
@@ -26,6 +27,8 @@ public class JG_Group extends Entity implements IJG_Group {
     group.toPosition().setX(Double.parseDouble(XML_Utils.attr(pParent, "toX", "0" ) ));
     group.toPosition().setY(Double.parseDouble(XML_Utils.attr(pParent, "toY", "0" ) ));
     group.setUnitDesign(XML_Utils.attr(pParent, "unitDesign", "" ));
+    group.setLoadType(XML_Utils.attr(pParent, "loadType", "" ));
+    group.setLoad(Double.parseDouble(XML_Utils.attr(pParent, "load", "0" ) ));
     return group;
   }
 
@@ -35,6 +38,7 @@ public class JG_Group extends Entity implements IJG_Group {
 
   private       int           mNumberOf;
   private       String        mFleet;
+  private       String        mFaction;
   private final IJG_Position  mPosition = JG_Position.of(0,0);
   private final IJG_Position  mToPosition = JG_Position.of(0,0);
   private       String        mUnitDesign;
@@ -114,6 +118,44 @@ public class JG_Group extends Entity implements IJG_Group {
   }
 
   @Override
+  public String faction() {
+    return mFaction;
+  }
+
+  @Override
+  public void setFaction(String faction) {
+    mFaction = faction;
+    return;
+  }
+
+  @Override
+  public double totalCargoMass() {
+    return 0.0;
+  }
+
+  @Override
+  public String loadType() {
+    return mLoadType;
+  }
+
+  @Override
+  public double load() {
+    return mLoad;
+  }
+
+  @Override
+  public void setLoadType(String pLoadType) {
+    mLoadType = pLoadType;
+    return;
+  }
+
+  @Override
+  public void setLoad(double pLoad) {
+    mLoad = pLoad;
+    return;
+  }
+
+  @Override
   public void storeObject(File pPath, Node pParent, String pName) {
     Element groupnode = pParent.getOwnerDocument().createElement( "group" );
     groupnode.setAttribute("id", id());
@@ -124,6 +166,10 @@ public class JG_Group extends Entity implements IJG_Group {
     groupnode.setAttribute("toX", ""+toPosition().x());
     groupnode.setAttribute("toY", ""+toPosition().y());
     groupnode.setAttribute("unitDesign", mUnitDesign);
+    if (mLoadType!=null) {
+      groupnode.setAttribute( "loadType", mLoadType);
+      groupnode.setAttribute("load", ""+mLoad);
+    }
     pParent.appendChild(groupnode);
     return;
   }

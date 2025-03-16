@@ -16,4 +16,6 @@ public interface IJG_UnitDesign extends IEntity, IStorage {
 
   double speed(IJG_Tech pTech);
 
+  double canCarry(IJG_Tech pTech);
+
 }

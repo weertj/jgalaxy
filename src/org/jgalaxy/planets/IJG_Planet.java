@@ -5,7 +5,11 @@ import org.jgalaxy.IJG_Position;
 import org.jgalaxy.IStorage;
 import org.jgalaxy.ITimeProgression;
 import org.jgalaxy.engine.IJG_Faction;
+import org.jgalaxy.engine.IJG_Game;
+import org.jgalaxy.engine.IJG_Player;
 import org.jgalaxy.units.IJG_UnitDesign;
+
+import java.util.Locale;
 
 public interface IJG_Planet extends IEntity,ITimeProgression, IStorage {
 
@@ -48,5 +52,17 @@ public interface IJG_Planet extends IEntity,ITimeProgression, IStorage {
 
   double populationIncreasePerHour();
   void setPopulationIncreasePerHour( double pPopulationIncreasePerHour );
+
+  double visibilityFor(IJG_Game pGame, IJG_Player   pPlayer);
+  double visibilityFor(IJG_Game pGame, IJG_Faction  pFaction);
+
+  default String formatString() {
+    return String.format( Locale.US, "%-12s %9.2f %9.2f %9.2f %9.2f",
+      name(),
+      position().x(), position().y(),
+      size(),
+      population()
+      );
+  }
 
 }

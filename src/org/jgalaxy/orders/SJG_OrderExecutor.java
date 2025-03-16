@@ -4,7 +4,10 @@ import org.jgalaxy.engine.IJG_Faction;
 import org.jgalaxy.engine.IJG_Game;
 import org.jgalaxy.planets.EProduceType;
 import org.jgalaxy.planets.IJG_Planet;
+import org.jgalaxy.planets.JG_Planet;
+import org.jgalaxy.planets.JG_Planets;
 import org.jgalaxy.units.IJG_Group;
+import org.jgalaxy.units.IJG_UnitDesign;
 
 public class SJG_OrderExecutor {
 
@@ -12,6 +15,11 @@ public class SJG_OrderExecutor {
     switch (pOrder.order()) {
       case RENAME -> {
       }
+
+      // **** LOAD
+      case LOAD -> orderLOAD(pGame,pFaction,pOrder);
+      // **** UNLOAD
+      case UNLOAD -> orderUNLOAD(pGame,pFaction,pOrder);
 
       // **** PRODUCE
       case PRODUCE -> orderPRODUCE(pGame,pFaction,pOrder);
@@ -50,6 +58,28 @@ public class SJG_OrderExecutor {
     return;
   }
 
+  /**
+   * orderLOAD
+   * @param pOrder
+   * @param pGame
+   */
+  static private void orderLOAD( IJG_Game pGame, IJG_Faction pFaction,IJG_Order pOrder) {
+    String groupfleetid = pOrder.param(0 );
+    IJG_Group group = pFaction.groups().getGroupById(groupfleetid);
+    IJG_UnitDesign unitdesign = pFaction.getUnitDesignById(group.unitDesign());
+    IJG_Planet planet = pFaction.planets().findPlanetByPosition(group.position());
+    SJG_LoadOrder.loadOrder(group, unitdesign, pOrder.param(1), planet, 9999999 );
+    return;
+  }
+
+  static private void orderUNLOAD( IJG_Game pGame, IJG_Faction pFaction,IJG_Order pOrder) {
+    String groupfleetid = pOrder.param(0 );
+    IJG_Group group = pFaction.groups().getGroupById(groupfleetid);
+    IJG_Planet planet = pGame.galaxy().map().planets().findPlanetByPosition(group.position());
+    SJG_LoadOrder.unloadOrder(group, planet, 9999999 );
+    return;
+  }
+
   static private void orderSEND(  IJG_Game pGame, IJG_Faction pFaction, IJG_Order pOrder ) {
     String groupfleetid = pOrder.param(0 );
     IJG_Group group = pFaction.groups().getGroupById(groupfleetid);
@@ -66,12 +96,18 @@ public class SJG_OrderExecutor {
     return;
   }
 
+  /**
+   * orderWAR
+   * @param pGame
+   * @param pFaction
+   * @param pOrder
+   */
   static private void orderWAR(  IJG_Game pGame, IJG_Faction pFaction, IJG_Order pOrder ) {
     String factionid = pOrder.param(0 );
     pFaction.addWarWith(factionid);
+    pGame.getFactionById(factionid).addWarWith(pFaction.id());
     return;
   }
-
 
   /**
    * orderRENAME

@@ -3,11 +3,16 @@ package org.jgalaxy.engine;
 import org.jgalaxy.Entity;
 import org.jgalaxy.Galaxy;
 import org.jgalaxy.IGalaxy;
+import org.jgalaxy.IJG_Position;
+import org.jgalaxy.battle.SB_Battle;
+import org.jgalaxy.los.FLOS_Visibility;
 import org.jgalaxy.map.IMAP_Map;
 import org.jgalaxy.map.MAP_Map;
 import org.jgalaxy.orders.IJG_Orders;
 import org.jgalaxy.orders.JG_Orders;
 import org.jgalaxy.planets.IJG_Planet;
+import org.jgalaxy.units.IJG_Groups;
+import org.jgalaxy.units.JG_Groups;
 import org.jgalaxy.utils.GEN_Streams;
 import org.jgalaxy.utils.XML_Utils;
 import org.w3c.dom.Document;
@@ -23,6 +28,7 @@ import java.io.IOException;
 import java.nio.charset.Charset;
 import java.time.Duration;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
 public class JG_Game extends Entity implements IJG_Game {
@@ -107,6 +113,19 @@ public class JG_Game extends Entity implements IJG_Game {
   }
 
   @Override
+  public void removeTurnNumber(File pPath,long pNumber) {
+    File f = new File( pPath, "game_" + pNumber + ".xml");
+    f.delete();
+    for( var faction : factions() ) {
+      faction.removeTurnNumber(new File(pPath,"factions"),pNumber);
+    }
+    for( var player : players() ) {
+      player.removeTurnNumber(new File(pPath,"players"),pNumber);
+    }
+    return;
+  }
+
+  @Override
   public void addFaction(IJG_Faction pFaction) {
     mFactions.add(pFaction);
     return;
@@ -154,8 +173,13 @@ public class JG_Game extends Entity implements IJG_Game {
     // Messages are sent.
     // Alliances and war are declared.
     // Groups with weapons attack enemy ships, causing combat. This can happen if a player declares war on the current turn. It can also happen if a player built a ship with weapons at a planet with enemy ships in orbit at the end of the previous turn.
+    fightPhase();
+
     // Groups with weapons bomb enemy planets. This can happen if a player declares war on the current turn.
     // Groups load or unload cargo.
+    factions().stream().forEach( f -> f.doOrders(3));
+    factions().stream().forEach( f -> f.doOrders(2));
+
     // Groups are upgraded.
     // Groups and fleets sent to planets enter hyperspace.
 
@@ -165,6 +189,8 @@ public class JG_Game extends Entity implements IJG_Game {
     mFactions.stream().forEach( f -> f.groups().moveGroups(f));
 
     // Groups with weapons attack enemy ships, causing combat.
+    fightPhase();
+
     // Groups with weapons bomb enemy planets.
 
     // Planets produce materials or capital, conduct research, or build ships.
@@ -172,7 +198,10 @@ public class JG_Game extends Entity implements IJG_Game {
     for( IJG_Planet planet : mGalaxy.map().planets().planets() ) {
       planet.timeProgression(this, pTimeStep);
     }
+
     // All ships unload cargo if the autounload option is turned on.
+    factions().stream().forEach( f -> f.doOrders(2));
+
     // For players with the autounload option turned off, ships that are at route destinations unload cargo.
     // Identical groups are merged.
     mFactions.stream().forEach( f -> f.groups().combineGroups() );
@@ -180,9 +209,27 @@ public class JG_Game extends Entity implements IJG_Game {
     // Groups are renumbered if the sortgroups option is turned on.
     // Races, planets, ships and fleets are renamed.
 
+    roundUp();
 
     mTurnNumber++;
 
+    return;
+  }
+
+  private void roundUp() {
+    for( IJG_Faction faction : factions() ) {
+      faction.planets().clear();
+      for (IJG_Planet planet : mGalaxy.map().planets().planets()) {
+        faction.planets().addPlanet(planet);
+      }
+    }
+    return;
+  }
+
+  private void fightPhase() {
+    var planets = mGalaxy.map().planets().planets();
+    Collections.shuffle(planets);
+    SB_Battle.performPlanetGroupBattles(this,planets);
     return;
   }
 
@@ -231,8 +278,16 @@ public class JG_Game extends Entity implements IJG_Game {
     return report;
   }
 
+  @Override
+  public IJG_Groups groupsByPosition(IJG_Position pPosition) {
+    IJG_Groups groups = JG_Groups.of();
+    for( IJG_Faction faction : factions() ) {
+      groups.addGroups(faction.groups().groupsByPosition(pPosition));
+    }
+    return groups;
+  }
 
-  private String reportPlain( IJG_Player pPlayer ) {
+  private String reportPlain(IJG_Player pPlayer ) {
     String report = "";
 
     // ****
@@ -255,10 +310,10 @@ public class JG_Game extends Entity implements IJG_Game {
     // ****
     report += "\t\t\tYour Planets\n";
     report += "\n";
-    report += "N\t\t\tX\tY\tS\tP\tI\tR\tP\t$\tM\tC\tL\n";
+    report += "N                     X      Y      S       P       I      R         P          $     M      C      L\n";
     for( IJG_Planet planet : new ArrayList<>(planets) ) {
-      if (pPlayer.planets().contains(planet)) {
-        report += planet.name() + "\n";
+      if (planet.visibilityFor(this,pPlayer)>= FLOS_Visibility.VIS_FULL) {
+        report += planet.formatString() + "\n";
         planets.remove(planet);
       }
     }
