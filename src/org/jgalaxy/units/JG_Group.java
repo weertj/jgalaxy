@@ -156,7 +156,7 @@ public class JG_Group extends Entity implements IJG_Group {
   }
 
   @Override
-  public void storeObject(File pPath, Node pParent, String pName) {
+  public void storeObject(File pPath, Node pParent, String pName, String pFilter ) {
     Element groupnode = pParent.getOwnerDocument().createElement( "group" );
     groupnode.setAttribute("id", id());
     groupnode.setAttribute("name", name());

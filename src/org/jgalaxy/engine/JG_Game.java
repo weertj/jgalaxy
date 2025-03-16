@@ -241,7 +241,7 @@ public class JG_Game extends Entity implements IJG_Game {
    * @param pName
    */
   @Override
-  public void storeObject(File pPath, Node pParent, String pName) {
+  public void storeObject(File pPath, Node pParent, String pName, String pFilter ) {
     Document doc = XML_Utils.newXMLDocument();
     var root = doc.createElement("root");
     doc.appendChild(root);
@@ -249,12 +249,12 @@ public class JG_Game extends Entity implements IJG_Game {
     gamenode.setAttribute("name", name() );
     gamenode.setAttribute("turnNumber", ""+turnNumber() );
     try {
-      mGalaxy.storeObject( null, gamenode, "" );
+      mGalaxy.storeObject( null, gamenode, "", "" );
       for( var faction : factions() ) {
-        faction.storeObject( new File( pPath, "factions" ), gamenode, ""  );
+        faction.storeObject( new File( pPath, "factions" ), gamenode, "", ""  );
       }
       for( var player : players() ) {
-        player.storeObject( new File( pPath, "players" ), gamenode, ""  );
+        player.storeObject( new File( pPath, "players" ), gamenode, "", ""  );
       }
       root.appendChild(gamenode);
       String gamexml = XML_Utils.documentToString(doc);

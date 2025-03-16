@@ -84,7 +84,7 @@ public class JG_UnitDesign extends Entity implements IJG_UnitDesign {
   }
 
   @Override
-  public void storeObject(File pPath, Node pParent, String pName) {
+  public void storeObject(File pPath, Node pParent, String pName, String pFilter ) {
     Element unitdesign = pParent.getOwnerDocument().createElement("unitdesign");
     unitdesign.setAttribute("id", id() );
     unitdesign.setAttribute("name", name() );

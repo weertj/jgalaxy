@@ -13,6 +13,8 @@ import java.util.Locale;
 
 public interface IJG_Planet extends IEntity,ITimeProgression, IStorage {
 
+  IJG_Planet copyOf();
+
   void rename( String pNewName );
 
   IJG_Position position();
@@ -41,6 +43,9 @@ public interface IJG_Planet extends IEntity,ITimeProgression, IStorage {
   EProduceType produceType();
   String produceUnitDesign();
 
+  double inProgress();
+  void setInProgress( double pInProgress );
+
   double materials();
   void setMaterials( double pMaterials );
 
@@ -55,6 +60,8 @@ public interface IJG_Planet extends IEntity,ITimeProgression, IStorage {
 
   double visibilityFor(IJG_Game pGame, IJG_Player   pPlayer);
   double visibilityFor(IJG_Game pGame, IJG_Faction  pFaction);
+
+  void setPlanetToVisibility( double pVisibility );
 
   default String formatString() {
     return String.format( Locale.US, "%-12s %9.2f %9.2f %9.2f %9.2f",

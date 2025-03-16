@@ -196,6 +196,17 @@ public class JG_Planet implements IJG_Planet {
   }
 
   @Override
+  public double inProgress() {
+    return mInprogress;
+  }
+
+  @Override
+  public void setInProgress(double pInProgress) {
+    mInprogress = pInProgress;
+    return;
+  }
+
+  @Override
   public void setMaterials(double pMaterials) {
     mMaterials = pMaterials;
     return;
@@ -250,6 +261,27 @@ public class JG_Planet implements IJG_Planet {
     } else {
       return FLOS_Visibility.VIS_MINIMUM;
     }
+  }
+
+  @Override
+  public void setPlanetToVisibility(double pVisibility) {
+    if (pVisibility>=FLOS_Visibility.VIS_FULL) {
+      return;
+    }
+    mPopulation = -1;
+    mCapitals = -1;
+    mCols = -1;
+    mMaterials = -1;
+    mIndustry = -1;
+    mSize = -1;
+    mPopulationPerCol = -1;
+    mInprogress = -1;
+    mSpent = -1;
+    mPopulationIncreasePerHour = -1;
+    mProducingShipType = null;
+    mProducing = null;
+    mOwner = null;
+    return;
   }
 
   @Override
@@ -399,7 +431,25 @@ public class JG_Planet implements IJG_Planet {
   }
 
   @Override
-  public void storeObject(File pPath, Node pParent, String pName) {
+  public IJG_Planet copyOf() {
+    IJG_Planet planet = of(id(),name(),position());
+    planet.setOwner(mOwner);
+    planet.setSize(size());
+    planet.setPopulation(population());
+    planet.setIndustry(industry());
+    planet.setProduceType(produceType(), produceUnitDesign());
+    planet.setCapitals(capitals());
+    planet.setMaterials(materials());
+    planet.setCols(cols());
+    planet.setInProgress(inProgress());
+    planet.setSpent(spent());
+    planet.setPopulationPerCol(populationPerCol());
+    planet.setPopulationIncreasePerHour(populationIncreasePerHour());
+    return planet;
+  }
+
+  @Override
+  public void storeObject(File pPath, Node pParent, String pName, String pFilter ) {
     Element planetnode = pParent.getOwnerDocument().createElement( "planet" );
     planetnode.setAttribute("id", id());
     planetnode.setAttribute("name", name());
@@ -408,22 +458,22 @@ public class JG_Planet implements IJG_Planet {
     if (mOwner!=null) {
       planetnode.setAttribute("owner", mOwner);
     }
-    planetnode.setAttribute("size", ""+size());
-    planetnode.setAttribute("population", ""+population());
-    planetnode.setAttribute("industry", ""+industry());
+    if (size()>=0)        planetnode.setAttribute("size", ""+size());
+    if (population()>=0)  planetnode.setAttribute("population", ""+population());
+    if (industry()>=0)    planetnode.setAttribute("industry", ""+industry());
     if (produceType()!=null) {
       planetnode.setAttribute("produceType", produceType().name() );
     }
     if (produceUnitDesign()!=null) {
       planetnode.setAttribute("produceUnitDesign", produceUnitDesign() );
     }
-    planetnode.setAttribute("capitals", ""+ capitals());
-    planetnode.setAttribute("materials", ""+materials());
-    planetnode.setAttribute("cols", ""+cols());
-    planetnode.setAttribute("inProgress", ""+mInprogress);
-    planetnode.setAttribute("spent", ""+mSpent);
-    planetnode.setAttribute("populationPerCol", ""+mPopulationPerCol);
-    planetnode.setAttribute("populationIncreasePerHour", ""+mPopulationIncreasePerHour);
+    if (capitals()>=0)    planetnode.setAttribute("capitals", ""+ capitals());
+    if (materials()>=0)   planetnode.setAttribute("materials", ""+materials());
+    if (cols()>=0)        planetnode.setAttribute("cols", ""+cols());
+    if (inProgress()>=0)  planetnode.setAttribute("inProgress", ""+mInprogress);
+    if (spent()>=0)       planetnode.setAttribute("spent", ""+mSpent);
+    if (populationPerCol()>=0) planetnode.setAttribute("populationPerCol", ""+mPopulationPerCol);
+    if (populationIncreasePerHour()>=0) planetnode.setAttribute("populationIncreasePerHour", ""+mPopulationIncreasePerHour);
     pParent.appendChild(planetnode);
     return;
   }

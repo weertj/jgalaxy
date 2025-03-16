@@ -55,14 +55,14 @@ public class MAP_Map implements IMAP_Map {
   }
 
   @Override
-  public void storeObject(File pPath, Node pParent, String pName) {
+  public void storeObject(File pPath, Node pParent, String pName, String pFilter ) {
     Element mapnode = pParent.getOwnerDocument().createElement( "map" );
     mapnode.setAttribute("xs", String.valueOf(mXStart));
     mapnode.setAttribute("ys", String.valueOf(mYStart));
     mapnode.setAttribute("xe", String.valueOf(mXEnd));
     mapnode.setAttribute("ye", String.valueOf(mYEnd));
     for( var planet : planets().planets() ) {
-      planet.storeObject(pPath, mapnode, pName);
+      planet.storeObject(pPath, mapnode, pName,pFilter);
     }
     pParent.appendChild(mapnode);
     return;

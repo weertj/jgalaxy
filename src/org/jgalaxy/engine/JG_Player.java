@@ -66,10 +66,11 @@ public class JG_Player extends Entity implements IJG_Player {
   }
 
   @Override
-  public void storeObject(File pPath, Node pParent, String pName) {
+  public void storeObject(File pPath, Node pParent, String pName, String pFilter ) {
     Document doc = XML_Utils.newXMLDocument();
     var root = doc.createElement("root");
     doc.appendChild(root);
+//    mGame.storeObject(null,root,"",pFilter);
     Element playernode = doc.createElement( "player" );
     playernode.setAttribute("id", id() );
     playernode.setAttribute("name", name() );

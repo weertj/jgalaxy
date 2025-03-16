@@ -32,8 +32,8 @@ public class Galaxy implements IGalaxy {
   }
 
   @Override
-  public void storeObject(File pPath, Node pParent, String pName) {
-    mMap.storeObject( pPath, pParent, pName );
+  public void storeObject(File pPath, Node pParent, String pName, String pFilter ) {
+    mMap.storeObject( pPath, pParent, pName,pFilter );
     return;
   }
 

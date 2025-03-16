@@ -1,6 +1,7 @@
 package org.jgalaxy.engine;
 
 import org.jgalaxy.Entity;
+import org.jgalaxy.los.FLOS_Visibility;
 import org.jgalaxy.orders.EJG_Order;
 import org.jgalaxy.orders.IJG_Order;
 import org.jgalaxy.orders.IJG_Orders;
@@ -17,6 +18,7 @@ import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 import org.w3c.dom.Node;
 
+import javax.xml.parsers.DocumentBuilderFactory;
 import javax.xml.transform.TransformerException;
 import java.io.File;
 import java.io.IOException;
@@ -186,32 +188,44 @@ public class JG_Faction extends Entity implements IJG_Faction {
   }
 
   @Override
-  public void storeObject(File pPath, Node pParent, String pName) {
-    Document doc = XML_Utils.newXMLDocument();
-    var root = doc.createElement("root");
-    doc.appendChild(root);
+  public void storeObject(File pPath, Node pParent, String pName, String pFilter ) {
+    Document doc;
+    Node root;
+    if (pPath==null) {
+      root = pParent;
+      doc = pParent.getOwnerDocument();
+    } else {
+      doc = XML_Utils.newXMLDocument();
+      root = doc.createElement("root");
+      doc.appendChild(root);
+    }
     Element factionnode = doc.createElement( "faction" );
     factionnode.setAttribute("id", id() );
     factionnode.setAttribute("name", name() );
     factionnode.setAttribute( "atWarWith", atWarWith().stream().collect(Collectors.joining("|")));
 
     for( IJG_UnitDesign ud : mUnitDesigns) {
-      ud.storeObject(pPath,factionnode,"");
+      ud.storeObject(pPath,factionnode,"", "");
     }
     for( IJG_Planet planet : mPlanets.planets()) {
-      planet.storeObject(pPath,factionnode,"");
+      double vis = planet.visibilityFor(mGame, this);
+      IJG_Planet cplanet = planet.copyOf();
+      cplanet.setPlanetToVisibility(vis);
+      cplanet.storeObject(pPath, factionnode, "", "");
     }
     for( IJG_Group group : mGroups.getGroups()) {
-      group.storeObject(pPath,factionnode,"");
+      group.storeObject(pPath,factionnode,"", "");
     }
 
     root.appendChild(factionnode);
-    try {
-      File factiondir = new File(pPath,id());
-      String factionxml = XML_Utils.documentToString(doc);
-      GEN_Streams.writeStringToFile(factionxml, new File(factiondir, "faction_" + mGame.turnNumber() + ".xml"));
-    } catch (IOException | TransformerException e ) {
-      e.printStackTrace();
+    if (pPath!=null) {
+      try {
+        File factiondir = new File(pPath, id());
+        String factionxml = XML_Utils.documentToString(doc);
+        GEN_Streams.writeStringToFile(factionxml, new File(factiondir, "faction_" + mGame.turnNumber() + ".xml"));
+      } catch (IOException | TransformerException e) {
+        e.printStackTrace();
+      }
     }
   }
 
