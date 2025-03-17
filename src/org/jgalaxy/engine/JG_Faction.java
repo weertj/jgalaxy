@@ -218,6 +218,18 @@ public class JG_Faction extends Entity implements IJG_Faction {
     }
 
     root.appendChild(factionnode);
+
+    // **** Other factions
+    for( IJG_Faction faction : mGame.factions()) {
+      if (faction!=this) {
+        Element otherfactionnode = doc.createElement( "faction" );
+        otherfactionnode.setAttribute("id", faction.id() );
+        otherfactionnode.setAttribute("name", faction.name() );
+        root.appendChild(otherfactionnode);
+      }
+    }
+
+
     if (pPath!=null) {
       try {
         File factiondir = new File(pPath, id());
@@ -227,6 +239,8 @@ public class JG_Faction extends Entity implements IJG_Faction {
         e.printStackTrace();
       }
     }
+
+    return;
   }
 
 }
