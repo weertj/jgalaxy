@@ -1,6 +1,7 @@
 package org.jgalaxy.engine;
 
 import org.jgalaxy.Entity;
+import org.jgalaxy.OrderException;
 import org.jgalaxy.los.FLOS_Visibility;
 import org.jgalaxy.orders.EJG_Order;
 import org.jgalaxy.orders.IJG_Order;
@@ -66,6 +67,8 @@ public class JG_Faction extends Entity implements IJG_Faction {
   private final IJG_Groups            mGroups = JG_Groups.of();
 
   private       IJG_Orders           mOrders;
+
+  private final transient List<OrderException> mOrderErrors = new ArrayList<>(8);
 
   private JG_Faction( IJG_Game pGame, String pID, String pName ) {
     super(pID,pName);
@@ -152,15 +155,31 @@ public class JG_Faction extends Entity implements IJG_Faction {
     if (mOrders!=null) {
       switch (pPhase) {
         case 1 -> {
-          for (var order : mOrders.ordersBy(EJG_Order.PRODUCE)) { SJG_OrderExecutor.exec(this, order, mGame);          }
-          for (var order : mOrders.ordersBy(EJG_Order.SEND))    { SJG_OrderExecutor.exec(this, order, mGame);          }
-          for (var order : mOrders.ordersBy(EJG_Order.WAR))     { SJG_OrderExecutor.exec(this, order, mGame);          }
+          for (var order : mOrders.ordersBy(EJG_Order.PRODUCE, EJG_Order.SEND, EJG_Order.WAR)) {
+            try {
+              SJG_OrderExecutor.exec(this, order, mGame);
+            } catch (OrderException e) {
+              mOrderErrors.add(e);
+            }
+          }
         }
         case 2 -> {
-          for (var order : mOrders.ordersBy(EJG_Order.LOAD))    { SJG_OrderExecutor.exec(this, order, mGame);          }
+          for (var order : mOrders.ordersBy(EJG_Order.LOAD)) {
+            try {
+              SJG_OrderExecutor.exec(this, order, mGame);
+            } catch (OrderException e) {
+              mOrderErrors.add(e);
+            }
+          }
         }
         case 3 -> {
-          for (var order : mOrders.ordersBy(EJG_Order.UNLOAD))  { SJG_OrderExecutor.exec(this, order, mGame);          }
+          for (var order : mOrders.ordersBy(EJG_Order.UNLOAD)) {
+            try {
+              SJG_OrderExecutor.exec(this, order, mGame);
+            } catch (OrderException e) {
+              mOrderErrors.add(e);
+            }
+          }
         }
       }
     }
@@ -170,6 +189,11 @@ public class JG_Faction extends Entity implements IJG_Faction {
   @Override
   public IJG_Groups groups() {
     return mGroups;
+  }
+
+  @Override
+  public List<OrderException> orderExceptions() {
+    return mOrderErrors;
   }
 
   @Override

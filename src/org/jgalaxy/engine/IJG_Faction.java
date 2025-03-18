@@ -2,6 +2,7 @@ package org.jgalaxy.engine;
 
 import org.jgalaxy.IEntity;
 import org.jgalaxy.IStorage;
+import org.jgalaxy.OrderException;
 import org.jgalaxy.orders.IJG_Orders;
 import org.jgalaxy.planets.IJG_Planet;
 import org.jgalaxy.planets.IJG_Planets;
@@ -34,5 +35,7 @@ public interface IJG_Faction extends IEntity, IStorage {
   IJG_Tech tech();
 
   IJG_Groups groups();
+
+  List<OrderException> orderExceptions();
 
 }

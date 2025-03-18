@@ -5,6 +5,7 @@ import org.w3c.dom.Node;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
 
 public record JG_Order(EJG_Order order, List<String> parameters ) implements IJG_Order {
 
@@ -23,5 +24,10 @@ public record JG_Order(EJG_Order order, List<String> parameters ) implements IJG
       return parameters().get(pIx);
     }
     return "";
+  }
+
+  @Override
+  public String toString() {
+    return order.name() +  parameters.stream().collect(Collectors.joining(" "," ",""));
   }
 }

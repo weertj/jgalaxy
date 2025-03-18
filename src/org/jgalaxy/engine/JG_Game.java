@@ -1,9 +1,6 @@
 package org.jgalaxy.engine;
 
-import org.jgalaxy.Entity;
-import org.jgalaxy.Galaxy;
-import org.jgalaxy.IGalaxy;
-import org.jgalaxy.IJG_Position;
+import org.jgalaxy.*;
 import org.jgalaxy.battle.SB_Battle;
 import org.jgalaxy.los.FLOS_Visibility;
 import org.jgalaxy.map.IMAP_Map;
@@ -298,6 +295,17 @@ public class JG_Game extends Entity implements IJG_Game {
       report += faction.name() + "\n";
     }
     report += "\n";
+
+    // **** Mistakes
+    report += "\tMISTAKES\n";
+    for( IJG_Faction faction : factions() ) {
+      for( OrderException orderException : faction.orderExceptions()) {
+        report += orderException.getOrder().toString() + "\n";
+        report += orderException.getMessage() + "\n";
+      }
+    }
+    report += "\n";
+
 
     // ****
     report += "\t\t\tYour Ship Types\n";
