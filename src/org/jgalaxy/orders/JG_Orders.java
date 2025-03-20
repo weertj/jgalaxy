@@ -1,9 +1,11 @@
 package org.jgalaxy.orders;
 
 import org.jgalaxy.utils.XML_Utils;
+import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 import org.w3c.dom.Node;
 
+import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -42,5 +44,21 @@ public class JG_Orders implements IJG_Orders {
     return mOrders;
   }
 
-
+  @Override
+  public void storeObject(File pPath, Node pParent, String pName, String pFilter) {
+    Document doc = pParent.getOwnerDocument();
+    Element orders = doc.createElement( "orders" );
+    for( IJG_Order order : mOrders) {
+      Element orderNode = doc.createElement( "order" );
+      orderNode.setAttribute("order", order.order().name() );
+      for( int ix=0; ix<8; ix++ ) {
+        if (!order.param(ix).isBlank()) {
+          orderNode.setAttribute("param" + ix, order.param(ix));
+        }
+      }
+      orders.appendChild(orderNode);
+    }
+    pParent.appendChild(orders);
+    return;
+  }
 }

@@ -21,6 +21,7 @@ public interface IJG_Game extends ITimeProgression, IStorage {
 
   List<IJG_Player> players();
   IJG_Player getPlayerByName( String pName );
+  IJG_Player getPlayerByID( String pID );
 
   IGalaxy galaxy();
 

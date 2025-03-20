@@ -38,4 +38,7 @@ public interface IJG_Faction extends IEntity, IStorage {
 
   List<OrderException> orderExceptions();
 
+  double totalPop();
+  double totalIndustry();
+
 }

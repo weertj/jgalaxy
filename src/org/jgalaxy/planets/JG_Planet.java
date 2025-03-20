@@ -41,7 +41,7 @@ public class JG_Planet implements IJG_Planet {
     planet.setCols( Double.parseDouble(XML_Utils.attr(pParent, "cols","0" )));
     planet.setSpent(Double.parseDouble(XML_Utils.attr(pParent, "spent","0" )));
     planet.setPopulationPerCol( Double.parseDouble(XML_Utils.attr(pParent, "populationPerCol", "8" )));
-    planet.setPopulationIncreasePerHour( Double.parseDouble(XML_Utils.attr(pParent, "populationIncreasePerHour", "0.08" )));
+    planet.setPopulationIncreasePerHour( Double.parseDouble(XML_Utils.attr(pParent, "populationIncreasePerHour", ""+DEFAULT_POPINCPERHOUR )));
     return planet;
   }
 
@@ -49,6 +49,7 @@ public class JG_Planet implements IJG_Planet {
     return new JG_Planet( pID, pName, pPosition );
   }
 
+  static public double DEFAULT_POPINCPERHOUR = 0.08 / (24.0*365.0*4.0);
 
   private final String mID;
   private       String mName;
@@ -67,7 +68,7 @@ public class JG_Planet implements IJG_Planet {
   private       double mSpent;
 
   private       double mPopulationPerCol = 8;
-  private       double mPopulationIncreasePerHour = 0.008;
+  private       double mPopulationIncreasePerHour = DEFAULT_POPINCPERHOUR;
   private       double mIndustryPerCapital = 5;
 
   private JG_Planet( String pID, String pName, IJG_Position pPosition ) {

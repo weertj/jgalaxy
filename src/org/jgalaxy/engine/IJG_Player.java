@@ -10,6 +10,7 @@ public interface IJG_Player extends IEntity, IStorage {
 
   void addFaction(IJG_Faction faction);
   List<IJG_Faction> factions();
+  IJG_Faction getFactionByID(String factionID);
 
   List<IJG_Planet> planets();
 

@@ -53,6 +53,11 @@ public class JG_Player extends Entity implements IJG_Player {
   }
 
   @Override
+  public IJG_Faction getFactionByID(String factionID) {
+    return mFactions.stream().filter( f -> f.id().equals(factionID)).findFirst().orElse(null);
+  }
+
+  @Override
   public List<IJG_Planet> planets() {
     return mFactions.stream().flatMap(f -> f.planets().planets().stream()).toList();
   }
@@ -67,9 +72,16 @@ public class JG_Player extends Entity implements IJG_Player {
 
   @Override
   public void storeObject(File pPath, Node pParent, String pName, String pFilter ) {
-    Document doc = XML_Utils.newXMLDocument();
-    var root = doc.createElement("root");
-    doc.appendChild(root);
+    Node root = pParent;
+    Document doc;
+    if (pPath==null) {
+      doc = pParent.getOwnerDocument();
+    } else {
+      doc = XML_Utils.newXMLDocument();
+      root = doc.createElement("root");
+      doc.appendChild(root);
+    }
+
 //    mGame.storeObject(null,root,"",pFilter);
     Element playernode = doc.createElement( "player" );
     playernode.setAttribute("id", id() );
@@ -80,12 +92,14 @@ public class JG_Player extends Entity implements IJG_Player {
       playernode.appendChild(factionnode);
     }
     root.appendChild(playernode);
-    try {
-      File playerdir = new File(pPath,id());
-      String playerxml = XML_Utils.documentToString(doc);
-      GEN_Streams.writeStringToFile(playerxml, new File(playerdir, "player_" + mGame.turnNumber() + ".xml"));
-    } catch (IOException | TransformerException e ) {
-      e.printStackTrace();
+    if (pPath!=null) {
+      try {
+        File playerdir = new File(pPath, id());
+        String playerxml = XML_Utils.documentToString(doc);
+        GEN_Streams.writeStringToFile(playerxml, new File(playerdir, "player_" + mGame.turnNumber() + ".xml"));
+      } catch (IOException | TransformerException e) {
+        e.printStackTrace();
+      }
     }
   }
 }

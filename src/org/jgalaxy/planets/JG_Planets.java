@@ -1,6 +1,7 @@
 package org.jgalaxy.planets;
 
 import org.jgalaxy.IJG_Position;
+import org.jgalaxy.engine.IJG_Faction;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -39,6 +40,11 @@ public class JG_Planets implements IJG_Planets {
   @Override
   public IJG_Planet findPlanetByPosition(IJG_Position pPosition) {
     return mPlanets.stream().filter(p -> p.position().equals(pPosition)).findFirst().orElse(null);
+  }
+
+  @Override
+  public List<IJG_Planet> planetsOwnedBy(IJG_Faction pFaction) {
+    return mPlanets.stream().filter(p -> pFaction.id().equals(p.owner())).toList();
   }
 
   @Override

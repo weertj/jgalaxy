@@ -145,6 +145,11 @@ public class JG_Game extends Entity implements IJG_Game {
   }
 
   @Override
+  public IJG_Player getPlayerByID(String pID) {
+    return mPlayers.stream().filter( p -> p.id().equals(pID)).findFirst().orElse(null);
+  }
+
+  @Override
   public List<IJG_Faction> factions() {
     return mFactions;
   }

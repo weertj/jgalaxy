@@ -12,6 +12,10 @@ public interface IJG_Tech {
   void setShields(double shields);
   void setCargo(double cargo);
 
+  default double totalTech() {
+    return drive()+weapons()+shields()+cargo();
+  }
+
   default void copyOf(IJG_Tech other) {
     setDrive(other.drive());
     setWeapons(other.weapons());

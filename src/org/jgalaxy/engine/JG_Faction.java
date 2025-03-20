@@ -202,6 +202,20 @@ public class JG_Faction extends Entity implements IJG_Faction {
   }
 
   @Override
+  public double totalPop() {
+    return planets().planetsOwnedBy(this).stream()
+      .mapToDouble(IJG_Planet::population)
+      .sum();
+  }
+
+  @Override
+  public double totalIndustry() {
+    return planets().planetsOwnedBy(this).stream()
+      .mapToDouble(IJG_Planet::industry)
+      .sum();
+  }
+
+  @Override
   public void removeTurnNumber(File pPath, long pTurnNumber) {
     File factiondir = new File(pPath,id());
     File f = new File(factiondir, "faction_" + pTurnNumber + ".xml");
@@ -226,7 +240,10 @@ public class JG_Faction extends Entity implements IJG_Faction {
     Element factionnode = doc.createElement( "faction" );
     factionnode.setAttribute("id", id() );
     factionnode.setAttribute("name", name() );
-    factionnode.setAttribute( "atWarWith", atWarWith().stream().collect(Collectors.joining("|")));
+    factionnode.setAttribute("atWarWith", atWarWith().stream().collect(Collectors.joining("|")));
+    factionnode.setAttribute("totalPop", ""+totalPop() );
+    factionnode.setAttribute("totalIndustry", ""+totalIndustry() );
+    factionnode.setAttribute("totalTech", ""+tech().totalTech());
 
     for( IJG_UnitDesign ud : mUnitDesigns) {
       ud.storeObject(pPath,factionnode,"", "");
@@ -239,6 +256,9 @@ public class JG_Faction extends Entity implements IJG_Faction {
     }
     for( IJG_Group group : mGroups.getGroups()) {
       group.storeObject(pPath,factionnode,"", "");
+    }
+    if (orders()!=null) {
+      orders().storeObject(pPath, factionnode, "", "");
     }
 
     root.appendChild(factionnode);
