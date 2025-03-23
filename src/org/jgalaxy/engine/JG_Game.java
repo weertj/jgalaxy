@@ -30,55 +30,66 @@ import java.util.List;
 
 public class JG_Game extends Entity implements IJG_Game {
 
-  static public IJG_Game of(File pPath, long pTurnNumber ) throws IOException, ParserConfigurationException, SAXException {
+  static public IJG_Game of(File pPath, Node pParent, long pTurnNumber ) throws IOException, ParserConfigurationException, SAXException {
 
-    File gamexml = new File(pPath,"game_" + pTurnNumber + ".xml");
-
+    Node root = pParent;
     String name;
     IGalaxy galaxy;
-    try(FileInputStream fis = new FileInputStream(gamexml)) {
-      String xml = GEN_Streams.readAsString(fis, Charset.defaultCharset());
-      Node root = XML_Utils.rootNodeBy(xml);
-      Node gameNode = XML_Utils.childNodeByPath(root,"game").get();
-      name = XML_Utils.attr(gameNode,"name");
-      IMAP_Map map = MAP_Map.of( null, XML_Utils.childNodeByPath(gameNode, "map" ).get());
-      galaxy = Galaxy.of(map);
+
+    if (root==null) {
+      File gamexml = new File(pPath, "game_" + pTurnNumber + ".xml");
+      try (FileInputStream fis = new FileInputStream(gamexml)) {
+        String xml = GEN_Streams.readAsString(fis, Charset.defaultCharset());
+        root = XML_Utils.rootNodeBy(xml);
+      }
     }
+    Node gameNode = XML_Utils.childNodeByPath(root,"game").get();
+    name = XML_Utils.attr(gameNode,"name");
+    IMAP_Map map = MAP_Map.of( null, XML_Utils.childNodeByPath(gameNode, "map" ).get());
+    galaxy = Galaxy.of(map);
 
     IJG_Game game = new JG_Game(name,galaxy);
     game.setTurnNumber(pTurnNumber);
 
-    File factions = new File( pPath, "factions");
-    for( File nf : factions.listFiles() ) {
-      File factionxml = new File(nf,"faction_" + pTurnNumber + ".xml");
-      if (factionxml.exists()) {
-        try (FileInputStream fis = new FileInputStream(factionxml)) {
-          String xml = GEN_Streams.readAsString(fis, Charset.defaultCharset());
-          Node root = XML_Utils.rootNodeBy(xml);
-          IJG_Faction faction = JG_Faction.of(game,XML_Utils.childNodeByPath(root, "faction").get());
-          game.addFaction(faction);
-          File orderxml = new File(nf,"orders_" + pTurnNumber + ".xml");
-          if (orderxml.exists()) {
-            try (FileInputStream ofis = new FileInputStream(orderxml)) {
-              String oxml = GEN_Streams.readAsString(ofis, Charset.defaultCharset());
-              Node oroot = XML_Utils.rootNodeBy(oxml);
-              IJG_Orders orders = JG_Orders.of( game.turnNumber(), XML_Utils.childNodeByPath(oroot, "orders").get());
-              faction.setOrders(orders);
+    if (pPath==null) {
+
+    } else {
+      File factions = new File(pPath, "factions");
+      for (File nf : factions.listFiles()) {
+        File factionxml = new File(nf, "faction_" + pTurnNumber + ".xml");
+        if (factionxml.exists()) {
+          try (FileInputStream fis = new FileInputStream(factionxml)) {
+            String xml = GEN_Streams.readAsString(fis, Charset.defaultCharset());
+            root = XML_Utils.rootNodeBy(xml);
+            IJG_Faction faction = JG_Faction.of(game, XML_Utils.childNodeByPath(root, "faction").get());
+            game.addFaction(faction);
+            File orderxml = new File(nf, "orders_" + pTurnNumber + ".xml");
+            if (orderxml.exists()) {
+              try (FileInputStream ofis = new FileInputStream(orderxml)) {
+                String oxml = GEN_Streams.readAsString(ofis, Charset.defaultCharset());
+                Node oroot = XML_Utils.rootNodeBy(oxml);
+                IJG_Orders orders = JG_Orders.of(game.turnNumber(), XML_Utils.childNodeByPath(oroot, "orders").get());
+                faction.setOrders(orders);
+              }
             }
           }
         }
       }
     }
 
-    File players = new File( pPath, "players");
-    for( File nf : players.listFiles() ) {
-      File playerxml = new File(nf,"player_" + pTurnNumber + ".xml");
-      if (playerxml.exists()) {
-        try (FileInputStream fis = new FileInputStream(playerxml)) {
-          String xml = GEN_Streams.readAsString(fis, Charset.defaultCharset());
-          Node root = XML_Utils.rootNodeBy(xml);
-          IJG_Player player = JG_Player.of(game,XML_Utils.childNodeByPath(root, "player").get());
-          game.addPlayer(player);
+    if (pPath==null) {
+
+    } else {
+      File players = new File(pPath, "players");
+      for (File nf : players.listFiles()) {
+        File playerxml = new File(nf, "player_" + pTurnNumber + ".xml");
+        if (playerxml.exists()) {
+          try (FileInputStream fis = new FileInputStream(playerxml)) {
+            String xml = GEN_Streams.readAsString(fis, Charset.defaultCharset());
+            root = XML_Utils.rootNodeBy(xml);
+            IJG_Player player = JG_Player.of(game, XML_Utils.childNodeByPath(root, "player").get());
+            game.addPlayer(player);
+          }
         }
       }
     }
@@ -244,23 +255,38 @@ public class JG_Game extends Entity implements IJG_Game {
    */
   @Override
   public void storeObject(File pPath, Node pParent, String pName, String pFilter ) {
-    Document doc = XML_Utils.newXMLDocument();
-    var root = doc.createElement("root");
-    doc.appendChild(root);
+    Document doc;
+    Node root = pParent;
+    if (pParent==null) {
+      doc = XML_Utils.newXMLDocument();
+      root = doc.createElement("root");
+      doc.appendChild(root);
+    } else {
+      doc = pParent.getOwnerDocument();
+    }
     Element gamenode = doc.createElement( "game" );
     gamenode.setAttribute("name", name() );
     gamenode.setAttribute("turnNumber", ""+turnNumber() );
     try {
       mGalaxy.storeObject( null, gamenode, "", "" );
-      for( var faction : factions() ) {
-        faction.storeObject( new File( pPath, "factions" ), gamenode, "", ""  );
+      if (pPath!=null) {
+        for (var faction : factions()) {
+          faction.storeObject(new File(pPath, "factions"), gamenode, "", "");
+        }
       }
-      for( var player : players() ) {
-        player.storeObject( new File( pPath, "players" ), gamenode, "", ""  );
+      if (pPath!=null) {
+        for (var player : players()) {
+          player.storeObject(new File(pPath, "players"), gamenode, "", "");
+        }
       }
       root.appendChild(gamenode);
-      String gamexml = XML_Utils.documentToString(doc);
-      GEN_Streams.writeStringToFile(gamexml, new File(pPath, "game_" + mTurnNumber + ".xml"));
+      if (pPath!=null) {
+        String gamexml = XML_Utils.documentToString(doc);
+        GEN_Streams.writeStringToFile(gamexml, new File(pPath, "game_" + mTurnNumber + ".xml"));
+      }
+//      if (pParent!=null) {
+//        pParent.appendChild(root);
+//      }
     } catch (IOException | TransformerException e ) {
       e.printStackTrace();
     }

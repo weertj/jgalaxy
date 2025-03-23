@@ -11,7 +11,7 @@ public class startGame {
   public static void main(String[] args) {
 
     try {
-      IJG_Game game = JG_Game.of(new File("games/test1"), 0);
+      IJG_Game game = JG_Game.of(new File("games/test1"),null, 0);
 
       game.timeProgression(game, Duration.ofHours(24));
       System.out.println(game);

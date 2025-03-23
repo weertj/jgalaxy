@@ -125,7 +125,7 @@ public class startCommand {
       File gameDir = new File(mainDir, gameName);
       System.out.println("Directory: " + gameDir.getCanonicalPath());
 
-      IJG_Game game = JG_Game.of(gameDir, turnNumber);
+      IJG_Game game = JG_Game.of(gameDir, null,turnNumber);
       IJG_Faction faction = null;
       if (parsedArgs.containsKey("faction") || parsedArgs.containsKey("f")) {
         faction = game.getFactionById(parsedArgs.getOrDefault("faction", parsedArgs.getOrDefault("f", "")));

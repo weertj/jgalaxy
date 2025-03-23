@@ -35,12 +35,15 @@ public class SimpleServer {
           IJG_GameInfo gameInfo = JG_GameInfo.of(gamedir);
           IStorage storage = gameInfo;
           if (path.length>4) {
-            IJG_Game game = JG_Game.of(gamedir, Integer.parseInt(path[4]));
-            IJG_Player player = game.getPlayerByID(path[5]);
-            storage = player;
-            if (path.length>=7) {
-              IJG_Faction faction = player.getFactionByID(path[6]);
-              storage = faction;
+            IJG_Game game = JG_Game.of(gamedir,null, Integer.parseInt(path[4]));
+            storage = game;
+            if (path.length>5) {
+              IJG_Player player = game.getPlayerByID(path[5]);
+              storage = player;
+              if (path.length>6) {
+                IJG_Faction faction = player.getFactionByID(path[6]);
+                storage = faction;
+              }
             }
           }
           Document doc = XML_Utils.newXMLDocument();
