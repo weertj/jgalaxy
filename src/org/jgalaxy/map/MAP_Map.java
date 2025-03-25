@@ -22,11 +22,15 @@ public class MAP_Map implements IMAP_Map {
     double ys = Double.parseDouble(pParent.getAttributes().getNamedItem("ys").getNodeValue());
     double xe = Double.parseDouble(pParent.getAttributes().getNamedItem("xe").getNodeValue());
     double ye = Double.parseDouble(pParent.getAttributes().getNamedItem("ye").getNodeValue());
-    map = new MAP_Map( xs, ys, xe, ye );
+    map = of( xs, ys, xe, ye );
     for(Element xmlpl : XML_Utils.childElementsByName(pParent,"planet")) {
       map.planets().addPlanet(JG_Planet.of( xmlpl ));
     }
     return map;
+  }
+
+  static public IMAP_Map of( double pXStart, double pYStart, double pXEnd, double pYEnd ) {
+    return new MAP_Map( pXStart, pYStart, pXEnd, pYEnd );
   }
 
   private final double mXStart;
@@ -43,6 +47,27 @@ public class MAP_Map implements IMAP_Map {
     mYEnd = pYEnd;
     return;
   }
+
+  @Override
+  public double xStart() {
+    return mXStart;
+  }
+
+  @Override
+  public double yStart() {
+    return mYStart;
+  }
+
+  @Override
+  public double xEnd() {
+    return mXEnd;
+  }
+
+  @Override
+  public double yEnd() {
+    return mYEnd;
+  }
+
 
   @Override
   public IJG_Planets planets() {

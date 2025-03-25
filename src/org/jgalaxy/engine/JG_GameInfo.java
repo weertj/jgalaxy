@@ -28,6 +28,22 @@ public class JG_GameInfo implements IJG_GameInfo {
   }
 
   @Override
+  public String id() {
+    return mGameDir.getName();
+  }
+
+  @Override
+  public String name() {
+    return mGameDir.getName();
+  }
+
+  @Override
+  public void init() {
+    mGameDir.mkdirs();
+    return;
+  }
+
+  @Override
   public int currentTurnNumber() {
     if (mCurrentTurnNumber<0) {
       int maxTurnNumber = 0;

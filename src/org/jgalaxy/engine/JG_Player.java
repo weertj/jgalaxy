@@ -99,6 +99,7 @@ public class JG_Player extends Entity implements IJG_Player {
     if (pPath!=null) {
       try {
         File playerdir = new File(pPath, id());
+        playerdir.mkdirs();
         String playerxml = XML_Utils.documentToString(doc);
         GEN_Streams.writeStringToFile(playerxml, new File(playerdir, "player_" + mGame.turnNumber() + ".xml"));
       } catch (IOException | TransformerException e) {

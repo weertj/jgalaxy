@@ -30,6 +30,11 @@ import java.util.stream.Collectors;
 
 public class JG_Faction extends Entity implements IJG_Faction {
 
+  static public File getFactionDirectory( File pBaseDir, IJG_GameInfo pGameInfo, IJG_Faction pFaction ) {
+    File dir = new File( pBaseDir, "games/" + pGameInfo.id() + "/factions/" + pFaction.id() );
+    return dir;
+  }
+
   static public IJG_Faction of(IJG_Game pGame, Node pParent ) {
     String id = XML_Utils.attr(pParent,"id");
     String name = XML_Utils.attr(pParent,"name");
@@ -278,6 +283,7 @@ public class JG_Faction extends Entity implements IJG_Faction {
       try {
         File factiondir = new File(pPath, id());
         String factionxml = XML_Utils.documentToString(doc);
+        factiondir.mkdirs();
         GEN_Streams.writeStringToFile(factionxml, new File(factiondir, "faction_" + mGame.turnNumber() + ".xml"));
       } catch (IOException | TransformerException e) {
         e.printStackTrace();

@@ -30,6 +30,7 @@ import java.util.List;
 
 public class JG_Game extends Entity implements IJG_Game {
 
+
   static public IJG_Game of(File pPath, Node pParent, long pTurnNumber ) throws IOException, ParserConfigurationException, SAXException {
 
     Node root = pParent;
@@ -48,7 +49,7 @@ public class JG_Game extends Entity implements IJG_Game {
     IMAP_Map map = MAP_Map.of( null, XML_Utils.childNodeByPath(gameNode, "map" ).get());
     galaxy = Galaxy.of(map);
 
-    IJG_Game game = new JG_Game(name,galaxy);
+    IJG_Game game = of(name,galaxy);
     game.setTurnNumber(pTurnNumber);
 
     if (pPath==null) {
@@ -101,6 +102,10 @@ public class JG_Game extends Entity implements IJG_Game {
     }
 
     return game;
+  }
+
+  static public IJG_Game of( String pName, IGalaxy pGalaxy ) {
+    return new JG_Game(pName,pGalaxy);
   }
 
   private final IGalaxy           mGalaxy;

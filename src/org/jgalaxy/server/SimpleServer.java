@@ -96,10 +96,10 @@ public class SimpleServer {
                 if (path.length>7) {
                   if (path[7].equals("orders")) {
                     String orders = GEN_Streams.readAsString(exchange.getRequestBody(), Charset.defaultCharset());
-                    System.out.println("poprpsdo " + orders);
                     Node root = XML_Utils.rootNodeBy(orders);
                     faction.setOrders(JG_Orders.of(game.turnNumber(),XML_Utils.childNodeByPath(root,"orders").get()));
-
+                    File factionDir = JG_Faction.getFactionDirectory( new File("workdir"), gameInfo, faction );
+                    GEN_Streams.writeStringToFile( orders, new File(factionDir,"orders_" + gameInfo.currentTurnNumber() + ".xml" ));
                   }
                 }
               }

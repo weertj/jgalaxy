@@ -11,4 +11,9 @@ public interface IMAP_Map extends ITimeProgression, IStorage {
 
   IJG_Planets planets();
 
+  double xStart();
+  double yStart();
+  double xEnd();
+  double yEnd();
+
 }
