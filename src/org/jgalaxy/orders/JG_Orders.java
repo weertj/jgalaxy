@@ -1,5 +1,6 @@
 package org.jgalaxy.orders;
 
+import org.jgalaxy.engine.IJG_Faction;
 import org.jgalaxy.utils.XML_Utils;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
@@ -10,6 +11,13 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class JG_Orders implements IJG_Orders {
+
+
+  static public IJG_Orders generateOf( long pNewTurnnumber, IJG_Faction pFromFaction, IJG_Faction pToFaction) {
+    IJG_Orders orders = of(pNewTurnnumber);
+    orders.addOrder(JG_Order.of(EJG_Order.PRODUCE, List.of("home0","CAP")));
+    return orders;
+  }
 
   static public IJG_Orders of( long pForTurnNumber, Node pParent ) {
     String id = XML_Utils.attr(pParent,"id");

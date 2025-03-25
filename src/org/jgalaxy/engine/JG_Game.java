@@ -78,7 +78,13 @@ public class JG_Game extends Entity implements IJG_Game {
     }
 
     if (pPath==null) {
-
+      var oplayers = XML_Utils.childNodeByPath(gameNode,"players");
+      if (oplayers.isPresent()) {
+        for( Node playernode : XML_Utils.childElementsByName(oplayers.get(), "player" )) {
+          IJG_Player player = JG_Player.of(game,playernode);
+          game.addPlayer(player);
+        }
+      }
     } else {
       File players = new File(pPath, "players");
       for (File nf : players.listFiles()) {
@@ -274,7 +280,13 @@ public class JG_Game extends Entity implements IJG_Game {
           faction.storeObject(new File(pPath, "factions"), gamenode, "", "");
         }
       }
-      if (pPath!=null) {
+      if (pPath==null) {
+        Node playersNode = doc.createElement("players");
+        for (var player : players()) {
+          player.storeObject(pPath, playersNode, "", "");
+        }
+        gamenode.appendChild(playersNode);
+      } else {
         for (var player : players()) {
           player.storeObject(new File(pPath, "players"), gamenode, "", "");
         }
