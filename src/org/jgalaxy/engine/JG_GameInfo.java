@@ -11,17 +11,19 @@ import java.io.File;
 public class JG_GameInfo implements IJG_GameInfo {
 
   static public IJG_GameInfo of(File pGameDir) throws Exception {
-    return new JG_GameInfo(pGameDir,-1);
+    return new JG_GameInfo(pGameDir.getName(), pGameDir,-1);
   }
 
   static public IJG_GameInfo of(Node pRoot) throws Exception {
-    return new JG_GameInfo(null, Integer.parseInt(XML_Utils.attr(pRoot,"currentTurnNumber", "-1" )));
+    return new JG_GameInfo(XML_Utils.attr(pRoot,"name"),null, Integer.parseInt(XML_Utils.attr(pRoot,"currentTurnNumber", "-1" )));
   }
 
-  private final File mGameDir;
-  private       int  mCurrentTurnNumber = -1;
+  private final File    mGameDir;
+  private final String  mName;
+  private       int     mCurrentTurnNumber = -1;
 
-  private JG_GameInfo( File pDir, int pCurrentTurnNumber ) {
+  private JG_GameInfo( String pName, File pDir, int pCurrentTurnNumber ) {
+    mName = pName;
     mGameDir = pDir;
     mCurrentTurnNumber = pCurrentTurnNumber;
     return;
@@ -29,12 +31,12 @@ public class JG_GameInfo implements IJG_GameInfo {
 
   @Override
   public String id() {
-    return mGameDir.getName();
+    return mName;
   }
 
   @Override
   public String name() {
-    return mGameDir.getName();
+    return mName;
   }
 
   @Override
@@ -62,6 +64,7 @@ public class JG_GameInfo implements IJG_GameInfo {
   public void storeObject(File pPath, Node pParent, String pName, String pFilter) {
     Document doc = pParent.getOwnerDocument();
     Element gameinfonode = doc.createElement( "game" );
+    gameinfonode.setAttribute("name", mName );
     gameinfonode.setAttribute("currentTurnNumber", ""+currentTurnNumber() );
     pParent.appendChild(gameinfonode);
     return;

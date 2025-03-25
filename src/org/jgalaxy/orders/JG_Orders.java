@@ -1,6 +1,8 @@
 package org.jgalaxy.orders;
 
 import org.jgalaxy.engine.IJG_Faction;
+import org.jgalaxy.planets.IJG_Planet;
+import org.jgalaxy.planets.IJG_Planets;
 import org.jgalaxy.utils.XML_Utils;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
@@ -9,13 +11,25 @@ import org.w3c.dom.Node;
 import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 
 public class JG_Orders implements IJG_Orders {
 
 
   static public IJG_Orders generateOf( long pNewTurnnumber, IJG_Faction pFromFaction, IJG_Faction pToFaction) {
     IJG_Orders orders = of(pNewTurnnumber);
-    orders.addOrder(JG_Order.of(EJG_Order.PRODUCE, List.of("home0","CAP")));
+
+    // **** Check planets
+    IJG_Planets planets = pFromFaction.planets();
+    for( int ix=0; ix<planets.getSize(); ix++ ) {
+      var p1 = planets.planetByIndex(ix);
+      if (Objects.equals(p1.owner(),pFromFaction.id())) {
+        var p2 = pToFaction.planets().planetByIndex(ix);
+        if (!Objects.equals(p1.produceUnitDesign(), p2.produceUnitDesign())) {
+            orders.addOrder(JG_Order.of(EJG_Order.PRODUCE, List.of(p1.id(), p2.produceUnitDesign())));
+        }
+      }
+    }
     return orders;
   }
 

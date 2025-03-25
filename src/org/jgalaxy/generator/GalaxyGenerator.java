@@ -36,6 +36,7 @@ public class GalaxyGenerator {
         JG_Position.of( Math.random()*(map.xEnd()-map.xStart()), Math.random()*(map.yEnd()-map.yStart()) ));
       planet.setSize( 1000 );
       planet.setPopulation(1000);
+      planet.setIndustry(1000);
       planet.setOwner(faction.id());
       faction.planets().addPlanet( planet );
       galaxy.map().planets().addPlanet( planet );

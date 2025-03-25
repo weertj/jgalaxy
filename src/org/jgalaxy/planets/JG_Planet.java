@@ -322,12 +322,12 @@ public class JG_Planet implements IJG_Planet {
           produceShip(pGame,industry);
         }
         case PR_CAP -> {
-          double industry =industry() * 0.75 + population() * 0.25 - mSpent + mInprogress;
+          double industry = industry() * 0.75 + population() * 0.25 - mSpent + mInprogress;
           mSpent = 0.0;
           produceCap(industry);
         }
         case PR_MAT -> {
-          double industry =industry() * 0.75 + population() * 0.25 - mSpent + mInprogress;
+          double industry = industry() * 0.75 + population() * 0.25 - mSpent + mInprogress;
           mSpent = 0.0;
           produceMat(industry);
         }
@@ -353,11 +353,11 @@ public class JG_Planet implements IJG_Planet {
     double materialDemand = pIndustry / mIndustryPerCapital;
     if (materialDemand>materials()) {
       materialDemand = materials();
-      pIndustry -= materialDemand * mIndustryPerCapital;
-      setCapitals(capitals()+materialDemand);
-      setMaterials(materials()-materialDemand);
-      setCapitals( capitals() + (pIndustry / (mIndustryPerCapital + 1 / resources())));
     }
+    pIndustry -= materialDemand * mIndustryPerCapital;
+    setCapitals(capitals()+materialDemand);
+    setMaterials(materials()-materialDemand);
+    setCapitals( capitals() + (pIndustry / (mIndustryPerCapital + 1 / resources())));
     setInProgress(0);
     return;
   }

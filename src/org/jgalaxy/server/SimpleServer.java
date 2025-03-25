@@ -19,6 +19,7 @@ import java.net.InetSocketAddress;
 import java.net.URI;
 import java.nio.charset.Charset;
 import java.nio.charset.StandardCharsets;
+import java.time.Duration;
 
 public class SimpleServer {
 
@@ -99,8 +100,17 @@ public class SimpleServer {
                     Node root = XML_Utils.rootNodeBy(orders);
                     faction.setOrders(JG_Orders.of(game.turnNumber(),XML_Utils.childNodeByPath(root,"orders").get()));
                     File factionDir = JG_Faction.getFactionDirectory( new File("workdir"), gameInfo, faction );
-                    GEN_Streams.writeStringToFile( orders, new File(factionDir,"orders_" + gameInfo.currentTurnNumber() + ".xml" ));
+                    GEN_Streams.writeStringToFile( orders, new File(factionDir,"orders_" + game.turnNumber() + ".xml" ));
                   }
+                }
+              }
+            } else {
+              String[] qelems = query.split("&");
+              for (String qelem : qelems) {
+                String[] qval = qelem.split("=");
+                if ("nextTurn".equals(qelem)) {
+                  game.timeProgression( game, Duration.ofDays(365));
+                  game.storeObject(gamedir, null, null,"");
                 }
               }
             }

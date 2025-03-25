@@ -48,9 +48,17 @@ public class JG_Planets implements IJG_Planets {
   }
 
   @Override
+  public IJG_Planet planetByIndex(int pIndex) {
+    return mPlanets.get(pIndex);
+  }
+
+  @Override
   public List<IJG_Planet> planets() {
     return new ArrayList<>(mPlanets);
   }
 
-
+  @Override
+  public int getSize() {
+    return mPlanets.size();
+  }
 }

@@ -15,5 +15,8 @@ public interface IJG_Planets {
   IJG_Planet findPlanetByPosition(IJG_Position pPosition );
   List<IJG_Planet> planetsOwnedBy(IJG_Faction pFaction);
   List<IJG_Planet> planets();
+  IJG_Planet planetByIndex( int pIndex );
+
+  int getSize();
 
 }
