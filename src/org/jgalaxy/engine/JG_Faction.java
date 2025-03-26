@@ -262,6 +262,9 @@ public class JG_Faction extends Entity implements IJG_Faction {
     for( IJG_Group group : mGroups.getGroups()) {
       group.storeObject(pPath,factionnode,"", "");
     }
+    for( IJG_Fleet fleet : mGroups.fleets()) {
+      fleet.storeObject(pPath,factionnode,"", "");
+    }
     if (orders()!=null) {
       orders().storeObject(pPath, factionnode, "", "");
     }

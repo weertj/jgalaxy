@@ -40,4 +40,6 @@ public interface IJG_Groups {
 
   IJG_Group getGroupByIndex( int pIndex );
 
+  List<IJG_Fleet> fleets();
+
 }

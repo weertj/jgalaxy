@@ -30,5 +30,11 @@ public class JGL_UnitTest {
     System.out.println(design.mass());
   }
 
+  @Test
+  public void testGroupTest() {
+    IJG_UnitDesign design = JG_UnitDesign.of("id","goat",10,10,2,10,10);
+  }
+
+
 }
 

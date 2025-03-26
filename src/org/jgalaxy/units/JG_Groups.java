@@ -6,6 +6,7 @@ import org.jgalaxy.engine.IJG_Faction;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
+import java.util.Objects;
 import java.util.stream.Collectors;
 
 public class JG_Groups implements IJG_Groups {
@@ -102,6 +103,16 @@ public class JG_Groups implements IJG_Groups {
       }
     }
     return null;
+  }
+
+  @Override
+  public List<IJG_Fleet> fleets() {
+    List<IJG_Fleet> fleets = new ArrayList<>(8);
+    var fleetnames = mGroups.stream().map( g -> g.getFleet() ).distinct().toList();
+    for( String fleetname : fleetnames ) {
+      fleets.add(JG_Fleet.of(fleetname,fleetname, mGroups.stream().filter(group -> Objects.equals(group.getFleet(),fleetname)).toList()));
+    }
+    return fleets;
   }
 
   @Override

@@ -59,6 +59,12 @@ public class JG_Group extends Entity implements IJG_Group {
   }
 
   @Override
+  public void setFleet(String pFleet) {
+    mFleet = pFleet;
+    return;
+  }
+
+  @Override
   public String getFleet() {
     return mFleet;
   }
@@ -174,5 +180,8 @@ public class JG_Group extends Entity implements IJG_Group {
     return;
   }
 
-
+  @Override
+  public String toString() {
+    return numberOf() + " x " + unitDesign();
+  }
 }

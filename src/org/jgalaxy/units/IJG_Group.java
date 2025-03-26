@@ -8,6 +8,7 @@ import org.jgalaxy.tech.IJG_Tech;
 
 public interface IJG_Group extends IEntity, IStorage {
 
+  void setFleet(String pFleet);
   String getFleet();
 
   IJG_Position position();

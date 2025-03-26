@@ -3,6 +3,7 @@ package org.jgalaxy.orders;
 import org.jgalaxy.engine.IJG_Faction;
 import org.jgalaxy.planets.IJG_Planet;
 import org.jgalaxy.planets.IJG_Planets;
+import org.jgalaxy.units.IJG_Group;
 import org.jgalaxy.utils.XML_Utils;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
@@ -25,11 +26,19 @@ public class JG_Orders implements IJG_Orders {
       var p1 = planets.planetByIndex(ix);
       if (Objects.equals(p1.owner(),pFromFaction.id())) {
         var p2 = pToFaction.planets().planetByIndex(ix);
-        if (!Objects.equals(p1.produceUnitDesign(), p2.produceUnitDesign())) {
+        if (!Objects.equals(p1.produceUnitDesign(), p2.produceUnitDesign()) && p2.produceUnitDesign()!=null) {
             orders.addOrder(JG_Order.of(EJG_Order.PRODUCE, List.of(p1.id(), p2.produceUnitDesign())));
         }
       }
     }
+
+    // **** Check groups
+    for(IJG_Group group : pToFaction.groups().getGroups() ) {
+      if (group.to()!=null) {
+        orders.addOrder( JG_Order.of( EJG_Order.SEND, List.of( group.id(), group.to() ) ) );
+      }
+    }
+
     return orders;
   }
 
