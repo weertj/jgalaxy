@@ -9,13 +9,15 @@ import org.jgalaxy.planets.JG_Planet;
 import org.jgalaxy.planets.JG_Planets;
 import org.jgalaxy.units.IJG_Group;
 import org.jgalaxy.units.IJG_UnitDesign;
+import org.jgalaxy.units.JG_UnitDesign;
 
 public class SJG_OrderExecutor {
 
   static public void exec(IJG_Faction pFaction, IJG_Order pOrder, IJG_Game pGame ) throws OrderException {
     switch (pOrder.order()) {
-      case RENAME -> {
-      }
+
+      // **** DESIGN
+      case DESIGN -> orderDESIGN(pGame, pFaction, pOrder);
 
       // **** LOAD
       case LOAD -> orderLOAD(pGame,pFaction,pOrder);
@@ -29,6 +31,25 @@ public class SJG_OrderExecutor {
       // **** SEND
       case WAR -> orderWAR(pGame,pFaction,pOrder);
 
+      case RENAME -> orderRENAME(pOrder,pGame);
+
+    }
+    return;
+  }
+
+
+  static private void orderDESIGN( IJG_Game pGame, IJG_Faction pFaction,IJG_Order pOrder) throws OrderException {
+    String name = pOrder.param(0 );
+    if ("FLEET".equals(name)) {
+    } else {
+      IJG_UnitDesign design = JG_UnitDesign.of( name, name,
+        Double.parseDouble(pOrder.param(1)),
+        Double.parseDouble(pOrder.param(2)),
+        Integer.parseInt(pOrder.param(3)),
+        Double.parseDouble(pOrder.param(4)),
+        Double.parseDouble(pOrder.param(5 ))
+      );
+      pFaction.addUnitDesign(design);
     }
     return;
   }

@@ -232,6 +232,7 @@ public class JG_Game extends Entity implements IJG_Game {
 
     // Groups are renumbered if the sortgroups option is turned on.
     // Races, planets, ships and fleets are renamed.
+    factions().stream().forEach( f -> f.doOrders(4));
 
     roundUp();
 

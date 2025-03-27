@@ -33,15 +33,15 @@ public class JG_Planet implements IJG_Planet {
         planet.setProduceType( EProduceType.valueOf(produceType), produceUnitDesign );
       }
     }
-    planet.setSize( Double.parseDouble(XML_Utils.attr(pParent, "size" )));
-    planet.setPopulation( Double.parseDouble(XML_Utils.attr(pParent, "population","0" )));
-    planet.setIndustry( Double.parseDouble(XML_Utils.attr(pParent, "industry","0" )));
-    planet.setCapitals( Double.parseDouble(XML_Utils.attr(pParent, "capitals","0" )));
-    planet.setMaterials( Double.parseDouble(XML_Utils.attr(pParent, "materials","0" )));
-    planet.setCols( Double.parseDouble(XML_Utils.attr(pParent, "cols","0" )));
-    planet.setSpent(Double.parseDouble(XML_Utils.attr(pParent, "spent","0" )));
-    planet.setPopulationPerCol( Double.parseDouble(XML_Utils.attr(pParent, "populationPerCol", "8" )));
-    planet.setPopulationIncreasePerHour( Double.parseDouble(XML_Utils.attr(pParent, "populationIncreasePerHour", ""+DEFAULT_POPINCPERHOUR )));
+    planet.setSize( Double.parseDouble(XML_Utils.attr(pParent, "size", "-1" )));
+    planet.setPopulation( Double.parseDouble(XML_Utils.attr(pParent, "population","-1" )));
+    planet.setIndustry( Double.parseDouble(XML_Utils.attr(pParent, "industry","-1" )));
+    planet.setCapitals( Double.parseDouble(XML_Utils.attr(pParent, "capitals","-1" )));
+    planet.setMaterials( Double.parseDouble(XML_Utils.attr(pParent, "materials","-1" )));
+    planet.setCols( Double.parseDouble(XML_Utils.attr(pParent, "cols","-1" )));
+    planet.setSpent(Double.parseDouble(XML_Utils.attr(pParent, "spent","-1" )));
+    planet.setPopulationPerCol( Double.parseDouble(XML_Utils.attr(pParent, "populationPerCol", "-1" )));
+    planet.setPopulationIncreasePerHour( Double.parseDouble(XML_Utils.attr(pParent, "populationIncreasePerHour", "-1" )));
     return planet;
   }
 

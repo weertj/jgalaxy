@@ -20,6 +20,20 @@ public class JG_Orders implements IJG_Orders {
   static public IJG_Orders generateOf( long pNewTurnnumber, IJG_Faction pFromFaction, IJG_Faction pToFaction) {
     IJG_Orders orders = of(pNewTurnnumber);
 
+    // **** Ship designs (new)
+    for( var design : pToFaction.unitDesigns() ) {
+      if (pFromFaction.getUnitDesignById(design.id())==null) {
+        orders.addOrder(JG_Order.of(EJG_Order.DESIGN,
+          List.of(design.id(),
+            ""+design.drive(),
+            ""+design.weapons(),
+            ""+design.nrweapons(),
+            ""+design.shields(),
+            ""+design.cargo()
+            )));
+      }
+    }
+
     // **** Check planets
     IJG_Planets planets = pFromFaction.planets();
     for( int ix=0; ix<planets.getSize(); ix++ ) {
@@ -27,7 +41,10 @@ public class JG_Orders implements IJG_Orders {
       if (Objects.equals(p1.owner(),pFromFaction.id())) {
         var p2 = pToFaction.planets().planetByIndex(ix);
         if (!Objects.equals(p1.produceUnitDesign(), p2.produceUnitDesign()) && p2.produceUnitDesign()!=null) {
-            orders.addOrder(JG_Order.of(EJG_Order.PRODUCE, List.of(p1.id(), p2.produceUnitDesign())));
+          orders.addOrder(JG_Order.of(EJG_Order.PRODUCE, List.of(p1.id(), p2.produceUnitDesign())));
+        }
+        if (!Objects.equals(p1.name(),p2.name())) {
+          orders.addOrder(JG_Order.of(EJG_Order.RENAME, List.of(p1.id(), p2.name())));
         }
       }
     }

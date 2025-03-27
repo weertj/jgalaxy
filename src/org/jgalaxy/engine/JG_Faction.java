@@ -9,6 +9,7 @@ import org.jgalaxy.orders.IJG_Orders;
 import org.jgalaxy.orders.SJG_OrderExecutor;
 import org.jgalaxy.planets.IJG_Planet;
 import org.jgalaxy.planets.IJG_Planets;
+import org.jgalaxy.planets.JG_Planet;
 import org.jgalaxy.planets.JG_Planets;
 import org.jgalaxy.tech.IJG_Tech;
 import org.jgalaxy.tech.JG_Tech;
@@ -47,7 +48,8 @@ public class JG_Faction extends Entity implements IJG_Faction {
       faction.addUnitDesign(JG_UnitDesign.of(ud));
     }
     for(Element ud : XML_Utils.childElementsByName(pParent,"planet")) {
-      var p = pGame.galaxy().map().planets().findPlanetById(XML_Utils.attr(ud, "id"));
+//      var p = pGame.galaxy().map().planets().findPlanetById(XML_Utils.attr(ud, "id"));
+      IJG_Planet p = JG_Planet.of(ud);
       faction.planets().addPlanet(p);
     }
     for(Element ud : XML_Utils.childElementsByName(pParent,"group")) {
@@ -160,7 +162,7 @@ public class JG_Faction extends Entity implements IJG_Faction {
     if (mOrders!=null) {
       switch (pPhase) {
         case 1 -> {
-          for (var order : mOrders.ordersBy(EJG_Order.PRODUCE, EJG_Order.SEND, EJG_Order.WAR)) {
+          for (var order : mOrders.ordersBy(EJG_Order.DESIGN,EJG_Order.PRODUCE, EJG_Order.SEND, EJG_Order.WAR)) {
             try {
               SJG_OrderExecutor.exec(this, order, mGame);
             } catch (OrderException e) {
@@ -179,6 +181,15 @@ public class JG_Faction extends Entity implements IJG_Faction {
         }
         case 3 -> {
           for (var order : mOrders.ordersBy(EJG_Order.UNLOAD)) {
+            try {
+              SJG_OrderExecutor.exec(this, order, mGame);
+            } catch (OrderException e) {
+              mOrderErrors.add(e);
+            }
+          }
+        }
+        case 4 -> {
+          for (var order : mOrders.ordersBy(EJG_Order.RENAME)) {
             try {
               SJG_OrderExecutor.exec(this, order, mGame);
             } catch (OrderException e) {
