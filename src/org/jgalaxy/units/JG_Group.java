@@ -4,6 +4,7 @@ import org.jgalaxy.Entity;
 import org.jgalaxy.IJG_Position;
 import org.jgalaxy.JG_Position;
 import org.jgalaxy.engine.IJG_Faction;
+import org.jgalaxy.engine.IJG_Game;
 import org.jgalaxy.tech.IJG_Tech;
 import org.jgalaxy.tech.JG_Tech;
 import org.jgalaxy.utils.XML_Utils;
@@ -14,8 +15,6 @@ import java.io.File;
 import java.util.concurrent.atomic.AtomicLong;
 
 public class JG_Group extends Entity implements IJG_Group {
-
-  static public final AtomicLong GROUPCOUNTER = new AtomicLong(1);
 
   static public IJG_Group of( Node pParent ) {
     String id = XML_Utils.attr(pParent,"id");
@@ -179,12 +178,12 @@ public class JG_Group extends Entity implements IJG_Group {
   }
 
   @Override
-  public IJG_Group breakOffGroup(int pNumberOf) {
+  public IJG_Group breakOffGroup(IJG_Game pGame,int pNumberOf) {
     if (pNumberOf>0) {
       if (pNumberOf>=mNumberOf) {
         return this;
       }
-      IJG_Group breakgroup = new JG_Group("group_" + JG_Group.GROUPCOUNTER.getAndIncrement(),name());
+      IJG_Group breakgroup = new JG_Group("group_" + pGame.getFactionById(faction()).currentGroupCounterAndIncrement(),name());
       breakgroup.copyOf(this);
       mNumberOf -= pNumberOf;
       breakgroup.setNumberOf(pNumberOf);

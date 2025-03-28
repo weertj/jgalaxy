@@ -23,7 +23,7 @@ import java.time.Duration;
 
 public class SimpleServer {
 
-  private int mPort = 8080;
+  private int mPort = 8765;
 
   static private class GamesHandler implements HttpHandler {
     @Override

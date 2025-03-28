@@ -4,6 +4,7 @@ import org.jgalaxy.IEntity;
 import org.jgalaxy.IJG_Position;
 import org.jgalaxy.IStorage;
 import org.jgalaxy.engine.IJG_Faction;
+import org.jgalaxy.engine.IJG_Game;
 import org.jgalaxy.tech.IJG_Tech;
 
 public interface IJG_Group extends IEntity, IStorage {
@@ -39,6 +40,6 @@ public interface IJG_Group extends IEntity, IStorage {
 
   double totalCargoMass();
 
-  IJG_Group breakOffGroup( int pNumberOf );
+  IJG_Group breakOffGroup(IJG_Game pGame, int pNumberOf );
 
 }

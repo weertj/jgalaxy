@@ -30,7 +30,7 @@ public interface IJG_Faction extends IEntity, IStorage {
   IJG_Orders orders();
   void setOrders(IJG_Orders pOrders);
 
-  void doOrders( int pPhase );
+  void doOrders( EPhase pPhase );
 
   IJG_Tech tech();
 
@@ -40,5 +40,12 @@ public interface IJG_Faction extends IEntity, IStorage {
 
   double totalPop();
   double totalIndustry();
+
+  int currentGroupCounter();
+  int currentGroupCounterAndIncrement();
+  void setCurrentGroupCounter( int pCurrentGroupCounter );
+
+  List<IJG_Faction> getOtherFactionsMutable();
+
 
 }

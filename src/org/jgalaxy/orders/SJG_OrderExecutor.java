@@ -13,32 +13,32 @@ import org.jgalaxy.units.JG_UnitDesign;
 
 public class SJG_OrderExecutor {
 
-  static public void exec(IJG_Faction pFaction, IJG_Order pOrder, IJG_Game pGame ) throws OrderException {
-    switch (pOrder.order()) {
+//  static public void exec(IJG_Faction pFaction, IJG_Order pOrder, IJG_Game pGame ) throws OrderException {
+//    switch (pOrder.order()) {
+//
+//      // **** DESIGN
+//      case DESIGN -> orderDESIGN(pGame, pFaction, pOrder);
+//
+//      // **** LOAD
+//      case LOAD -> orderLOAD(pGame,pFaction,pOrder);
+//      // **** UNLOAD
+//      case UNLOAD -> orderUNLOAD(pGame,pFaction,pOrder);
+//
+//      // **** PRODUCE
+//      case PRODUCE -> orderPRODUCE(pGame,pFaction,pOrder);
+//      // **** SEND
+//      case SEND -> orderSEND(pGame,pFaction,pOrder);
+//      // **** SEND
+//      case WAR -> orderWAR(pGame,pFaction,pOrder);
+//
+//      case RENAME -> orderRENAME(pOrder,pGame);
+//
+//    }
+//    return;
+//  }
 
-      // **** DESIGN
-      case DESIGN -> orderDESIGN(pGame, pFaction, pOrder);
 
-      // **** LOAD
-      case LOAD -> orderLOAD(pGame,pFaction,pOrder);
-      // **** UNLOAD
-      case UNLOAD -> orderUNLOAD(pGame,pFaction,pOrder);
-
-      // **** PRODUCE
-      case PRODUCE -> orderPRODUCE(pGame,pFaction,pOrder);
-      // **** SEND
-      case SEND -> orderSEND(pGame,pFaction,pOrder);
-      // **** SEND
-      case WAR -> orderWAR(pGame,pFaction,pOrder);
-
-      case RENAME -> orderRENAME(pOrder,pGame);
-
-    }
-    return;
-  }
-
-
-  static private void orderDESIGN( IJG_Game pGame, IJG_Faction pFaction,IJG_Order pOrder) throws OrderException {
+  static public void orderDESIGN( IJG_Game pGame, IJG_Faction pFaction,IJG_Order pOrder) throws OrderException {
     String name = pOrder.param(0 );
     if ("FLEET".equals(name)) {
     } else {
@@ -54,7 +54,7 @@ public class SJG_OrderExecutor {
     return;
   }
 
-  static private void orderPRODUCE(  IJG_Game pGame, IJG_Faction pFaction, IJG_Order pOrder ) {
+  static public void orderPRODUCE(  IJG_Game pGame, IJG_Faction pFaction, IJG_Order pOrder ) {
     String planetid = pOrder.param(0);
     String produce  = pOrder.param(1);
     IJG_Planet planet = pGame.galaxy().map().planets().findPlanetById(planetid);
@@ -86,7 +86,7 @@ public class SJG_OrderExecutor {
    * @param pOrder
    * @param pGame
    */
-  static private void orderLOAD( IJG_Game pGame, IJG_Faction pFaction,IJG_Order pOrder) throws OrderException {
+  static public void orderLOAD( IJG_Game pGame, IJG_Faction pFaction,IJG_Order pOrder) throws OrderException {
     String groupfleetid = pOrder.param(0 );
     IJG_Group group = pFaction.groups().getGroupById(groupfleetid);
     if (group == null) throw new OrderException(pFaction,pOrder,"Group "+groupfleetid+" not found");
@@ -98,7 +98,7 @@ public class SJG_OrderExecutor {
     return;
   }
 
-  static private void orderUNLOAD( IJG_Game pGame, IJG_Faction pFaction,IJG_Order pOrder) throws OrderException {
+  static public void orderUNLOAD( IJG_Game pGame, IJG_Faction pFaction,IJG_Order pOrder) throws OrderException {
     String groupfleetid = pOrder.param(0 );
     IJG_Group group = pFaction.groups().getGroupById(groupfleetid);
     if (group == null) throw new OrderException(pFaction,pOrder,"Group "+groupfleetid+" not found");
@@ -108,19 +108,19 @@ public class SJG_OrderExecutor {
     return;
   }
 
-  static private void orderSEND(  IJG_Game pGame, IJG_Faction pFaction, IJG_Order pOrder ) throws OrderException {
+  static public void orderSEND(  IJG_Game pGame, IJG_Faction pFaction, IJG_Order pOrder ) throws OrderException {
     String groupfleetid = pOrder.param(0 );
     IJG_Group group = pFaction.groups().getGroupById(groupfleetid);
     if (group == null) throw new OrderException(pFaction,pOrder,"Group "+groupfleetid+" not found");
     String planetid = pOrder.param(1);
     IJG_Planet planet = pGame.galaxy().map().planets().findPlanetById(planetid);
     if (planet == null) throw new OrderException(pFaction,pOrder,"Planet "+planetid+" not found");
-    if (pOrder.param(2)!=null) {
-      var breakgroup = group.breakOffGroup(Integer.parseInt(pOrder.param(2)));
+    if (pOrder.param(2).isBlank()) {
+      group.toPosition().copyOf(planet.position());
+    } else {
+      var breakgroup = group.breakOffGroup(pGame,Integer.parseInt(pOrder.param(2)));
       breakgroup.toPosition().copyOf(planet.position());
       pFaction.groups().addGroup(breakgroup);
-    } else {
-      group.toPosition().copyOf(planet.position());
     }
     return;
   }
@@ -131,7 +131,7 @@ public class SJG_OrderExecutor {
    * @param pFaction
    * @param pOrder
    */
-  static private void orderWAR(  IJG_Game pGame, IJG_Faction pFaction, IJG_Order pOrder ) {
+  static public void orderWAR(  IJG_Game pGame, IJG_Faction pFaction, IJG_Order pOrder ) {
     String factionid = pOrder.param(0 );
     pFaction.addWarWith(factionid);
     pGame.getFactionById(factionid).addWarWith(pFaction.id());
@@ -143,7 +143,7 @@ public class SJG_OrderExecutor {
    * @param pOrder
    * @param pGame
    */
-  static private void orderRENAME( IJG_Order pOrder, IJG_Game pGame ) {
+  static public void orderRENAME( IJG_Order pOrder, IJG_Game pGame ) {
     IJG_Planet planet = pGame.galaxy().map().planets().findPlanetByName(pOrder.parameters().get(0) );
     if (planet!=null) {
       planet.rename( pOrder.parameters().get(1) );

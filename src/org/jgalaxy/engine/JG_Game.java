@@ -8,6 +8,7 @@ import org.jgalaxy.map.MAP_Map;
 import org.jgalaxy.orders.IJG_Orders;
 import org.jgalaxy.orders.JG_Orders;
 import org.jgalaxy.planets.IJG_Planet;
+import org.jgalaxy.units.IJG_Group;
 import org.jgalaxy.units.IJG_Groups;
 import org.jgalaxy.units.JG_Groups;
 import org.jgalaxy.utils.GEN_Streams;
@@ -27,6 +28,7 @@ import java.time.Duration;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
+import java.util.Objects;
 
 public class JG_Game extends Entity implements IJG_Game {
 
@@ -191,31 +193,39 @@ public class JG_Game extends Entity implements IJG_Game {
   public void timeProgression(IJG_Game pGame, Duration pTimeStep) {
     mGalaxy.timeProgression(pGame, pTimeStep);
 
+    designPhase();
     // Planetary production orders are assigned. Note that production occurs later in the turn.
-    factions().stream().forEach( f -> f.doOrders(1));
+    producePhase();
 
     // Messages are sent.
+    messagesPhase();
     // Alliances and war are declared.
+    warDeclarePhase();
     // Groups with weapons attack enemy ships, causing combat. This can happen if a player declares war on the current turn. It can also happen if a player built a ship with weapons at a planet with enemy ships in orbit at the end of the previous turn.
     fightPhase();
 
     // Groups with weapons bomb enemy planets. This can happen if a player declares war on the current turn.
     // Groups load or unload cargo.
-    factions().stream().forEach( f -> f.doOrders(3));
-    factions().stream().forEach( f -> f.doOrders(2));
+    unloadPhase();
+    loadPhase();
 
     // Groups are upgraded.
+    upgradePhase();
     // Groups and fleets sent to planets enter hyperspace.
 
     // Routes are assigned to planets. Cargo ships are assigned cargos and destinations, load cargo (if necessary) and enter hyperspace.
+    routesPhase();
+
     // Groups and fleets with intercept orders are assigned destinations and enter hyperspace.
+    interceptPhase();
     // Groups and fleets move through hyperspace, possibly arriving at planets.
-    mFactions.stream().forEach( f -> f.groups().moveGroups(f));
+    movePhase();
 
     // Groups with weapons attack enemy ships, causing combat.
     fightPhase();
 
     // Groups with weapons bomb enemy planets.
+    bombPhase();
 
     // Planets produce materials or capital, conduct research, or build ships.
     // Population growth occurs.
@@ -224,17 +234,19 @@ public class JG_Game extends Entity implements IJG_Game {
     }
 
     // All ships unload cargo if the autounload option is turned on.
-    factions().stream().forEach( f -> f.doOrders(2));
+    unloadPhase();
 
     // For players with the autounload option turned off, ships that are at route destinations unload cargo.
     // Identical groups are merged.
-    mFactions.stream().forEach( f -> f.groups().combineGroups() );
+    combinePhase();
 
     // Groups are renumbered if the sortgroups option is turned on.
     // Races, planets, ships and fleets are renamed.
-    factions().stream().forEach( f -> f.doOrders(4));
+    renamePhase();
 
     roundUp();
+
+    reconPhase();
 
     mTurnNumber++;
 
@@ -251,6 +263,67 @@ public class JG_Game extends Entity implements IJG_Game {
     return;
   }
 
+  private void reconPhase() {
+
+    // **** Other factions
+    for( IJG_Faction faction : factions() ) {
+      faction.getOtherFactionsMutable().clear();
+      for (IJG_Faction otherfaction : factions()) {
+        if (otherfaction!=faction) {
+          IJG_Faction visOtherFaction = JG_Faction.of(this, otherfaction.id(),otherfaction.name());
+          faction.getOtherFactionsMutable().add(visOtherFaction);
+          // **** Check for visible fleets/groups
+          for( IJG_Group group : otherfaction.groups().getGroups()) {
+            // **** Orbit above planet?
+            for( var planet : faction.planets().planets()) {
+              if (Objects.equals(planet.owner(),faction.id())) {
+                if (planet.position().equals(group.position())) {
+                  visOtherFaction.groups().addGroup(group);
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+
+    return;
+  }
+
+  private void renamePhase() {
+    factions().stream().forEach( f -> f.doOrders(EPhase.RENAME));
+    return;
+  }
+
+  private void combinePhase() {
+    mFactions.stream().forEach( f -> f.groups().combineGroups() );
+  }
+
+  private void messagesPhase() {
+    return;
+  }
+
+  private void routesPhase() {
+    return;
+  }
+
+  private void warDeclarePhase() {
+    return;
+  }
+
+  private void designPhase() {
+    factions().stream().forEach( f -> f.doOrders(EPhase.DESIGN));
+    return;
+  }
+
+  private void producePhase() {
+    factions().stream().forEach( f -> f.doOrders(EPhase.PLANET_PRODUCTION));
+    return;
+  }
+
+  private void joinPhase() {
+  }
+
   private void fightPhase() {
     var planets = mGalaxy.map().planets().planets();
     Collections.shuffle(planets);
@@ -258,6 +331,34 @@ public class JG_Game extends Entity implements IJG_Game {
     return;
   }
 
+  private void upgradePhase() {
+    return;
+  }
+
+  private void fleetPhase() {
+  }
+
+  private void bombPhase() {
+  }
+
+  private void unloadPhase() {
+    factions().stream().forEach( f -> f.doOrders(EPhase.UNLOAD));
+    return;
+  }
+
+  private void loadPhase() {
+    factions().stream().forEach( f -> f.doOrders(EPhase.LOAD));
+    return;
+  }
+
+  private void interceptPhase() {
+  }
+
+  private void movePhase() {
+    factions().stream().forEach( f -> f.doOrders(EPhase.SEND));
+    factions().stream().forEach( f -> f.groups().moveGroups(f));
+    return;
+  }
 
   /**
    * storeObject

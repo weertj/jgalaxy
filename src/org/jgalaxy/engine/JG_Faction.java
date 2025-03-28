@@ -20,13 +20,13 @@ import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 import org.w3c.dom.Node;
 
-import javax.xml.parsers.DocumentBuilderFactory;
 import javax.xml.transform.TransformerException;
 import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+import java.util.concurrent.atomic.AtomicInteger;
 import java.util.stream.Collectors;
 
 public class JG_Faction extends Entity implements IJG_Faction {
@@ -59,6 +59,9 @@ public class JG_Faction extends Entity implements IJG_Faction {
       group.setFaction(faction.id());
       faction.groups().addGroup( group );
     }
+    faction.setCurrentGroupCounter( Integer.parseInt(XML_Utils.attr(pParent,"currentGroupCounter", "0")) );
+
+
 
     return faction;
   }
@@ -74,8 +77,11 @@ public class JG_Faction extends Entity implements IJG_Faction {
   private final IJG_Planets           mPlanets = new JG_Planets(List.of());
   private final List<IJG_UnitDesign>  mUnitDesigns = new ArrayList<>(8);
   private final IJG_Groups            mGroups = JG_Groups.of();
+  private final AtomicInteger         mCurrentGroupCount = new AtomicInteger(0);
 
-  private       IJG_Orders           mOrders;
+  private final List<IJG_Faction>     mOtherFactions = new ArrayList<>(8);
+
+  private       IJG_Orders            mOrders;
 
   private final transient List<OrderException> mOrderErrors = new ArrayList<>(8);
 
@@ -160,45 +166,45 @@ public class JG_Faction extends Entity implements IJG_Faction {
 //};
 
   @Override
-  public void doOrders(int pPhase) {
+  public void doOrders( EPhase pPhase ) {
     if (mOrders!=null) {
       switch (pPhase) {
-        case 1 -> {
-          for (var order : mOrders.ordersBy(EJG_Order.DESIGN,EJG_Order.PRODUCE, EJG_Order.SEND, EJG_Order.WAR)) {
-            try {
-              SJG_OrderExecutor.exec(this, order, mGame);
-            } catch (OrderException e) {
-              mOrderErrors.add(e);
-            }
-          }
+//        case 1 -> {
+//          for (var order : mOrders.ordersBy(EJG_Order.DESIGN,EJG_Order.PRODUCE, EJG_Order.SEND, EJG_Order.WAR)) {
+//            try {
+//              SJG_OrderExecutor.exec(this, order, mGame);
+//            } catch (OrderException e) {
+//              mOrderErrors.add(e);
+//            }
+//          }
+//        }
+        case DESIGN -> defaultDoOrders(EJG_Order.DESIGN );
+        case PLANET_PRODUCTION -> defaultDoOrders(EJG_Order.PRODUCE );
+        case SEND -> defaultDoOrders(EJG_Order.SEND );
+        case DECLARE -> defaultDoOrders(EJG_Order.WAR );
+        case LOAD -> defaultDoOrders(EJG_Order.LOAD );
+        case UNLOAD -> defaultDoOrders(EJG_Order.UNLOAD );
+        case RENAME -> defaultDoOrders(EJG_Order.RENAME );
+      }
+    }
+    return;
+  }
+
+  private void defaultDoOrders( EJG_Order... pOrder ) {
+    for (var order : mOrders.ordersBy(pOrder )) {
+      try {
+        switch (order.order()) {
+          case DESIGN -> SJG_OrderExecutor.orderDESIGN(mGame,this,order);
+          case PRODUCE -> SJG_OrderExecutor.orderPRODUCE(mGame,this,order);
+          case SEND -> SJG_OrderExecutor.orderSEND(mGame,this,order);
+          case WAR -> SJG_OrderExecutor.orderWAR(mGame,this,order);
+          case LOAD -> SJG_OrderExecutor.orderLOAD(mGame,this,order);
+          case UNLOAD -> SJG_OrderExecutor.orderUNLOAD(mGame,this,order);
+          case RENAME -> SJG_OrderExecutor.orderRENAME(order,mGame);
         }
-        case 2 -> {
-          for (var order : mOrders.ordersBy(EJG_Order.LOAD)) {
-            try {
-              SJG_OrderExecutor.exec(this, order, mGame);
-            } catch (OrderException e) {
-              mOrderErrors.add(e);
-            }
-          }
-        }
-        case 3 -> {
-          for (var order : mOrders.ordersBy(EJG_Order.UNLOAD)) {
-            try {
-              SJG_OrderExecutor.exec(this, order, mGame);
-            } catch (OrderException e) {
-              mOrderErrors.add(e);
-            }
-          }
-        }
-        case 4 -> {
-          for (var order : mOrders.ordersBy(EJG_Order.RENAME)) {
-            try {
-              SJG_OrderExecutor.exec(this, order, mGame);
-            } catch (OrderException e) {
-              mOrderErrors.add(e);
-            }
-          }
-        }
+//        SJG_OrderExecutor.exec(this, order, mGame);
+      } catch (OrderException e) {
+        mOrderErrors.add(e);
       }
     }
     return;
@@ -234,6 +240,27 @@ public class JG_Faction extends Entity implements IJG_Faction {
   }
 
   @Override
+  public void setCurrentGroupCounter(int pCurrentGroupCounter) {
+    mCurrentGroupCount.set(pCurrentGroupCounter);
+    return;
+  }
+
+  @Override
+  public int currentGroupCounter() {
+    return mCurrentGroupCount.get();
+  }
+
+  @Override
+  public int currentGroupCounterAndIncrement() {
+    return mCurrentGroupCount.getAndIncrement();
+  }
+
+  @Override
+  public List<IJG_Faction> getOtherFactionsMutable() {
+    return mOtherFactions;
+  }
+
+  @Override
   public void removeTurnNumber(File pPath, long pTurnNumber) {
     File factiondir = new File(pPath,id());
     File f = new File(factiondir, "faction_" + pTurnNumber + ".xml");
@@ -255,16 +282,20 @@ public class JG_Faction extends Entity implements IJG_Faction {
       root = doc.createElement("root");
       doc.appendChild(root);
     }
-    Element factionnode = doc.createElement( "faction" );
+    Element factionnode = doc.createElement( pName.equals("")?"faction":pName );
+    boolean isOtherfaction = "otherfaction".equals(pName);
     factionnode.setAttribute("id", id() );
     factionnode.setAttribute("name", name() );
     factionnode.setAttribute("atWarWith", atWarWith().stream().collect(Collectors.joining("|")));
-    factionnode.setAttribute("totalPop", ""+totalPop() );
-    factionnode.setAttribute("totalIndustry", ""+totalIndustry() );
     factionnode.setAttribute("tech.drive", ""+tech().drive());
     factionnode.setAttribute("tech.weapons", ""+tech().weapons());
     factionnode.setAttribute("tech.shields", ""+tech().shields());
     factionnode.setAttribute("tech.cargo", ""+tech().cargo());
+    factionnode.setAttribute("totalPop", ""+totalPop() );
+    factionnode.setAttribute("totalIndustry", ""+totalIndustry() );
+    if (!isOtherfaction) {
+      factionnode.setAttribute("currentGroupCounter", "" + currentGroupCounter());
+    }
 
     for( IJG_UnitDesign ud : mUnitDesigns) {
       ud.storeObject(pPath,factionnode,"", "");
@@ -288,13 +319,12 @@ public class JG_Faction extends Entity implements IJG_Faction {
     root.appendChild(factionnode);
 
     // **** Other factions
-    for( IJG_Faction faction : mGame.factions()) {
-      if (faction!=this) {
-        Element otherfactionnode = doc.createElement( "faction" );
-        otherfactionnode.setAttribute("id", faction.id() );
-        otherfactionnode.setAttribute("name", faction.name() );
-        root.appendChild(otherfactionnode);
-      }
+    for( IJG_Faction otherfaction : getOtherFactionsMutable()) {
+      otherfaction.storeObject( null,root,"otherfaction", "");
+////      Element otherfactionnode = doc.createElement( "faction" );
+////      otherfactionnode.setAttribute("id", otherfaction.id() );
+////      otherfactionnode.setAttribute("name", otherfaction.name() );
+////      root.appendChild(otherfactionnode);
     }
 
 

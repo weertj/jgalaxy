@@ -427,7 +427,7 @@ public class JG_Planet implements IJG_Planet {
         pIndustry -= indForProduction + indForMaterials;
         mInprogress = pIndustry;
 
-        IJG_Group group = JG_Group.of("group_" + JG_Group.GROUPCOUNTER.getAndIncrement(), "newgroup" );
+        IJG_Group group = JG_Group.of("group_" + owner.currentGroupCounterAndIncrement(), "newgroup" );
         group.setNumberOf(numberOfShips);
         group.tech().copyOf(owner.tech());
         group.position().setX(position().x());
