@@ -57,7 +57,8 @@ public class SJG_OrderExecutor {
   static private void orderPRODUCE(  IJG_Game pGame, IJG_Faction pFaction, IJG_Order pOrder ) {
     String planetid = pOrder.param(0);
     String produce  = pOrder.param(1);
-    IJG_Planet planet = pFaction.planets().findPlanetById(planetid);
+    IJG_Planet planet = pGame.galaxy().map().planets().findPlanetById(planetid);
+//    IJG_Planet planet = pFaction.planets().findPlanetById(planetid);
     if (planet == null) {
 
     } else {
@@ -114,7 +115,13 @@ public class SJG_OrderExecutor {
     String planetid = pOrder.param(1);
     IJG_Planet planet = pGame.galaxy().map().planets().findPlanetById(planetid);
     if (planet == null) throw new OrderException(pFaction,pOrder,"Planet "+planetid+" not found");
-    group.toPosition().copyOf(planet.position());
+    if (pOrder.param(2)!=null) {
+      var breakgroup = group.breakOffGroup(Integer.parseInt(pOrder.param(2)));
+      breakgroup.toPosition().copyOf(planet.position());
+      pFaction.groups().addGroup(breakgroup);
+    } else {
+      group.toPosition().copyOf(planet.position());
+    }
     return;
   }
 

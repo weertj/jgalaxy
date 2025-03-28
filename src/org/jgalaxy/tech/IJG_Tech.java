@@ -1,6 +1,8 @@
 package org.jgalaxy.tech;
 
-public interface IJG_Tech {
+import org.jgalaxy.IStorage;
+
+public interface IJG_Tech extends IStorage {
 
   double drive();
   double weapons();

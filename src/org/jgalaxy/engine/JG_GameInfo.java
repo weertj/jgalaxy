@@ -40,6 +40,11 @@ public class JG_GameInfo implements IJG_GameInfo {
   }
 
   @Override
+  public EGameType getGameType() {
+    return EGameType.GALAXNG;
+  }
+
+  @Override
   public void init() {
     mGameDir.mkdirs();
     return;

@@ -315,21 +315,32 @@ public class JG_Planet implements IJG_Planet {
 
   private void producePhase( IJG_Game pGame, Duration pDuration) {
     if (mProducing!=null) {
+      var owner = pGame.getFactionById(mOwner);
+      double industry = industry() * 0.75 + population() * 0.25 - mSpent + mInprogress;
       switch (mProducing) {
         case PR_SHIP -> {
-          double industry = industry() * 0.75 + population() * 0.25 - mSpent + mInprogress;
           mSpent = 0.0;
           produceShip(pGame,industry);
         }
         case PR_CAP -> {
-          double industry = industry() * 0.75 + population() * 0.25 - mSpent + mInprogress;
           mSpent = 0.0;
           produceCap(industry);
         }
         case PR_MAT -> {
-          double industry = industry() * 0.75 + population() * 0.25 - mSpent + mInprogress;
           mSpent = 0.0;
           produceMat(industry);
+        }
+        case PR_DRIVE -> {
+          owner.tech().setDrive(owner.tech().drive() + industry/5000.0);
+        }
+        case PR_WEAPONS -> {
+          owner.tech().setWeapons(owner.tech().weapons() + industry/5000.0);
+        }
+        case PR_SHIELDS -> {
+          owner.tech().setShields(owner.tech().shields() + industry/5000.0);
+        }
+        case PR_CARGO -> {
+          owner.tech().setCargo(owner.tech().cargo() + industry/5000.0);
         }
       }
     }

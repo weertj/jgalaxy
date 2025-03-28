@@ -8,6 +8,8 @@ import org.jgalaxy.tech.IJG_Tech;
 
 public interface IJG_Group extends IEntity, IStorage {
 
+  void copyOf( IJG_Group pGroup );
+
   void setFleet(String pFleet);
   String getFleet();
 
@@ -36,5 +38,7 @@ public interface IJG_Group extends IEntity, IStorage {
   void setLoad( double pLoad );
 
   double totalCargoMass();
+
+  IJG_Group breakOffGroup( int pNumberOf );
 
 }

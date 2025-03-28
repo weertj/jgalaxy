@@ -1,6 +1,21 @@
 package org.jgalaxy.tech;
 
+import org.jgalaxy.utils.XML_Utils;
+import org.w3c.dom.Element;
+import org.w3c.dom.Node;
+
+import java.io.File;
+
 public class JG_Tech implements IJG_Tech {
+
+  static public IJG_Tech of( Node pNode ) {
+    IJG_Tech tech = of();
+    tech.setDrive( Double.parseDouble(XML_Utils.attr(pNode,"tech.drive","1")) );
+    tech.setWeapons( Double.parseDouble(XML_Utils.attr(pNode,"tech.weapons","1")) );
+    tech.setShields( Double.parseDouble(XML_Utils.attr(pNode,"tech.shield","1")) );
+    tech.setCargo( Double.parseDouble(XML_Utils.attr(pNode,"tech.cargo","1")) );
+    return tech;
+  }
 
   static public IJG_Tech of() {
     return of(1.0,1.0,1.0,1.0);
@@ -83,4 +98,14 @@ public class JG_Tech implements IJG_Tech {
     mCargo = cargo;
     return;
   }
+
+  @Override
+  public void storeObject(File pPath, Node pParent, String pName, String pFilter) {
+    ((Element)pParent).setAttribute("tech.drive", ""+drive());
+    ((Element)pParent).setAttribute("tech.weapons", ""+weapons());
+    ((Element)pParent).setAttribute("tech.shields", ""+shields());
+    ((Element)pParent).setAttribute("tech.cargo", ""+cargo());
+    return;
+  }
+
 }

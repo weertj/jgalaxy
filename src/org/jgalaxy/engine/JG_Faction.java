@@ -41,6 +41,8 @@ public class JG_Faction extends Entity implements IJG_Faction {
     String name = XML_Utils.attr(pParent,"name");
     IJG_Faction faction = of(pGame,id,name);
 
+    faction.tech().copyOf(JG_Tech.of(pParent));
+
     String atWarWith = XML_Utils.attr(pParent,"atWarWith");
     Arrays.stream(atWarWith.split("\\|")).forEach(faction::addWarWith);
 
@@ -259,7 +261,10 @@ public class JG_Faction extends Entity implements IJG_Faction {
     factionnode.setAttribute("atWarWith", atWarWith().stream().collect(Collectors.joining("|")));
     factionnode.setAttribute("totalPop", ""+totalPop() );
     factionnode.setAttribute("totalIndustry", ""+totalIndustry() );
-    factionnode.setAttribute("totalTech", ""+tech().totalTech());
+    factionnode.setAttribute("tech.drive", ""+tech().drive());
+    factionnode.setAttribute("tech.weapons", ""+tech().weapons());
+    factionnode.setAttribute("tech.shields", ""+tech().shields());
+    factionnode.setAttribute("tech.cargo", ""+tech().cargo());
 
     for( IJG_UnitDesign ud : mUnitDesigns) {
       ud.storeObject(pPath,factionnode,"", "");

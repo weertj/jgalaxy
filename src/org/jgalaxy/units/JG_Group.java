@@ -29,6 +29,7 @@ public class JG_Group extends Entity implements IJG_Group {
     group.setUnitDesign(XML_Utils.attr(pParent, "unitDesign", "" ));
     group.setLoadType(XML_Utils.attr(pParent, "loadType", "" ));
     group.setLoad(Double.parseDouble(XML_Utils.attr(pParent, "load", "0" ) ));
+    group.tech().copyOf(JG_Tech.of(pParent));
     return group;
   }
 
@@ -50,6 +51,22 @@ public class JG_Group extends Entity implements IJG_Group {
 
   private JG_Group( String pId, String pName ) {
     super( pId, pName );
+    return;
+  }
+
+  @Override
+  public void copyOf(IJG_Group pGroup) {
+    mNumberOf = pGroup.numberOf();
+    mFleet = pGroup.getFleet();
+    mFaction = pGroup.faction();
+    mPosition.copyOf(pGroup.position());
+    mToPosition.copyOf(pGroup.toPosition());
+    mUnitDesign = pGroup.unitDesign();
+    mTech.copyOf(pGroup.tech());
+    mLoadType = pGroup.loadType();
+    mLoad = pGroup.load();
+    mFrom = pGroup.from();
+    mTo = pGroup.to();
     return;
   }
 
@@ -162,6 +179,21 @@ public class JG_Group extends Entity implements IJG_Group {
   }
 
   @Override
+  public IJG_Group breakOffGroup(int pNumberOf) {
+    if (pNumberOf>0) {
+      if (pNumberOf>=mNumberOf) {
+        return this;
+      }
+      IJG_Group breakgroup = new JG_Group("group_" + JG_Group.GROUPCOUNTER.getAndIncrement(),name());
+      breakgroup.copyOf(this);
+      mNumberOf -= pNumberOf;
+      breakgroup.setNumberOf(pNumberOf);
+      return breakgroup;
+    }
+    return null;
+  }
+
+  @Override
   public void storeObject(File pPath, Node pParent, String pName, String pFilter ) {
     Element groupnode = pParent.getOwnerDocument().createElement( "group" );
     groupnode.setAttribute("id", id());
@@ -176,6 +208,7 @@ public class JG_Group extends Entity implements IJG_Group {
       groupnode.setAttribute( "loadType", mLoadType);
       groupnode.setAttribute("load", ""+mLoad);
     }
+    mTech.storeObject(null, groupnode, null, null);
     pParent.appendChild(groupnode);
     return;
   }
