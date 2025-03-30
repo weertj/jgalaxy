@@ -3,11 +3,36 @@ package org.jgalaxy.battle;
 import org.jgalaxy.engine.IJG_Faction;
 import org.jgalaxy.engine.IJG_Game;
 import org.jgalaxy.planets.IJG_Planet;
+import org.jgalaxy.units.IJG_Group;
 
 import java.util.List;
 
 public class SB_Battle {
 
+
+  static public void bombPlanets( IJG_Game pGame, List<IJG_Planet> pPlanets ) {
+    for(IJG_Faction faction : pGame.factions() ) {
+      for(IJG_Group group : faction.groups().getGroups() ) {
+        if (group.getNumberOf()>0 && faction.getUnitDesignById(group.unitDesign()).weapons()>0) {
+          for (IJG_Planet planet : pPlanets) {
+            if (planet.position().equals(group.position())) {
+              if (planet.owner() != null && !group.faction().equals(planet.owner())) {
+                if (pGame.getFactionById(group.faction()).atWarWith().contains(planet.owner())) {
+                  planet.setOwner(null);
+                  planet.setPopulation(0);
+                  planet.setIndustry(0);
+                  planet.setCapitals(0);
+                  planet.setMaterials(0);
+                  planet.setSpent(0);
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+    return;
+  }
 
   /****f* Battle/performPlanetGroupBattles
    * NAME

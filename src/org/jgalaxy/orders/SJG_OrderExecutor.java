@@ -12,30 +12,6 @@ import org.jgalaxy.units.JG_UnitDesign;
 
 public class SJG_OrderExecutor {
 
-//  static public void exec(IJG_Faction pFaction, IJG_Order pOrder, IJG_Game pGame ) throws OrderException {
-//    switch (pOrder.order()) {
-//
-//      // **** DESIGN
-//      case DESIGN -> orderDESIGN(pGame, pFaction, pOrder);
-//
-//      // **** LOAD
-//      case LOAD -> orderLOAD(pGame,pFaction,pOrder);
-//      // **** UNLOAD
-//      case UNLOAD -> orderUNLOAD(pGame,pFaction,pOrder);
-//
-//      // **** PRODUCE
-//      case PRODUCE -> orderPRODUCE(pGame,pFaction,pOrder);
-//      // **** SEND
-//      case SEND -> orderSEND(pGame,pFaction,pOrder);
-//      // **** SEND
-//      case WAR -> orderWAR(pGame,pFaction,pOrder);
-//
-//      case RENAME -> orderRENAME(pOrder,pGame);
-//
-//    }
-//    return;
-//  }
-
 
   static public void orderDESIGN( IJG_Game pGame, IJG_Faction pFaction,IJG_Order pOrder) throws OrderException {
     String name = pOrder.param(0 );
@@ -155,6 +131,13 @@ public class SJG_OrderExecutor {
     String factionid = pOrder.param(0 );
     pFaction.addWarWith(factionid);
     pGame.getFactionById(factionid).addWarWith(pFaction.id());
+    return;
+  }
+
+  static public void orderALLIANCE(  IJG_Game pGame, IJG_Faction pFaction, IJG_Order pOrder ) {
+    String factionid = pOrder.param(0 );
+    pFaction.removeWarWith(factionid);
+    pGame.getFactionById(factionid).removeWarWith(pFaction.id());
     return;
   }
 

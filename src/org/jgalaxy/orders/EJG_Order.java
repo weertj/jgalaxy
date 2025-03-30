@@ -2,6 +2,7 @@ package org.jgalaxy.orders;
 
 public enum EJG_Order {
 
+  ALLIANCE( "a" ),
   DESIGN( "d" ),
   JOIN( "j"),
   LOAD("l"),

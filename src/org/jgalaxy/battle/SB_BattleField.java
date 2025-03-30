@@ -91,7 +91,7 @@ public class SB_BattleField implements ISB_BattleField {
       IJG_Faction faction = mGame.getFactionById(attacker.faction());
       var atwar = faction.atWarWith();
       var uatt = faction.getUnitDesignById(attacker.unitDesign());
-      for( int gun=0; gun<uatt.nrweapons(); gun++ ) {
+      for( int gun=0; gun<uatt.nrweapons()*attacker.getNumberOf(); gun++ ) {
         var targets = groups.groupsByFactions(atwar);
         if (!targets.isEmpty()) {
           var target = selectTargetGroup(targets);

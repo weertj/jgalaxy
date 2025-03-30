@@ -22,6 +22,17 @@ public class JG_Orders implements IJG_Orders {
   static public IJG_Orders generateOf( long pNewTurnnumber, IJG_Faction pFromFaction, IJG_Faction pToFaction) {
     IJG_Orders orders = of(pNewTurnnumber);
 
+    if (!Objects.deepEquals(pFromFaction.atWarWith(),pToFaction.atWarWith())) {
+      for( var warfaction : pToFaction.atWarWith()) {
+        orders.addOrder(JG_Order.of(EJG_Order.WAR, List.of(warfaction)));
+      }
+      var from2 = new ArrayList<>(pFromFaction.atWarWith());
+      from2.removeAll(List.of(pToFaction.atWarWith()));
+      for( var peacefaction : from2) {
+        orders.addOrder(JG_Order.of(EJG_Order.ALLIANCE, List.of(peacefaction)));
+      }
+    }
+
     // **** Ship designs (new)
     for( var design : pToFaction.unitDesigns() ) {
       if (pFromFaction.getUnitDesignById(design.id())==null) {
@@ -72,6 +83,7 @@ public class JG_Orders implements IJG_Orders {
       }
     }
 
+    // **** Unload/load/join
     IJG_Groups groups = pFromFaction.groups();
     for( int ix=0; ix<groups.getSize(); ix++ ) {
       var g1 = groups.getGroupByGroupIndex(ix);

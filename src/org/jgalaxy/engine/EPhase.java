@@ -7,7 +7,8 @@ public enum EPhase {
   DESIGN,
   JOIN,
   SEND,
-  DECLARE,
+  DECLAREALLIANCE,
+  DECLAREWAR,
   LOAD,
   UNLOAD,
   RENAME

@@ -190,7 +190,8 @@ public class JG_Faction extends Entity implements IJG_Faction {
         case JOIN -> defaultDoOrders(EJG_Order.JOIN );
         case PLANET_PRODUCTION -> defaultDoOrders(EJG_Order.PRODUCE );
         case SEND -> defaultDoOrders(EJG_Order.SEND );
-        case DECLARE -> defaultDoOrders(EJG_Order.WAR );
+        case DECLAREALLIANCE -> defaultDoOrders(EJG_Order.ALLIANCE );
+        case DECLAREWAR -> defaultDoOrders(EJG_Order.WAR );
         case LOAD -> defaultDoOrders(EJG_Order.LOAD );
         case UNLOAD -> defaultDoOrders(EJG_Order.UNLOAD );
         case RENAME -> defaultDoOrders(EJG_Order.RENAME );
@@ -207,6 +208,7 @@ public class JG_Faction extends Entity implements IJG_Faction {
           case JOIN -> SJG_OrderExecutor.orderJOIN(mGame,this,order);
           case PRODUCE -> SJG_OrderExecutor.orderPRODUCE(mGame,this,order);
           case SEND -> SJG_OrderExecutor.orderSEND(mGame,this,order);
+          case ALLIANCE -> SJG_OrderExecutor.orderALLIANCE(mGame,this,order);
           case WAR -> SJG_OrderExecutor.orderWAR(mGame,this,order);
           case LOAD -> SJG_OrderExecutor.orderLOAD(mGame,this,order);
           case UNLOAD -> SJG_OrderExecutor.orderUNLOAD(mGame,this,order);

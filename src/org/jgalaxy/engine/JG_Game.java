@@ -201,7 +201,7 @@ public class JG_Game extends Entity implements IJG_Game {
     // Messages are sent.
     messagesPhase();
     // Alliances and war are declared.
-    warDeclarePhase();
+    declarePhase();
     // Groups with weapons attack enemy ships, causing combat. This can happen if a player declares war on the current turn. It can also happen if a player built a ship with weapons at a planet with enemy ships in orbit at the end of the previous turn.
     fightPhase();
 
@@ -230,9 +230,7 @@ public class JG_Game extends Entity implements IJG_Game {
 
     // Planets produce materials or capital, conduct research, or build ships.
     // Population growth occurs.
-    for( IJG_Planet planet : mGalaxy.map().planets().planets() ) {
-      planet.timeProgression(this, pTimeStep);
-    }
+    planetProducePhase(pTimeStep);
 
     // All ships unload cargo if the autounload option is turned on.
     unloadPhase();
@@ -304,11 +302,20 @@ public class JG_Game extends Entity implements IJG_Game {
     return;
   }
 
+  private void planetProducePhase( Duration pTimeStep ) {
+    for( IJG_Planet planet : mGalaxy.map().planets().planets() ) {
+      planet.timeProgression(this, pTimeStep);
+    }
+    return;
+  }
+
   private void routesPhase() {
     return;
   }
 
-  private void warDeclarePhase() {
+  private void declarePhase() {
+    factions().stream().forEach( f -> f.doOrders(EPhase.DECLAREWAR));
+    factions().stream().forEach( f -> f.doOrders(EPhase.DECLAREALLIANCE));
     return;
   }
 
@@ -342,6 +349,8 @@ public class JG_Game extends Entity implements IJG_Game {
   }
 
   private void bombPhase() {
+    SB_Battle.bombPlanets(this,mGalaxy.map().planets().planets());
+    return;
   }
 
   private void unloadPhase() {
