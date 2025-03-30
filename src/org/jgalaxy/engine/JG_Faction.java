@@ -59,8 +59,16 @@ public class JG_Faction extends Entity implements IJG_Faction {
       group.setFaction(faction.id());
       faction.groups().addGroup( group );
     }
+    for(Element ud : XML_Utils.childElementsByName(pParent,"fleet")) {
+      faction.groups().addFleet( XML_Utils.attr(ud,"id"),XML_Utils.attr(ud,"name") );
+    }
     faction.setCurrentGroupCounter( Integer.parseInt(XML_Utils.attr(pParent,"currentGroupCounter", "0")) );
 
+
+    for( Element ofact : XML_Utils.childElementsByName(pParent,"otherfaction")) {
+      IJG_Faction ofaction = of(pGame,ofact );
+      faction.getOtherFactionsMutable().add(ofaction);
+    }
 
 
     return faction;
@@ -179,6 +187,7 @@ public class JG_Faction extends Entity implements IJG_Faction {
 //          }
 //        }
         case DESIGN -> defaultDoOrders(EJG_Order.DESIGN );
+        case JOIN -> defaultDoOrders(EJG_Order.JOIN );
         case PLANET_PRODUCTION -> defaultDoOrders(EJG_Order.PRODUCE );
         case SEND -> defaultDoOrders(EJG_Order.SEND );
         case DECLARE -> defaultDoOrders(EJG_Order.WAR );
@@ -195,6 +204,7 @@ public class JG_Faction extends Entity implements IJG_Faction {
       try {
         switch (order.order()) {
           case DESIGN -> SJG_OrderExecutor.orderDESIGN(mGame,this,order);
+          case JOIN -> SJG_OrderExecutor.orderJOIN(mGame,this,order);
           case PRODUCE -> SJG_OrderExecutor.orderPRODUCE(mGame,this,order);
           case SEND -> SJG_OrderExecutor.orderSEND(mGame,this,order);
           case WAR -> SJG_OrderExecutor.orderWAR(mGame,this,order);
@@ -315,18 +325,12 @@ public class JG_Faction extends Entity implements IJG_Faction {
     if (orders()!=null) {
       orders().storeObject(pPath, factionnode, "", "");
     }
-
-    root.appendChild(factionnode);
-
     // **** Other factions
     for( IJG_Faction otherfaction : getOtherFactionsMutable()) {
-      otherfaction.storeObject( null,root,"otherfaction", "");
-////      Element otherfactionnode = doc.createElement( "faction" );
-////      otherfactionnode.setAttribute("id", otherfaction.id() );
-////      otherfactionnode.setAttribute("name", otherfaction.name() );
-////      root.appendChild(otherfactionnode);
+      otherfaction.storeObject( null,factionnode,"otherfaction", "");
     }
 
+    root.appendChild(factionnode);
 
     if (pPath!=null) {
       try {

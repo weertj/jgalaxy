@@ -66,7 +66,7 @@ public class SB_BattleField implements ISB_BattleField {
   private Boolean attack(IJG_UnitDesign pAttackerDesign,IJG_Group pAttacker, IJG_Faction pDefFaction, IJG_UnitDesign pDefenderDesign, IJG_Group pDefender ) {
 
     var defdesign = pDefFaction.getUnitDesignById(pDefender.unitDesign());
-    double mass = defdesign.mass() + pDefender.totalCargoMass()/pDefender.numberOf();
+    double mass = defdesign.mass() + pDefender.totalCargoMass()/pDefender.getNumberOf();
     double shields = (pDefender.tech().shields() * pDefenderDesign.shields() / Math.pow(mass,0.3333333)) * 3.10723250595;
     if (shields>0) {
       double weapon = pAttacker.tech().weapons() * pAttackerDesign.weapons();
@@ -104,8 +104,8 @@ public class SB_BattleField implements ISB_BattleField {
               rerun = true;
               if (result) {
                 // **** Hit
-                target.setNumberOf(target.numberOf() - 1);
-                if (target.numberOf() <= 0) {
+                target.setNumberOf(target.getNumberOf() - 1);
+                if (target.getNumberOf() <= 0) {
                   // **** Destroyed
                   deffaction.groups().removeGroup(target);
                 }

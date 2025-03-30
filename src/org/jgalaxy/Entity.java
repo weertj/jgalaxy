@@ -21,4 +21,17 @@ public class Entity implements IEntity {
     return mName;
   }
 
+  @Override
+  public boolean equals(Object o) {
+    if (o == null || getClass() != o.getClass()) return false;
+    Entity entity = (Entity) o;
+    return mID.equals(entity.mID) && mName.equals(entity.mName);
+  }
+
+  @Override
+  public int hashCode() {
+    int result = mID.hashCode();
+    result = 31 * result + mName.hashCode();
+    return result;
+  }
 }

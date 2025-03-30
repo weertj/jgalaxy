@@ -12,7 +12,6 @@ import org.w3c.dom.Element;
 import org.w3c.dom.Node;
 
 import java.io.File;
-import java.util.concurrent.atomic.AtomicLong;
 
 public class JG_Group extends Entity implements IJG_Group {
 
@@ -20,7 +19,7 @@ public class JG_Group extends Entity implements IJG_Group {
     String id = XML_Utils.attr(pParent,"id");
     String name = XML_Utils.attr(pParent,"name");
     IJG_Group group = of(id,name);
-    group.setNumberOf( Integer.parseInt(XML_Utils.attr(pParent, "numberOf", "1" ) ));
+    group.setNumberOf( Integer.parseInt(XML_Utils.attr(pParent, "nr", "1" ) ));
     group.position().setX(Double.parseDouble(XML_Utils.attr(pParent, "x", "0" ) ));
     group.position().setY(Double.parseDouble(XML_Utils.attr(pParent, "y", "0" ) ));
     group.toPosition().setX(Double.parseDouble(XML_Utils.attr(pParent, "toX", "0" ) ));
@@ -28,6 +27,7 @@ public class JG_Group extends Entity implements IJG_Group {
     group.setUnitDesign(XML_Utils.attr(pParent, "unitDesign", "" ));
     group.setLoadType(XML_Utils.attr(pParent, "loadType", "" ));
     group.setLoad(Double.parseDouble(XML_Utils.attr(pParent, "load", "0" ) ));
+    group.setFleet(XML_Utils.attr(pParent, "fleet", null ));
     group.tech().copyOf(JG_Tech.of(pParent));
     return group;
   }
@@ -48,14 +48,14 @@ public class JG_Group extends Entity implements IJG_Group {
   private       String        mFrom;
   private       String        mTo;
 
-  private JG_Group( String pId, String pName ) {
+  protected JG_Group( String pId, String pName ) {
     super( pId, pName );
     return;
   }
 
   @Override
   public void copyOf(IJG_Group pGroup) {
-    mNumberOf = pGroup.numberOf();
+    mNumberOf = pGroup.getNumberOf();
     mFleet = pGroup.getFleet();
     mFaction = pGroup.faction();
     mPosition.copyOf(pGroup.position());
@@ -70,7 +70,7 @@ public class JG_Group extends Entity implements IJG_Group {
   }
 
   @Override
-  public int numberOf() {
+  public int getNumberOf() {
     return mNumberOf;
   }
 
@@ -115,6 +115,13 @@ public class JG_Group extends Entity implements IJG_Group {
   @Override
   public IJG_Position toPosition() {
     return mToPosition;
+  }
+
+  @Override
+  public double maxSpeed(IJG_Faction pFaction) {
+    IJG_UnitDesign unitdesign = pFaction.getUnitDesignById(unitDesign());
+    double speed = unitdesign.speed(tech(), 0); // TODO (cargo)
+    return speed;
   }
 
   @Override
@@ -197,12 +204,15 @@ public class JG_Group extends Entity implements IJG_Group {
     Element groupnode = pParent.getOwnerDocument().createElement( "group" );
     groupnode.setAttribute("id", id());
     groupnode.setAttribute("name", name());
-    groupnode.setAttribute("numberOf", ""+mNumberOf );
+    groupnode.setAttribute("nr", ""+mNumberOf );
     groupnode.setAttribute("x", ""+position().x());
     groupnode.setAttribute("y", ""+position().y());
     groupnode.setAttribute("toX", ""+toPosition().x());
     groupnode.setAttribute("toY", ""+toPosition().y());
     groupnode.setAttribute("unitDesign", mUnitDesign);
+    if (mFleet!=null) {
+      groupnode.setAttribute("fleet", mFleet);
+    }
     if (mLoadType!=null) {
       groupnode.setAttribute( "loadType", mLoadType);
       groupnode.setAttribute("load", ""+mLoad);
@@ -214,6 +224,6 @@ public class JG_Group extends Entity implements IJG_Group {
 
   @Override
   public String toString() {
-    return numberOf() + " x " + unitDesign();
+    return getNumberOf() + " x " + unitDesign();
   }
 }

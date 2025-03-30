@@ -21,6 +21,7 @@ public class JG_Groups implements IJG_Groups {
     return new JG_Groups();
   }
 
+  private final List<IJG_Fleet> mFleets = new ArrayList<>(64);
   private final List<IJG_Group> mGroups = new ArrayList<>(64);
 
   private JG_Groups() {
@@ -30,6 +31,11 @@ public class JG_Groups implements IJG_Groups {
   @Override
   public IJG_Group getGroupById(String pGroupId) {
     return mGroups.stream().filter(g->g.id().equals(pGroupId)).findFirst().orElse(null);
+  }
+
+  @Override
+  public int getSize() {
+    return mGroups.size();
   }
 
   @Override
@@ -67,8 +73,11 @@ public class JG_Groups implements IJG_Groups {
         for (IJG_Group innergroup : new ArrayList<>(mGroups)) {
           if (group != innergroup &&
             group.position().equals(innergroup.position()) &&
-            group.tech().equals(innergroup.tech())) {
-            group.setNumberOf(group.numberOf() + innergroup.numberOf());
+            group.unitDesign().equals(innergroup.unitDesign()) &&
+            group.tech().equals(innergroup.tech()) &&
+            Objects.equals(group.getFleet(),innergroup.getFleet())
+          ) {
+            group.setNumberOf(group.getNumberOf() + innergroup.getNumberOf());
             mGroups.remove(innergroup);
             rerun = true;
             break;
@@ -90,14 +99,19 @@ public class JG_Groups implements IJG_Groups {
 
   @Override
   public int totalNumberOfUnits() {
-    return mGroups.stream().mapToInt( IJG_Group::numberOf ).sum();
+    return mGroups.stream().mapToInt( IJG_Group::getNumberOf).sum();
+  }
+
+  @Override
+  public IJG_Group getGroupByGroupIndex(int pIndex) {
+    return mGroups.get( pIndex );
   }
 
   @Override
   public IJG_Group getGroupByIndex(int pIndex) {
     int ix = 0;
     for( IJG_Group group : mGroups ) {
-      ix += group.numberOf();
+      ix += group.getNumberOf();
       if (pIndex<ix) {
         return group;
       }
@@ -106,11 +120,35 @@ public class JG_Groups implements IJG_Groups {
   }
 
   @Override
+  public IJG_Fleet addFleet(String pID, String pName) {
+    IJG_Fleet fleet = getFleetByName( pName );
+    if (fleet==null) {
+      fleet = JG_Fleet.of( pID,pName,new ArrayList<>());
+      mFleets.add( fleet );
+    }
+    return fleet;
+  }
+
+  @Override
+  public IJG_Fleet getFleetByName(String pName) {
+    return fleets().stream().filter(f->f.name().equals(pName)).findFirst().orElse(null);
+  }
+
+  @Override
   public List<IJG_Fleet> fleets() {
     List<IJG_Fleet> fleets = new ArrayList<>(8);
-    var fleetnames = mGroups.stream().map( g -> g.getFleet() ).distinct().toList();
+    var fleetnames = mGroups.stream()
+      .map( g -> g.getFleet() )
+      .filter( Objects::nonNull )
+      .distinct().toList();
     for( String fleetname : fleetnames ) {
-      fleets.add(JG_Fleet.of(fleetname,fleetname, mGroups.stream().filter(group -> Objects.equals(group.getFleet(),fleetname)).toList()));
+      fleets.add(JG_Fleet.of(fleetname,fleetname, mGroups.stream()
+        .filter(group -> Objects.equals(group.getFleet(),fleetname)).toList()));
+    }
+    for( var fleet : mFleets ) {
+      if (!fleets.contains(fleet)) {
+        fleets.add(fleet);
+      }
     }
     return fleets;
   }
@@ -121,29 +159,43 @@ public class JG_Groups implements IJG_Groups {
     return;
   }
 
+  private void moveGroup(IJG_Faction pFaction,IJG_Group pGroup, Double pMaxSpeed) {
+//    IJG_UnitDesign unitdesign = pFaction.getUnitDesignById(pGroup.unitDesign());
+    double speed = pGroup.maxSpeed(pFaction);
+//    double speed = unitdesign.speed(pGroup.tech()); // TODO (cargo)
+    if (pMaxSpeed!=null) {
+      speed = Math.min(speed,pMaxSpeed);
+    }
+
+    double dx = pGroup.toPosition().x() - pGroup.position().x();
+    double dy = pGroup.toPosition().y() - pGroup.position().y();
+    double distance = Math.sqrt(dx * dx + dy * dy);
+    if (distance <= speed) {
+      pGroup.position().copyOf(pGroup.toPosition());
+    } else {
+      double directionX = dx / distance;
+      double directionY = dy / distance;
+      double newX = pGroup.position().x() + directionX * speed;
+      double newY = pGroup.position().y() + directionY * speed;
+      pGroup.position().setX(newX);
+      pGroup.position().setY(newY);
+    }
+    return;
+  }
+
   @Override
   public void moveGroups(IJG_Faction pFaction) {
+    // **** Move fleets
+    for( IJG_Fleet fleet : fleets()) {
+      double maxspeed = fleet.maxSpeed(pFaction);
+      for( IJG_Group group : fleet.groups() ) {
+        moveGroup(pFaction, group, maxspeed);
+      }
+    }
+    // **** Move groups
     for( IJG_Group group : mGroups ) {
-      if (group.getFleet()!=null) {
-        // **** TODO
-        throw new UnsupportedOperationException();
-      } else {
-        IJG_UnitDesign unitdesign = pFaction.getUnitDesignById(group.unitDesign());
-        double speed = unitdesign.speed(group.tech()); // TODO (cargo)
-
-        double dx = group.toPosition().x() - group.position().x();
-        double dy = group.toPosition().y() - group.position().y();
-        double distance = Math.sqrt(dx * dx + dy * dy);
-        if (distance <= speed) {
-          group.position().copyOf(group.toPosition());
-        } else {
-          double directionX = dx / distance;
-          double directionY = dy / distance;
-          double newX = group.position().x() + directionX * speed;
-          double newY = group.position().y() + directionY * speed;
-          group.position().setX(newX);
-          group.position().setY(newY);
-        }
+      if (group.getFleet()==null) {
+        moveGroup(pFaction, group, null);
       }
     }
     return;

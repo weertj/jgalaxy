@@ -314,10 +314,10 @@ public class JG_Planet implements IJG_Planet {
   }
 
   private void producePhase( IJG_Game pGame, Duration pDuration) {
-    if (mProducing!=null) {
+    if (produceType()!=null) {
       var owner = pGame.getFactionById(mOwner);
       double industry = industry() * 0.75 + population() * 0.25 - mSpent + mInprogress;
-      switch (mProducing) {
+      switch (produceType()) {
         case PR_SHIP -> {
           mSpent = 0.0;
           produceShip(pGame,industry);
@@ -389,7 +389,7 @@ public class JG_Planet implements IJG_Planet {
   private void produceShip( IJG_Game pGame, double pIndustry ) {
     var owner = pGame.getFactionById(mOwner);
     if (owner!=null) {
-      var prodship = owner.getUnitDesignById(mProducingShipType);
+      var prodship = owner.getUnitDesignById(produceUnitDesign() );
       double INDPERSHIP = 10;
       double typeMass = prodship.mass();
       double indForProduction, indForMaterials;
@@ -427,7 +427,8 @@ public class JG_Planet implements IJG_Planet {
         pIndustry -= indForProduction + indForMaterials;
         mInprogress = pIndustry;
 
-        IJG_Group group = JG_Group.of("group_" + owner.currentGroupCounterAndIncrement(), "newgroup" );
+        int id = owner.currentGroupCounterAndIncrement();
+        IJG_Group group = JG_Group.of(""+id , "group " + id );
         group.setNumberOf(numberOfShips);
         group.tech().copyOf(owner.tech());
         group.position().setX(position().x());

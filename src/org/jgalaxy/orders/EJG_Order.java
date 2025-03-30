@@ -3,6 +3,7 @@ package org.jgalaxy.orders;
 public enum EJG_Order {
 
   DESIGN( "d" ),
+  JOIN( "j"),
   LOAD("l"),
   UNLOAD("u"),
   RENAME("n"),

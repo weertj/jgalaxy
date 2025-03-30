@@ -194,6 +194,7 @@ public class JG_Game extends Entity implements IJG_Game {
     mGalaxy.timeProgression(pGame, pTimeStep);
 
     designPhase();
+    joinPhase();
     // Planetary production orders are assigned. Note that production occurs later in the turn.
     producePhase();
 
@@ -322,6 +323,8 @@ public class JG_Game extends Entity implements IJG_Game {
   }
 
   private void joinPhase() {
+    factions().stream().forEach( f -> f.doOrders(EPhase.JOIN));
+    return;
   }
 
   private void fightPhase() {

@@ -5,8 +5,7 @@ import org.jgalaxy.engine.IJG_Faction;
 import org.jgalaxy.engine.IJG_Game;
 import org.jgalaxy.planets.EProduceType;
 import org.jgalaxy.planets.IJG_Planet;
-import org.jgalaxy.planets.JG_Planet;
-import org.jgalaxy.planets.JG_Planets;
+import org.jgalaxy.units.IJG_Fleet;
 import org.jgalaxy.units.IJG_Group;
 import org.jgalaxy.units.IJG_UnitDesign;
 import org.jgalaxy.units.JG_UnitDesign;
@@ -40,7 +39,8 @@ public class SJG_OrderExecutor {
 
   static public void orderDESIGN( IJG_Game pGame, IJG_Faction pFaction,IJG_Order pOrder) throws OrderException {
     String name = pOrder.param(0 );
-    if ("FLEET".equals(name)) {
+    if ("FLEET".equalsIgnoreCase(name)) {
+      pFaction.groups().addFleet(pOrder.param(1), pOrder.param(1));
     } else {
       IJG_UnitDesign design = JG_UnitDesign.of( name, name,
         Double.parseDouble(pOrder.param(1)),
@@ -50,6 +50,20 @@ public class SJG_OrderExecutor {
         Double.parseDouble(pOrder.param(5 ))
       );
       pFaction.addUnitDesign(design);
+    }
+    return;
+  }
+
+  static public void orderJOIN( IJG_Game pGame, IJG_Faction pFaction, IJG_Order pOrder ) {
+    IJG_Group group = pFaction.groups().getGroupById(pOrder.param(0));
+    IJG_Fleet tofleet = pFaction.groups().getFleetByName(pOrder.param(1));
+    if (group==null) {
+      IJG_Fleet fleet = pFaction.groups().getFleetByName(pOrder.param(0));
+      if (fleet!=null && tofleet!=null) {
+        fleet.groups().stream().forEach( g->g.setFleet(tofleet.id()) );
+      }
+    } else if (tofleet!=null) {
+      group.setFleet(pOrder.param(1));
     }
     return;
   }
@@ -110,17 +124,23 @@ public class SJG_OrderExecutor {
 
   static public void orderSEND(  IJG_Game pGame, IJG_Faction pFaction, IJG_Order pOrder ) throws OrderException {
     String groupfleetid = pOrder.param(0 );
-    IJG_Group group = pFaction.groups().getGroupById(groupfleetid);
-    if (group == null) throw new OrderException(pFaction,pOrder,"Group "+groupfleetid+" not found");
     String planetid = pOrder.param(1);
     IJG_Planet planet = pGame.galaxy().map().planets().findPlanetById(planetid);
-    if (planet == null) throw new OrderException(pFaction,pOrder,"Planet "+planetid+" not found");
-    if (pOrder.param(2).isBlank()) {
-      group.toPosition().copyOf(planet.position());
+    if (planet == null) throw new OrderException(pFaction, pOrder, "Planet " + planetid + " not found");
+    IJG_Fleet fleet = pFaction.groups().getFleetByName(groupfleetid);
+    if (fleet==null) {
+      IJG_Group group = pFaction.groups().getGroupById(groupfleetid);
+      if (group == null) throw new OrderException(pFaction, pOrder, "Group " + groupfleetid + " not found");
+      if (pOrder.param(2).isBlank()) {
+        group.toPosition().copyOf(planet.position());
+      } else {
+        var breakgroup = group.breakOffGroup(pGame, Integer.parseInt(pOrder.param(2)));
+        breakgroup.toPosition().copyOf(planet.position());
+        pFaction.groups().addGroup(breakgroup);
+      }
     } else {
-      var breakgroup = group.breakOffGroup(pGame,Integer.parseInt(pOrder.param(2)));
-      breakgroup.toPosition().copyOf(planet.position());
-      pFaction.groups().addGroup(breakgroup);
+      // **** Move fleet
+      fleet.groups().stream().forEach( g->g.toPosition().copyOf(planet.position()) );
     }
     return;
   }

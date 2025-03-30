@@ -11,6 +11,8 @@ public interface IJG_Groups {
     return getGroups().isEmpty();
   }
 
+  int getSize();
+
   IJG_Group getGroupById( String pGroupId );
 
   void addGroup( IJG_Group pGroup );
@@ -38,8 +40,13 @@ public interface IJG_Groups {
 
   int totalNumberOfUnits();
 
+  IJG_Group getGroupByGroupIndex( int pIndex );
+
+
   IJG_Group getGroupByIndex( int pIndex );
 
+  IJG_Fleet addFleet( String pID, String pName );
+  IJG_Fleet getFleetByName( String pName );
   List<IJG_Fleet> fleets();
 
 }

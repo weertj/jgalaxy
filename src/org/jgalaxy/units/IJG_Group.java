@@ -17,7 +17,9 @@ public interface IJG_Group extends IEntity, IStorage {
   IJG_Position position();
   IJG_Position toPosition();
 
-  int   numberOf();
+  double maxSpeed(IJG_Faction pFaction);
+
+  int getNumberOf();
   void  setNumberOf( int pNumber );
 
   String    unitDesign();

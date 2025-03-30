@@ -24,6 +24,24 @@ public class SJG_LoadOrder {
             pPlanet.setCols(pPlanet.cols() - load);
             loaded = load;
           }
+        } else if ("CAP".equals(pLoad)) {
+          double available = pPlanet.capitals();
+          load = Math.min(cc,available);
+          if (load > 0.0) {
+            pGroup.setLoadType("CAP");
+            pGroup.setLoad(pGroup.load() + load);
+            pPlanet.setCols(pPlanet.cols() - load);
+            loaded = load;
+          }
+        } else if ("MAT".equals(pLoad)) {
+          double available = pPlanet.materials();
+          load = Math.min(cc,available);
+          if (load > 0.0) {
+            pGroup.setLoadType("MAT");
+            pGroup.setLoad(pGroup.load() + load);
+            pPlanet.setCols(pPlanet.cols() - load);
+            loaded = load;
+          }
         }
       }
     }
@@ -37,8 +55,32 @@ public class SJG_LoadOrder {
     if ("COL".equals(type)) {
       pPlanet.setCols(pPlanet.cols() + unload);
       unloaded = unload;
+      if (pPlanet.owner() == null) {
+        pPlanet.setOwner(pGroup.faction());
+      }
+      pGroup.setLoad(pGroup.load() - unload);
+      if (pGroup.load() <= 0.0) {
+        pGroup.setLoadType(null);
+      }
+    } else if ("CAP".equals(type)) {
+      pPlanet.setCapitals(pPlanet.capitals() + unload);
+      unloaded = unload;
       if (pPlanet.owner()==null) {
         pPlanet.setOwner(pGroup.faction());
+      }
+      pGroup.setLoad(pGroup.load() - unload);
+      if (pGroup.load()<=0.0) {
+        pGroup.setLoadType(null);
+      }
+    } else if ("MAT".equals(type)) {
+      pPlanet.setMaterials(pPlanet.materials() + unload);
+      unloaded = unload;
+      if (pPlanet.owner()==null) {
+        pPlanet.setOwner(pGroup.faction());
+      }
+      pGroup.setLoad(pGroup.load() - unload);
+      if (pGroup.load()<=0.0) {
+        pGroup.setLoadType(null);
       }
     }
     return unloaded;

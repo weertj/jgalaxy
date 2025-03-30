@@ -3,7 +3,6 @@ package org.jgalaxy.units;
 import org.jgalaxy.Entity;
 import org.jgalaxy.tech.IJG_Tech;
 import org.jgalaxy.utils.XML_Utils;
-import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 import org.w3c.dom.Node;
 
@@ -74,8 +73,9 @@ public class JG_UnitDesign extends Entity implements IJG_UnitDesign {
   }
 
   @Override
-  public double speed(IJG_Tech pTech) {
-    return drive() + pTech.drive() * 20/mass();
+  public double speed(IJG_Tech pTech, double pCargoMass) {
+//    return drive() + pTech.drive() * 20/mass();
+    return 20*pTech.drive() * (drive()/(mass()+pCargoMass));
   }
 
   @Override

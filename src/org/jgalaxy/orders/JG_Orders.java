@@ -3,7 +3,9 @@ package org.jgalaxy.orders;
 import org.jgalaxy.engine.IJG_Faction;
 import org.jgalaxy.planets.IJG_Planet;
 import org.jgalaxy.planets.IJG_Planets;
+import org.jgalaxy.units.IJG_Fleet;
 import org.jgalaxy.units.IJG_Group;
+import org.jgalaxy.units.IJG_Groups;
 import org.jgalaxy.utils.XML_Utils;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
@@ -49,10 +51,45 @@ public class JG_Orders implements IJG_Orders {
       }
     }
 
+    // **** Check fleets (new)
+    for( var fleet : pToFaction.groups().fleets() ) {
+      if (!pFromFaction.groups().fleets().contains(fleet)) {
+        orders.addOrder(JG_Order.of(EJG_Order.DESIGN, List.of( "FLEET", fleet.name())));
+      }
+    }
+
+    // **** Check fleets
+    for (IJG_Fleet fleet : pToFaction.groups().fleets()) {
+      if (!fleet.groups().isEmpty() && fleet.groups().getFirst().to()!=null) {
+        orders.addOrder(JG_Order.of(EJG_Order.SEND, List.of(fleet.id(), fleet.groups().getFirst().to())));
+      }
+    }
+
     // **** Check groups
-    for(IJG_Group group : pToFaction.groups().getGroups() ) {
-      if (group.to()!=null) {
-        orders.addOrder( JG_Order.of( EJG_Order.SEND, List.of( group.id(), group.to()  ) ) );
+    for (IJG_Group group : pToFaction.groups().getGroups()) {
+      if (group.to() != null && group.getFleet()==null) {
+        orders.addOrder(JG_Order.of(EJG_Order.SEND, List.of(group.id(), group.to())));
+      }
+    }
+
+    IJG_Groups groups = pFromFaction.groups();
+    for( int ix=0; ix<groups.getSize(); ix++ ) {
+      var g1 = groups.getGroupByGroupIndex(ix);
+      var g2 = pToFaction.groups().getGroupById(g1.id());
+      if (g2==null) {
+
+      } else {
+        if (!Objects.equals(g2.loadType(),g1.loadType())) {
+          if (g1.loadType()!=null) {
+            orders.addOrder(JG_Order.of( EJG_Order.UNLOAD, List.of(g1.id())));
+          }
+          if (g2.loadType()!=null) {
+            orders.addOrder(JG_Order.of( EJG_Order.LOAD, List.of(g2.id(),g2.loadType(),""+g2.load())));
+          }
+        }
+        if (!Objects.equals(g2.getFleet(),g1.getFleet())) {
+          orders.addOrder(JG_Order.of( EJG_Order.JOIN, List.of(g1.id(),g2.getFleet())));
+        }
       }
     }
 
