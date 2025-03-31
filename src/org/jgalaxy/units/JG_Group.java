@@ -24,6 +24,8 @@ public class JG_Group extends Entity implements IJG_Group {
     group.position().setY(Double.parseDouble(XML_Utils.attr(pParent, "y", "0" ) ));
     group.toPosition().setX(Double.parseDouble(XML_Utils.attr(pParent, "toX", "0" ) ));
     group.toPosition().setY(Double.parseDouble(XML_Utils.attr(pParent, "toY", "0" ) ));
+    group.lastStaticPosition().setX(Double.parseDouble(XML_Utils.attr(pParent, "lastStaticX", "0" ) ));
+    group.lastStaticPosition().setY(Double.parseDouble(XML_Utils.attr(pParent, "lastStaticY", "0" ) ));
     group.setUnitDesign(XML_Utils.attr(pParent, "unitDesign", "" ));
     group.setLoadType(XML_Utils.attr(pParent, "loadType", "" ));
     group.setLoad(Double.parseDouble(XML_Utils.attr(pParent, "load", "0" ) ));
@@ -39,6 +41,7 @@ public class JG_Group extends Entity implements IJG_Group {
   private       int           mNumberOf;
   private       String        mFleet;
   private       String        mFaction;
+  private final IJG_Position  mLastStaticPosition = JG_Position.of(0,0);
   private final IJG_Position  mPosition = JG_Position.of(0,0);
   private final IJG_Position  mToPosition = JG_Position.of(0,0);
   private       String        mUnitDesign;
@@ -58,6 +61,7 @@ public class JG_Group extends Entity implements IJG_Group {
     mNumberOf = pGroup.getNumberOf();
     mFleet = pGroup.getFleet();
     mFaction = pGroup.faction();
+    mLastStaticPosition.copyOf(pGroup.lastStaticPosition());
     mPosition.copyOf(pGroup.position());
     mToPosition.copyOf(pGroup.toPosition());
     mUnitDesign = pGroup.unitDesign();
@@ -105,6 +109,11 @@ public class JG_Group extends Entity implements IJG_Group {
   public void setUnitDesign(String unitDesign) {
     mUnitDesign = unitDesign;
     return;
+  }
+
+  @Override
+  public IJG_Position lastStaticPosition() {
+    return mLastStaticPosition;
   }
 
   @Override
@@ -163,6 +172,13 @@ public class JG_Group extends Entity implements IJG_Group {
   }
 
   @Override
+  public double totalMass( IJG_Faction pFaction ) {
+    IJG_UnitDesign unitDesign = pFaction.getUnitDesignById(unitDesign());
+    double mass = unitDesign.mass()*getNumberOf();
+    return mass + totalCargoMass();
+  }
+
+  @Override
   public String loadType() {
     return mLoadType;
   }
@@ -209,6 +225,8 @@ public class JG_Group extends Entity implements IJG_Group {
     groupnode.setAttribute("y", ""+position().y());
     groupnode.setAttribute("toX", ""+toPosition().x());
     groupnode.setAttribute("toY", ""+toPosition().y());
+    groupnode.setAttribute("lastStaticX", ""+lastStaticPosition().x());
+    groupnode.setAttribute("lastStaticY", ""+lastStaticPosition().y());
     groupnode.setAttribute("unitDesign", mUnitDesign);
     if (mFleet!=null) {
       groupnode.setAttribute("fleet", mFleet);

@@ -2,6 +2,7 @@ package org.jgalaxy.units;
 
 import org.jgalaxy.IJG_Position;
 import org.jgalaxy.engine.IJG_Faction;
+import org.jgalaxy.engine.IJG_Game;
 
 import java.util.List;
 
@@ -32,7 +33,7 @@ public interface IJG_Groups {
   IJG_Groups groupsByFactions( List<String> pFactions );
 
   void combineGroups();
-  void moveGroups(IJG_Faction pFaction);
+  void moveGroups(IJG_Game pGame, IJG_Faction pFaction);
 
   void removeGroup( IJG_Group pGroup );
 

@@ -368,7 +368,7 @@ public class JG_Game extends Entity implements IJG_Game {
 
   private void movePhase() {
     factions().stream().forEach( f -> f.doOrders(EPhase.SEND));
-    factions().stream().forEach( f -> f.groups().moveGroups(f));
+    factions().stream().forEach( f -> f.groups().moveGroups(this,f));
     return;
   }
 

@@ -14,6 +14,7 @@ public interface IJG_Group extends IEntity, IStorage {
   void setFleet(String pFleet);
   String getFleet();
 
+  IJG_Position lastStaticPosition();
   IJG_Position position();
   IJG_Position toPosition();
 
@@ -41,6 +42,7 @@ public interface IJG_Group extends IEntity, IStorage {
   void setLoad( double pLoad );
 
   double totalCargoMass();
+  double totalMass( IJG_Faction pFaction );
 
   IJG_Group breakOffGroup(IJG_Game pGame, int pNumberOf );
 

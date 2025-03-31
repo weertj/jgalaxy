@@ -9,6 +9,7 @@ import org.jgalaxy.planets.IJG_Planets;
 import org.jgalaxy.tech.IJG_Tech;
 import org.jgalaxy.units.IJG_Group;
 import org.jgalaxy.units.IJG_Groups;
+import org.jgalaxy.units.IJG_Incoming;
 import org.jgalaxy.units.IJG_UnitDesign;
 
 import java.util.List;
@@ -45,7 +46,7 @@ public interface IJG_Faction extends IEntity, IStorage {
   int currentGroupCounterAndIncrement();
   void setCurrentGroupCounter( int pCurrentGroupCounter );
 
-  List<IJG_Faction> getOtherFactionsMutable();
-
+  List<IJG_Faction>   getOtherFactionsMutable();
+  List<IJG_Incoming>  getIncomingMutable();
 
 }

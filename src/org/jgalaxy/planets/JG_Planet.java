@@ -435,6 +435,8 @@ public class JG_Planet implements IJG_Planet {
         group.position().setY(position().y());
         group.toPosition().setX(position().x());
         group.toPosition().setY(position().y());
+        group.lastStaticPosition().setX(position().x());
+        group.lastStaticPosition().setY(position().y());
         group.setUnitDesign(prodship.id());
         owner.groups().addGroup( group );
       }

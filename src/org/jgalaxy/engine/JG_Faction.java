@@ -87,6 +87,8 @@ public class JG_Faction extends Entity implements IJG_Faction {
   private final IJG_Groups            mGroups = JG_Groups.of();
   private final AtomicInteger         mCurrentGroupCount = new AtomicInteger(0);
 
+  private final List<IJG_Incoming>    mIncomings = new ArrayList<>(8);
+
   private final List<IJG_Faction>     mOtherFactions = new ArrayList<>(8);
 
   private       IJG_Orders            mOrders;
@@ -273,6 +275,11 @@ public class JG_Faction extends Entity implements IJG_Faction {
   }
 
   @Override
+  public List<IJG_Incoming> getIncomingMutable() {
+    return mIncomings;
+  }
+
+  @Override
   public void removeTurnNumber(File pPath, long pTurnNumber) {
     File factiondir = new File(pPath,id());
     File f = new File(factiondir, "faction_" + pTurnNumber + ".xml");
@@ -330,6 +337,11 @@ public class JG_Faction extends Entity implements IJG_Faction {
     // **** Other factions
     for( IJG_Faction otherfaction : getOtherFactionsMutable()) {
       otherfaction.storeObject( null,factionnode,"otherfaction", "");
+    }
+
+    // **** Incoming groups
+    for( IJG_Incoming incoming : getIncomingMutable()) {
+      incoming.storeObject( null,factionnode,"", "");
     }
 
     root.appendChild(factionnode);

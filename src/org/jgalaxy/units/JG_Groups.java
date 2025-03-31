@@ -2,11 +2,10 @@ package org.jgalaxy.units;
 
 import org.jgalaxy.IJG_Position;
 import org.jgalaxy.engine.IJG_Faction;
+import org.jgalaxy.engine.IJG_Game;
+import org.jgalaxy.planets.IJG_Planet;
 
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.List;
-import java.util.Objects;
+import java.util.*;
 import java.util.stream.Collectors;
 
 public class JG_Groups implements IJG_Groups {
@@ -159,6 +158,12 @@ public class JG_Groups implements IJG_Groups {
     return;
   }
 
+  /**
+   * moveGroup
+   * @param pFaction
+   * @param pGroup
+   * @param pMaxSpeed
+   */
   private void moveGroup(IJG_Faction pFaction,IJG_Group pGroup, Double pMaxSpeed) {
 //    IJG_UnitDesign unitdesign = pFaction.getUnitDesignById(pGroup.unitDesign());
     double speed = pGroup.maxSpeed(pFaction);
@@ -172,6 +177,7 @@ public class JG_Groups implements IJG_Groups {
     double distance = Math.sqrt(dx * dx + dy * dy);
     if (distance <= speed) {
       pGroup.position().copyOf(pGroup.toPosition());
+      pGroup.lastStaticPosition().copyOf(pGroup.toPosition());
     } else {
       double directionX = dx / distance;
       double directionY = dy / distance;
@@ -183,8 +189,13 @@ public class JG_Groups implements IJG_Groups {
     return;
   }
 
+  /**
+   * moveGroups
+   * @param pGame
+   * @param pFaction
+   */
   @Override
-  public void moveGroups(IJG_Faction pFaction) {
+  public void moveGroups(IJG_Game pGame,IJG_Faction pFaction) {
     // **** Move fleets
     for( IJG_Fleet fleet : fleets()) {
       double maxspeed = fleet.maxSpeed(pFaction);
@@ -198,6 +209,36 @@ public class JG_Groups implements IJG_Groups {
         moveGroup(pFaction, group, null);
       }
     }
+
+    // **** Add groups to incoming groups
+    for( IJG_Faction faction : pGame.factions() ) {
+      // **** the fleets
+      for( IJG_Fleet fleet : fleets() ) {
+        if (!fleet.groups().isEmpty()) {
+          IJG_Group group = fleet.groups().getFirst();
+          if (!group.position().equals(group.toPosition())) {
+            IJG_Planet planet     = faction.planets().findPlanetByPosition(group.toPosition());
+            IJG_Planet fromplanet = faction.planets().findPlanetByPosition(group.lastStaticPosition());
+            if (planet!=null && fromplanet!=null && planet.owner()!=null && !planet.owner().equals(group.faction())) {
+              IJG_Incoming incoming = new JG_Incoming( group.lastStaticPosition(), group.position(), group.toPosition(), group.totalMass(pGame.getFactionById(group.faction())) );
+              pGame.getFactionById(planet.owner()).getIncomingMutable().add(incoming);
+            }
+          }
+        }
+      }
+      // **** the groups
+      for( IJG_Group group : getGroups() ) {
+        if (group.getFleet()==null && !group.position().equals(group.toPosition())) {
+          IJG_Planet planet     = faction.planets().findPlanetByPosition(group.toPosition());
+          IJG_Planet fromplanet = faction.planets().findPlanetByPosition(group.lastStaticPosition());
+          if (planet!=null && fromplanet!=null && planet.owner()!=null && !planet.owner().equals(group.faction())) {
+            IJG_Incoming incoming = new JG_Incoming( group.lastStaticPosition(), group.position(), group.toPosition(), group.totalMass(pGame.getFactionById(group.faction())) );
+            pGame.getFactionById(planet.owner()).getIncomingMutable().add(incoming);
+          }
+        }
+      }
+    }
+
     return;
   }
 
