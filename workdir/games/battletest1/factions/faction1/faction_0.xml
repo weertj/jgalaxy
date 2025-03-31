@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<root>
+    <faction id="faction1" name="Faction 1">
+        <unitdesign id="bMG" name="MG" drive="33" weapons="33" nrweapons="1" shields="33" cargo="0"/>
+        <unitdesign id="bSG" name="SG" drive="33" weapons="3" nrweapons="10" shields="33" cargo="0"/>
+        <unitdesign id="bLADG" name="LADG" drive="33" weapons="1" nrweapons="40" shields="33" cargo="0"/>
+        <unitdesign id="bD" name="D" drive="1" weapons="0" nrweapons="0" shields="0" cargo="0"/>
+        <planet id="home0" name="home0" owner="faction0" x="2" y="3"/>
+
+        <group id="10" name="bgroup 10" nr="1"  unitDesign="bMG" x="2" y="3" tech.cargo="1.0" tech.drive="1.0" tech.shields="1.0" tech.weapons="1.0" toX="2" toY="3"/>
+        <group id="11" name="bgroup 11" nr="1"  unitDesign="bSG" x="2" y="3" tech.cargo="1.0" tech.drive="1.0" tech.shields="1.0" tech.weapons="1.0" toX="2" toY="3"/>
+        <group id="12" name="bgroup 12" nr="1"  unitDesign="bLADG" x="2" y="3" tech.cargo="1.0" tech.drive="1.0" tech.shields="1.0" tech.weapons="1.0" toX="2" toY="3"/>
+        <group id="13" name="bgroup 13" nr="100"  unitDesign="bD" x="2" y="3" tech.cargo="1.0" tech.drive="1.0" tech.shields="1.0" tech.weapons="1.0" toX="2" toY="3"/>
+
+
+    </faction>
+</root>
