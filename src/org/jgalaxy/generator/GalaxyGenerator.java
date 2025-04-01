@@ -37,7 +37,7 @@ public class GalaxyGenerator {
       planet.setSize( 1000 );
       planet.setPopulation(1000);
       planet.setIndustry(1000);
-      planet.setOwner(faction.id());
+      planet.setFaction(faction.id());
       faction.planets().addPlanet( planet );
       galaxy.map().planets().addPlanet( planet );
     }

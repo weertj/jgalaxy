@@ -26,7 +26,7 @@ public class JG_Planet implements IJG_Planet {
 
     String owner = XML_Utils.attr(pParent, "owner" );
     if (!owner.isBlank()) {
-      planet.setOwner(owner);
+      planet.setFaction(owner);
       String produceType = XML_Utils.attr(pParent, "produceType" );
       if (!produceType.isBlank()) {
         String produceUnitDesign = XML_Utils.attr(pParent, "produceUnitDesign" );
@@ -40,6 +40,7 @@ public class JG_Planet implements IJG_Planet {
     planet.setMaterials( Double.parseDouble(XML_Utils.attr(pParent, "materials","-1" )));
     planet.setCols( Double.parseDouble(XML_Utils.attr(pParent, "cols","-1" )));
     planet.setSpent(Double.parseDouble(XML_Utils.attr(pParent, "spent","-1" )));
+    planet.setInProgress( Double.parseDouble(XML_Utils.attr(pParent, "inProgress","0" )));
     planet.setPopulationPerCol( Double.parseDouble(XML_Utils.attr(pParent, "populationPerCol", "-1" )));
     planet.setPopulationIncreasePerHour( Double.parseDouble(XML_Utils.attr(pParent, "populationIncreasePerHour", "-1" )));
     return planet;
@@ -54,7 +55,7 @@ public class JG_Planet implements IJG_Planet {
   private final String mID;
   private       String mName;
   private IJG_Position mPosition;
-  private       String mOwner;
+  private       String mFaction;
   private       double mSize;
   private       double mResources = 10.0;
   private       double mPopulation;
@@ -114,14 +115,14 @@ public class JG_Planet implements IJG_Planet {
   }
 
   @Override
-  public void setOwner(String pOwner) {
-    mOwner = pOwner;
+  public void setFaction(String pFaction) {
+    mFaction = pFaction;
     return;
   }
 
   @Override
-  public String owner() {
-    return mOwner;
+  public String faction() {
+    return mFaction;
   }
 
   @Override
@@ -257,7 +258,7 @@ public class JG_Planet implements IJG_Planet {
 
   @Override
   public double visibilityFor(IJG_Game pGame, IJG_Faction pFaction) {
-    if (pFaction.id().equals(owner())) {
+    if (pFaction.id().equals(faction())) {
       return FLOS_Visibility.VIS_FULL;
     } else {
       return FLOS_Visibility.VIS_MINIMUM;
@@ -281,7 +282,7 @@ public class JG_Planet implements IJG_Planet {
     mPopulationIncreasePerHour = -1;
     mProducingShipType = null;
     mProducing = null;
-    mOwner = null;
+    mFaction = null;
     return;
   }
 
@@ -315,7 +316,7 @@ public class JG_Planet implements IJG_Planet {
 
   private void producePhase( IJG_Game pGame, Duration pDuration) {
     if (produceType()!=null) {
-      var owner = pGame.getFactionById(mOwner);
+      var owner = pGame.getFactionById(mFaction);
       double industry = industry() * 0.75 + population() * 0.25 - mSpent + mInprogress;
       switch (produceType()) {
         case PR_SHIP -> {
@@ -387,7 +388,7 @@ public class JG_Planet implements IJG_Planet {
    * SOURCE
    */
   private void produceShip( IJG_Game pGame, double pIndustry ) {
-    var owner = pGame.getFactionById(mOwner);
+    var owner = pGame.getFactionById(mFaction);
     if (owner!=null) {
       var prodship = owner.getUnitDesignById(produceUnitDesign() );
       double INDPERSHIP = 10;
@@ -484,7 +485,7 @@ public class JG_Planet implements IJG_Planet {
   @Override
   public IJG_Planet copyOf() {
     IJG_Planet planet = of(id(),name(),position());
-    planet.setOwner(mOwner);
+    planet.setFaction(mFaction);
     planet.setSize(size());
     planet.setPopulation(population());
     planet.setIndustry(industry());
@@ -506,8 +507,8 @@ public class JG_Planet implements IJG_Planet {
     planetnode.setAttribute("name", name());
     planetnode.setAttribute("x", ""+position().x());
     planetnode.setAttribute("y", ""+position().y());
-    if (mOwner!=null) {
-      planetnode.setAttribute("owner", mOwner);
+    if (mFaction !=null) {
+      planetnode.setAttribute("owner", mFaction);
     }
     if (size()>=0)        planetnode.setAttribute("size", ""+size());
     if (population()>=0)  planetnode.setAttribute("population", ""+population());

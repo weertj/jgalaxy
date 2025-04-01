@@ -1,7 +1,6 @@
 package org.jgalaxy.orders;
 
 import org.jgalaxy.engine.IJG_Faction;
-import org.jgalaxy.planets.IJG_Planet;
 import org.jgalaxy.planets.IJG_Planets;
 import org.jgalaxy.units.IJG_Fleet;
 import org.jgalaxy.units.IJG_Group;
@@ -51,7 +50,7 @@ public class JG_Orders implements IJG_Orders {
     IJG_Planets planets = pFromFaction.planets();
     for( int ix=0; ix<planets.getSize(); ix++ ) {
       var p1 = planets.planetByIndex(ix);
-      if (Objects.equals(p1.owner(),pFromFaction.id())) {
+      if (Objects.equals(p1.faction(),pFromFaction.id())) {
         var p2 = pToFaction.planets().planetByIndex(ix);
         if (!Objects.equals(p1.produceUnitDesign(), p2.produceUnitDesign()) && p2.produceUnitDesign()!=null) {
           orders.addOrder(JG_Order.of(EJG_Order.PRODUCE, List.of(p1.id(), p2.produceUnitDesign())));

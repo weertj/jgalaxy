@@ -219,9 +219,9 @@ public class JG_Groups implements IJG_Groups {
           if (!group.position().equals(group.toPosition())) {
             IJG_Planet planet     = faction.planets().findPlanetByPosition(group.toPosition());
             IJG_Planet fromplanet = faction.planets().findPlanetByPosition(group.lastStaticPosition());
-            if (planet!=null && fromplanet!=null && planet.owner()!=null && !planet.owner().equals(group.faction())) {
+            if (planet!=null && fromplanet!=null && planet.faction()!=null && !planet.faction().equals(group.faction())) {
               IJG_Incoming incoming = new JG_Incoming( group.lastStaticPosition(), group.position(), group.toPosition(), group.totalMass(pGame.getFactionById(group.faction())) );
-              pGame.getFactionById(planet.owner()).getIncomingMutable().add(incoming);
+              pGame.getFactionById(planet.faction()).getIncomingMutable().add(incoming);
             }
           }
         }
@@ -231,9 +231,9 @@ public class JG_Groups implements IJG_Groups {
         if (group.getFleet()==null && !group.position().equals(group.toPosition())) {
           IJG_Planet planet     = faction.planets().findPlanetByPosition(group.toPosition());
           IJG_Planet fromplanet = faction.planets().findPlanetByPosition(group.lastStaticPosition());
-          if (planet!=null && fromplanet!=null && planet.owner()!=null && !planet.owner().equals(group.faction())) {
+          if (planet!=null && fromplanet!=null && planet.faction()!=null && !planet.faction().equals(group.faction())) {
             IJG_Incoming incoming = new JG_Incoming( group.lastStaticPosition(), group.position(), group.toPosition(), group.totalMass(pGame.getFactionById(group.faction())) );
-            pGame.getFactionById(planet.owner()).getIncomingMutable().add(incoming);
+            pGame.getFactionById(planet.faction()).getIncomingMutable().add(incoming);
           }
         }
       }

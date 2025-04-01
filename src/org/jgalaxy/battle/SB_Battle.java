@@ -10,15 +10,23 @@ import java.util.List;
 public class SB_Battle {
 
 
+  /**
+   * bombPlanets
+   * @param pGame
+   * @param pPlanets
+   */
   static public void bombPlanets( IJG_Game pGame, List<IJG_Planet> pPlanets ) {
     for(IJG_Faction faction : pGame.factions() ) {
       for(IJG_Group group : faction.groups().getGroups() ) {
         if (group.getNumberOf()>0 && faction.getUnitDesignById(group.unitDesign()).weapons()>0) {
           for (IJG_Planet planet : pPlanets) {
             if (planet.position().equals(group.position())) {
-              if (planet.owner() != null && !group.faction().equals(planet.owner())) {
-                if (pGame.getFactionById(group.faction()).atWarWith().contains(planet.owner())) {
-                  planet.setOwner(null);
+              if (planet.faction() != null && !group.faction().equals(planet.faction())) {
+                if (pGame.getFactionById(group.faction()).atWarWith().contains(planet.faction())) {
+                  group.shotsMutable().add( new B_Shot(
+                    IB_Shot.TYPE.SHIP_PLANET,
+                    -1,planet.id(),planet.faction(),1));
+                  planet.setFaction(null);
                   planet.setPopulation(0);
                   planet.setIndustry(0);
                   planet.setCapitals(0);

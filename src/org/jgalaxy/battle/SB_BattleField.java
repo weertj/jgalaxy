@@ -20,6 +20,7 @@ public class SB_BattleField implements ISB_BattleField {
   private final IJG_Game                      mGame;
   private final Map<IJG_Faction, IJG_Groups>  mField = new HashMap<>(64);
   private final Map<IJG_Faction, IJG_Groups>  mDoneField = new HashMap<>(64);
+  private       int                           mBattleRound = 0;
 
   private SB_BattleField( IJG_Game pGame ) {
     mGame = pGame;
@@ -100,14 +101,16 @@ public class SB_BattleField implements ISB_BattleField {
             var udef = deffaction.getUnitDesignById(target.unitDesign());
             Boolean result = attack(uatt, attacker, deffaction, udef, target);
             if (result==null) {
+              attacker.shotsMutable().add(new B_Shot(IB_Shot.TYPE.SHIP_SHIP,mBattleRound,target.id(),target.faction(),0));
             } else {
               rerun = true;
               if (result) {
                 // **** Hit
+                attacker.shotsMutable().add(new B_Shot(IB_Shot.TYPE.SHIP_SHIP,mBattleRound,target.id(),target.faction(),1));
                 target.setNumberOf(target.getNumberOf() - 1);
                 if (target.getNumberOf() <= 0) {
                   // **** Destroyed
-                  deffaction.groups().removeGroup(target);
+//                  deffaction.groups().removeGroup(target);
                 }
               }
             }
@@ -115,7 +118,7 @@ public class SB_BattleField implements ISB_BattleField {
         }
       }
     }
-
+    mBattleRound++;
     return rerun;
   }
 }

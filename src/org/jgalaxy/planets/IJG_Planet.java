@@ -1,26 +1,19 @@
 package org.jgalaxy.planets;
 
-import org.jgalaxy.IEntity;
-import org.jgalaxy.IJG_Position;
-import org.jgalaxy.IStorage;
-import org.jgalaxy.ITimeProgression;
+import org.jgalaxy.*;
 import org.jgalaxy.engine.IJG_Faction;
 import org.jgalaxy.engine.IJG_Game;
 import org.jgalaxy.engine.IJG_Player;
-import org.jgalaxy.units.IJG_UnitDesign;
 
 import java.util.Locale;
 
-public interface IJG_Planet extends IEntity,ITimeProgression, IStorage {
+public interface IJG_Planet extends IFactionOwner,IEntity,ITimeProgression, IStorage {
 
   IJG_Planet copyOf();
 
   void rename( String pNewName );
 
   IJG_Position position();
-
-  String owner();
-  void setOwner( String pOwner );
 
   double population();
   void setPopulation(double pPopulation);

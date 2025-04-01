@@ -3,6 +3,8 @@ package org.jgalaxy.units;
 import org.jgalaxy.Entity;
 import org.jgalaxy.IJG_Position;
 import org.jgalaxy.JG_Position;
+import org.jgalaxy.battle.B_Shot;
+import org.jgalaxy.battle.IB_Shot;
 import org.jgalaxy.engine.IJG_Faction;
 import org.jgalaxy.engine.IJG_Game;
 import org.jgalaxy.tech.IJG_Tech;
@@ -12,6 +14,8 @@ import org.w3c.dom.Element;
 import org.w3c.dom.Node;
 
 import java.io.File;
+import java.util.ArrayList;
+import java.util.List;
 
 public class JG_Group extends Entity implements IJG_Group {
 
@@ -31,6 +35,17 @@ public class JG_Group extends Entity implements IJG_Group {
     group.setLoad(Double.parseDouble(XML_Utils.attr(pParent, "load", "0" ) ));
     group.setFleet(XML_Utils.attr(pParent, "fleet", null ));
     group.tech().copyOf(JG_Tech.of(pParent));
+
+    for( Node shotnode : XML_Utils.childElementsByName( pParent, "shot" )) {
+      IB_Shot shot = new B_Shot(
+        IB_Shot.TYPE.valueOf(XML_Utils.attr(shotnode,"type" )),
+        Integer.parseInt(XML_Utils.attr(shotnode,"round" )),
+        XML_Utils.attr(shotnode,"targetID" ),
+        XML_Utils.attr(shotnode,"targetFaction" ),
+        Integer.parseInt(XML_Utils.attr(shotnode,"hits" )));
+      group.shotsMutable().add(shot);
+    }
+
     return group;
   }
 
@@ -50,6 +65,7 @@ public class JG_Group extends Entity implements IJG_Group {
   private       double        mLoad;
   private       String        mFrom;
   private       String        mTo;
+  private final List<IB_Shot> mShots = new ArrayList<>(32);
 
   protected JG_Group( String pId, String pName ) {
     super( pId, pName );
@@ -216,6 +232,11 @@ public class JG_Group extends Entity implements IJG_Group {
   }
 
   @Override
+  public List<IB_Shot> shotsMutable() {
+    return mShots;
+  }
+
+  @Override
   public void storeObject(File pPath, Node pParent, String pName, String pFilter ) {
     Element groupnode = pParent.getOwnerDocument().createElement( "group" );
     groupnode.setAttribute("id", id());
@@ -236,6 +257,19 @@ public class JG_Group extends Entity implements IJG_Group {
       groupnode.setAttribute("load", ""+mLoad);
     }
     mTech.storeObject(null, groupnode, null, null);
+
+    if (!pFilter.contains("shots") && !mShots.isEmpty()) {
+      for( IB_Shot shot : mShots ) {
+        Element shotnode = pParent.getOwnerDocument().createElement( "shot" );
+        groupnode.appendChild(shotnode);
+        shotnode.setAttribute("type", shot.type().name());
+        shotnode.setAttribute("round", ""+shot.round());
+        shotnode.setAttribute("targetID", shot.targetID());
+        shotnode.setAttribute("targetFaction", shot.targetFaction());
+        shotnode.setAttribute("hits", ""+shot.hits());
+      }
+    }
+
     pParent.appendChild(groupnode);
     return;
   }

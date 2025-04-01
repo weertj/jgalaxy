@@ -1,13 +1,17 @@
 package org.jgalaxy.units;
 
 import org.jgalaxy.IEntity;
+import org.jgalaxy.IFactionOwner;
 import org.jgalaxy.IJG_Position;
 import org.jgalaxy.IStorage;
+import org.jgalaxy.battle.IB_Shot;
 import org.jgalaxy.engine.IJG_Faction;
 import org.jgalaxy.engine.IJG_Game;
 import org.jgalaxy.tech.IJG_Tech;
 
-public interface IJG_Group extends IEntity, IStorage {
+import java.util.List;
+
+public interface IJG_Group extends IEntity, IStorage, IFactionOwner {
 
   void copyOf( IJG_Group pGroup );
 
@@ -32,9 +36,6 @@ public interface IJG_Group extends IEntity, IStorage {
   String  to();
   void    setTo(String to);
 
-  String      faction();
-  void        setFaction( String faction);
-
   String loadType();
   double load();
 
@@ -45,5 +46,7 @@ public interface IJG_Group extends IEntity, IStorage {
   double totalMass( IJG_Faction pFaction );
 
   IJG_Group breakOffGroup(IJG_Game pGame, int pNumberOf );
+
+  List<IB_Shot> shotsMutable();
 
 }

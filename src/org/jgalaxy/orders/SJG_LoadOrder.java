@@ -55,8 +55,8 @@ public class SJG_LoadOrder {
     if ("COL".equals(type)) {
       pPlanet.setCols(pPlanet.cols() + unload);
       unloaded = unload;
-      if (pPlanet.owner() == null) {
-        pPlanet.setOwner(pGroup.faction());
+      if (pPlanet.faction() == null) {
+        pPlanet.setFaction(pGroup.faction());
       }
       pGroup.setLoad(pGroup.load() - unload);
       if (pGroup.load() <= 0.0) {
@@ -65,8 +65,8 @@ public class SJG_LoadOrder {
     } else if ("CAP".equals(type)) {
       pPlanet.setCapitals(pPlanet.capitals() + unload);
       unloaded = unload;
-      if (pPlanet.owner()==null) {
-        pPlanet.setOwner(pGroup.faction());
+      if (pPlanet.faction()==null) {
+        pPlanet.setFaction(pGroup.faction());
       }
       pGroup.setLoad(pGroup.load() - unload);
       if (pGroup.load()<=0.0) {
@@ -75,8 +75,8 @@ public class SJG_LoadOrder {
     } else if ("MAT".equals(type)) {
       pPlanet.setMaterials(pPlanet.materials() + unload);
       unloaded = unload;
-      if (pPlanet.owner()==null) {
-        pPlanet.setOwner(pGroup.faction());
+      if (pPlanet.faction()==null) {
+        pPlanet.setFaction(pGroup.faction());
       }
       pGroup.setLoad(pGroup.load() - unload);
       if (pGroup.load()<=0.0) {

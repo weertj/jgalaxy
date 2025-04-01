@@ -44,7 +44,7 @@ public class JG_Planets implements IJG_Planets {
 
   @Override
   public List<IJG_Planet> planetsOwnedBy(IJG_Faction pFaction) {
-    return mPlanets.stream().filter(p -> pFaction.id().equals(p.owner())).toList();
+    return mPlanets.stream().filter(p -> pFaction.id().equals(p.faction())).toList();
   }
 
   @Override

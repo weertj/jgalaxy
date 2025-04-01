@@ -193,6 +193,8 @@ public class JG_Game extends Entity implements IJG_Game {
   public void timeProgression(IJG_Game pGame, Duration pTimeStep) {
     mGalaxy.timeProgression(pGame, pTimeStep);
 
+    cleanUp();
+
     designPhase();
     joinPhase();
     // Planetary production orders are assigned. Note that production occurs later in the turn.
@@ -252,6 +254,18 @@ public class JG_Game extends Entity implements IJG_Game {
     return;
   }
 
+  private void cleanUp() {
+    for( IJG_Faction faction : factions() ) {
+      for( IJG_Group group : new ArrayList<>(faction.groups().getGroups()) ) {
+        if (group.getNumberOf()==0) {
+          faction.groups().removeGroup(group);
+        }
+      }
+      faction.getIncomingMutable().clear();
+    }
+    return;
+  }
+
   private void roundUp() {
     for( IJG_Faction faction : factions() ) {
       faction.planets().clear();
@@ -275,7 +289,7 @@ public class JG_Game extends Entity implements IJG_Game {
           for( IJG_Group group : otherfaction.groups().getGroups()) {
             // **** Orbit above planet?
             for( var planet : faction.planets().planets()) {
-              if (Objects.equals(planet.owner(),faction.id())) {
+              if (Objects.equals(planet.faction(),faction.id())) {
                 if (planet.position().equals(group.position())) {
                   visOtherFaction.groups().addGroup(group);
                 }

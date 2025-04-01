@@ -64,6 +64,10 @@ public class JG_Faction extends Entity implements IJG_Faction {
     }
     faction.setCurrentGroupCounter( Integer.parseInt(XML_Utils.attr(pParent,"currentGroupCounter", "0")) );
 
+    for(Element ud : XML_Utils.childElementsByName(pParent,"incoming")) {
+      IJG_Incoming incoming = JG_Incoming.of(ud);
+      faction.getIncomingMutable().add(incoming);
+    }
 
     for( Element ofact : XML_Utils.childElementsByName(pParent,"otherfaction")) {
       IJG_Faction ofaction = of(pGame,ofact );
@@ -326,7 +330,7 @@ public class JG_Faction extends Entity implements IJG_Faction {
       cplanet.storeObject(pPath, factionnode, "", "");
     }
     for( IJG_Group group : mGroups.getGroups()) {
-      group.storeObject(pPath,factionnode,"", "");
+      group.storeObject(pPath,factionnode,"", isOtherfaction?"shots":"");
     }
     for( IJG_Fleet fleet : mGroups.fleets()) {
       fleet.storeObject(pPath,factionnode,"", "");
