@@ -281,6 +281,9 @@ public class JG_Game extends Entity implements IJG_Game {
     return;
   }
 
+  /**
+   * reconPhase
+   */
   private void reconPhase() {
 
     // **** Other factions
@@ -294,8 +297,14 @@ public class JG_Game extends Entity implements IJG_Game {
           for( IJG_Group group : otherfaction.groups().getGroups()) {
             // **** Orbit above planet?
             for( var planet : faction.planets().planets()) {
+              // **** Own planet
               if (Objects.equals(planet.faction(),faction.id())) {
                 if (planet.position().equals(group.position())) {
+                  visOtherFaction.groups().addGroup(group);
+                }
+              } else {
+                // **** Or an own fleet is in orbit
+                if (!faction.groups().groupsByPosition(planet.position()).isEmpty()) {
                   visOtherFaction.groups().addGroup(group);
                 }
               }
@@ -315,6 +324,7 @@ public class JG_Game extends Entity implements IJG_Game {
 
   private void combinePhase() {
     mFactions.stream().forEach( f -> f.groups().combineGroups() );
+    return;
   }
 
   private void messagesPhase() {

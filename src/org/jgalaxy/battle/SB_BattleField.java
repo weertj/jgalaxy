@@ -54,6 +54,24 @@ public class SB_BattleField implements ISB_BattleField {
     return;
   }
 
+  private boolean hasDestroyableTarget( IJG_UnitDesign pAttackerDesign, IJG_Group pAttacker, IJG_Groups pGroups ) {
+    if (pAttacker.getNumberOf()>0) {
+      var attfaction = mGame.getFactionById(pAttacker.faction());
+      double weapon = pAttackerDesign.effectiveWeapon(pAttacker.tech());
+      for (IJG_Group group : pGroups.getGroups()) {
+        if (group.getNumberOf()>0 && attfaction.atWarWith().contains(group.faction())) {
+          var deffaction = mGame.getFactionById(group.faction());
+          var udef = deffaction.getUnitDesignById(group.unitDesign());
+          double shields = udef.effectiveShield(group.tech());
+          if (killChance(weapon,shields)>0) {
+            return true;
+          }
+        }
+      }
+    }
+    return false;
+  }
+
   private IJG_Group selectTargetGroup( IJG_Groups pGroups ) {
     int totalNumberOfTargets = pGroups.totalNumberOfUnits();
     if (totalNumberOfTargets==0) {
@@ -64,14 +82,31 @@ public class SB_BattleField implements ISB_BattleField {
     return attackgroup;
   }
 
+  private double killChance( double pWeapon, double pShields ) {
+    return ((Math.log(pWeapon/pShields)/Math.log(4))+1)/2;
+  }
+
+
+  /**
+   * attack
+   * @param pAttackerDesign
+   * @param pAttacker
+   * @param pDefFaction
+   * @param pDefenderDesign
+   * @param pDefender
+   * @return
+   */
   private Boolean attack(IJG_UnitDesign pAttackerDesign,IJG_Group pAttacker, IJG_Faction pDefFaction, IJG_UnitDesign pDefenderDesign, IJG_Group pDefender ) {
 
     var defdesign = pDefFaction.getUnitDesignById(pDefender.unitDesign());
     double mass = defdesign.mass() + pDefender.totalCargoMass()/pDefender.getNumberOf();
-    double shields = (pDefender.tech().shields() * pDefenderDesign.shields() / Math.pow(mass,0.3333333)) * 3.10723250595;
+//    double shields = (pDefender.tech().shields() * pDefenderDesign.shields() / Math.pow(mass,0.3333333)) * 3.10723250595;
+    double shields = pDefenderDesign.effectiveShield( pDefender.tech());
     if (shields>0) {
-      double weapon = pAttacker.tech().weapons() * pAttackerDesign.weapons();
-      double pkill = ((Math.log(weapon/shields)/Math.log(4))+1)/2;
+      double weapon = pAttackerDesign.effectiveWeapon( pAttacker.tech());
+//      double weapon = pAttacker.tech().weapons() * pAttackerDesign.weapons();
+//      double pkill = ((Math.log(weapon/shields)/Math.log(4))+1)/2;
+      double pkill = killChance(weapon/shields, mass);
       if (pkill<0) {
         return null;
       }
@@ -90,27 +125,33 @@ public class SB_BattleField implements ISB_BattleField {
     groups.shuffle();
     for( IJG_Group attacker : groups.getGroups() ) {
       IJG_Faction faction = mGame.getFactionById(attacker.faction());
-      var atwar = faction.atWarWith();
       var uatt = faction.getUnitDesignById(attacker.unitDesign());
-      for( int gun=0; gun<uatt.nrweapons()*attacker.getNumberOf(); gun++ ) {
-        var targets = groups.groupsByFactions(atwar);
-        if (!targets.isEmpty()) {
-          var target = selectTargetGroup(targets);
-          if (target!=null) {
-            IJG_Faction deffaction = mGame.getFactionById(target.faction());
-            var udef = deffaction.getUnitDesignById(target.unitDesign());
-            Boolean result = attack(uatt, attacker, deffaction, udef, target);
-            if (result==null) {
-              attacker.shotsMutable().add(new B_Shot(IB_Shot.TYPE.SHIP_SHIP,mBattleRound,target.id(),target.faction(),0));
-            } else {
-              rerun = true;
-              if (result) {
-                // **** Hit
-                attacker.shotsMutable().add(new B_Shot(IB_Shot.TYPE.SHIP_SHIP,mBattleRound,target.id(),target.faction(),1));
-                target.setNumberOf(target.getNumberOf() - 1);
-                if (target.getNumberOf() <= 0) {
-                  // **** Destroyed
+      if (hasDestroyableTarget( uatt, attacker, groups )) {
+        rerun = true;
+        var atwar = faction.atWarWith();
+        for (int gun = 0; gun < uatt.nrweapons() * attacker.getNumberOf(); gun++) {
+          var targets = groups.groupsByFactions(atwar);
+          if (!targets.isEmpty()) {
+            var target = selectTargetGroup(targets);
+            if (target != null) {
+              IJG_Faction deffaction = mGame.getFactionById(target.faction());
+              var udef = deffaction.getUnitDesignById(target.unitDesign());
+              Boolean result = attack(uatt, attacker, deffaction, udef, target);
+              if (result == null) {
+                // **** No chance to kill
+                attacker.shotsMutable().add(new B_Shot(IB_Shot.TYPE.SHIP_SHIP, mBattleRound, target.id(), target.faction(), -1));
+              } else {
+                if (result) {
+                  // **** Hit
+                  attacker.shotsMutable().add(new B_Shot(IB_Shot.TYPE.SHIP_SHIP, mBattleRound, target.id(), target.faction(), 1));
+                  target.setNumberOf(target.getNumberOf() - 1);
+                  if (target.getNumberOf() <= 0) {
+                    // **** Destroyed
 //                  deffaction.groups().removeGroup(target);
+                  }
+                } else {
+                  // **** Shields
+                  attacker.shotsMutable().add(new B_Shot(IB_Shot.TYPE.SHIP_SHIP, mBattleRound, target.id(), target.faction(), 0));
                 }
               }
             }

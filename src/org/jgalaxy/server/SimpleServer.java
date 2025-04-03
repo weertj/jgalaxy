@@ -18,6 +18,7 @@ import java.net.URI;
 import java.nio.charset.Charset;
 import java.nio.charset.StandardCharsets;
 import java.time.Duration;
+import java.util.Objects;
 
 public class SimpleServer {
 
@@ -45,6 +46,10 @@ public class SimpleServer {
             storage = game;
             if (path.length>5) {
               IJG_Player player = game.getPlayerByID(path[5]);
+              if (!Objects.equals(player.getUsername(),username)) {
+                exchange.sendResponseHeaders(401, -1);
+                return;
+              }
               storage = player;
               if (path.length>6) {
                 IJG_Faction faction = player.getFactionByID(path[6]);

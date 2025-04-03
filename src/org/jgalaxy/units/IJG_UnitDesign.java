@@ -18,4 +18,13 @@ public interface IJG_UnitDesign extends IEntity, IStorage {
 
   double canCarry(IJG_Tech pTech);
 
+  default double effectiveShield( IJG_Tech pTech ) {
+    return (pTech.shields() * shields() / Math.pow(mass(),0.3333333)) * 3.10723250595;
+  }
+
+  default double effectiveWeapon( IJG_Tech pTech ) {
+    return pTech.weapons() * weapons();
+  }
+
 }
+

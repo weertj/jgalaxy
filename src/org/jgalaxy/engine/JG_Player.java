@@ -107,6 +107,7 @@ public class JG_Player extends Entity implements IJG_Player {
     Element playernode = doc.createElement( "player" );
     playernode.setAttribute("id", id() );
     playernode.setAttribute("name", name() );
+    playernode.setAttribute("username", getUsername() );
     for( var faction : factions() ) {
       Element factionnode = doc.createElement( "faction" );
       factionnode.setAttribute("id", faction.id());
