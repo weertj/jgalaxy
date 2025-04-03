@@ -174,6 +174,11 @@ public class JG_Game extends Entity implements IJG_Game {
   }
 
   @Override
+  public IJG_Player getPlayerByUsername(String pUsername) {
+    return mPlayers.stream().filter( p -> Objects.equals(p.getUsername(),pUsername)).findFirst().orElse(null);
+  }
+
+  @Override
   public List<IJG_Faction> factions() {
     return mFactions;
   }
@@ -458,6 +463,19 @@ public class JG_Game extends Entity implements IJG_Game {
       groups.addGroups(faction.groups().groupsByPosition(pPosition));
     }
     return groups;
+  }
+
+  @Override
+  public void prepareGameAsUser(String pUserName) {
+    var player = getPlayerByUsername(pUserName);
+    if (player==null) {
+      mGalaxy.map().planets().clear();
+    } else {
+      for( IJG_Planet planet : mGalaxy.map().planets().planets()) {
+        planet.anonymize();
+      }
+    }
+    return;
   }
 
   private String reportPlain(IJG_Player pPlayer ) {

@@ -1,8 +1,6 @@
 package org.jgalaxy.server;
 
-import com.sun.net.httpserver.HttpExchange;
-import com.sun.net.httpserver.HttpHandler;
-import com.sun.net.httpserver.HttpServer;
+import com.sun.net.httpserver.*;
 import org.jgalaxy.IStorage;
 import org.jgalaxy.engine.*;
 import org.jgalaxy.orders.JG_Orders;
@@ -28,6 +26,9 @@ public class SimpleServer {
   static private class GamesHandler implements HttpHandler {
     @Override
     public void handle(HttpExchange exchange) throws IOException {
+
+      String username = exchange.getPrincipal().getUsername();
+
       if ("GET".equals(exchange.getRequestMethod())) {
         URI uri = exchange.getRequestURI();
         System.out.println(uri.toString());
@@ -40,6 +41,7 @@ public class SimpleServer {
           IStorage storage = gameInfo;
           if (path.length>4) {
             IJG_Game game = JG_Game.of(gamedir,null, Integer.parseInt(path[4]));
+            game.prepareGameAsUser(username);
             storage = game;
             if (path.length>5) {
               IJG_Player player = game.getPlayerByID(path[5]);
@@ -134,7 +136,16 @@ public class SimpleServer {
   private SimpleServer() throws IOException {
     HttpServer server = HttpServer.create(new InetSocketAddress(mPort), 0);
     server.setExecutor(null); // Uses the default executor
-    server.createContext("/jgalaxy/games", new GamesHandler());
+    HttpContext context = server.createContext("/jgalaxy/games", new GamesHandler());
+    context.setAuthenticator(new BasicAuthenticator("jgalaxy") {
+      @Override
+      public boolean checkCredentials(String username, String password) {
+        if ("weert".equals(username) && "weert".equals(password)) {
+          return true;
+        }
+        return false;
+      }
+    });
     server.start();
     return;
   }

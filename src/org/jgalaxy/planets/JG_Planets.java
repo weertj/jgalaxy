@@ -28,6 +28,12 @@ public class JG_Planets implements IJG_Planets {
   }
 
   @Override
+  public void removePlanet(IJG_Planet pPlanet) {
+    mPlanets.remove(pPlanet);
+    return;
+  }
+
+  @Override
   public IJG_Planet findPlanetById(String pId) {
     return mPlanets.stream().filter(p -> p.id().equals(pId)).findFirst().orElse(null);
   }

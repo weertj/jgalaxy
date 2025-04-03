@@ -8,6 +8,9 @@ import java.util.List;
 
 public interface IJG_Player extends IEntity, IStorage {
 
+  String getUsername();
+  String getPasswordEnc();
+
   void addFaction(IJG_Faction faction);
   List<IJG_Faction> factions();
   IJG_Faction getFactionByID(String factionID);

@@ -10,6 +10,7 @@ public interface IJG_Planets {
   void clear();
 
   void addPlanet(IJG_Planet pPlanet);
+  void removePlanet(IJG_Planet pPlanet);
   IJG_Planet findPlanetById( String pId );
   IJG_Planet findPlanetByName( String pName );
   IJG_Planet findPlanetByPosition(IJG_Position pPosition );

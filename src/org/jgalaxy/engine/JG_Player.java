@@ -19,7 +19,9 @@ public class JG_Player extends Entity implements IJG_Player {
   static public IJG_Player of(IJG_Game pGame,Node pParent ) {
     String id = pParent.getAttributes().getNamedItem("id").getNodeValue();
     String name = pParent.getAttributes().getNamedItem("name").getNodeValue();
-    IJG_Player player = of(pGame,id,name);
+    String username = XML_Utils.attr(pParent,"username");
+    String password = XML_Utils.attr(pParent, "password");
+    IJG_Player player = of(pGame,username,password,id,name);
     for( Element factionnode : XML_Utils.childElementsByName(pParent,"faction")) {
       String factionid = XML_Utils.attr(factionnode, "id", "");
       IJG_Faction faction = pGame.getFactionById(factionid);
@@ -32,17 +34,22 @@ public class JG_Player extends Entity implements IJG_Player {
     return player;
   }
 
-  static public IJG_Player of( IJG_Game pGame, String pID, String pName ) {
-    return new JG_Player( pGame,pID,pName);
+  static public IJG_Player of( IJG_Game pGame, String pUsername, String pPasswordEnc, String pID, String pName ) {
+    return new JG_Player( pGame,pUsername,pPasswordEnc,pID,pName);
   }
 
 
+  private final String            mUsername;
+  private final String            mPasswordEnc;
   private final IJG_Game          mGame;
   private final List<IJG_Faction> mFactions = new ArrayList<>(8);
 
-  private JG_Player( IJG_Game pGame, String pID, String pName ) {
+  private JG_Player( IJG_Game pGame, String pUsername, String pPasswordEnc, String pID, String pName ) {
     super(pID,pName);
+    mUsername = pUsername;
+    mPasswordEnc = pPasswordEnc;
     mGame = pGame;
+    return;
   }
 
   @Override
@@ -54,6 +61,16 @@ public class JG_Player extends Entity implements IJG_Player {
   @Override
   public List<IJG_Faction> factions() {
     return mFactions;
+  }
+
+  @Override
+  public String getUsername() {
+    return mUsername;
+  }
+
+  @Override
+  public String getPasswordEnc() {
+    return mPasswordEnc;
   }
 
   @Override

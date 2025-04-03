@@ -115,6 +115,25 @@ public class JG_Planet implements IJG_Planet {
   }
 
   @Override
+  public void anonymize() {
+    mSize = -1;
+    mInprogress = -1;
+    mPopulation = -1;
+    mIndustry = -1;
+    mProducing = null;
+    mProducingShipType = null;
+    mCapitals = -1;
+    mMaterials = -1;
+    mCols = -1;
+    mPopulationPerCol = -1;
+    mPopulationIncreasePerHour = -1;
+    mIndustryPerCapital = -1;
+    mPopulationIncreasePerHour = -1;
+    mIndustryPerCapital = -1;
+    return;
+  }
+
+  @Override
   public void setFaction(String pFaction) {
     mFaction = pFaction;
     return;

@@ -8,7 +8,7 @@ import java.io.File;
 import java.util.List;
 
 
-public interface IJG_Game extends ITimeProgression, IStorage {
+public interface IJG_Game extends IEntity,ITimeProgression, IStorage {
 
   long turnNumber();
   void setTurnNumber(long pNumber);
@@ -22,11 +22,14 @@ public interface IJG_Game extends ITimeProgression, IStorage {
   List<IJG_Player> players();
   IJG_Player getPlayerByName( String pName );
   IJG_Player getPlayerByID( String pID );
+  IJG_Player getPlayerByUsername( String pUsername );
 
   IGalaxy galaxy();
 
   String reportForPlayerAs( IJG_Player pPlayer, String pFormat );
 
   IJG_Groups groupsByPosition(IJG_Position pPosition);
+
+  void prepareGameAsUser( String pUserName );
 
 }

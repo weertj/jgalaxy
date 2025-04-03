@@ -11,6 +11,8 @@ public interface IJG_Planet extends IFactionOwner,IEntity,ITimeProgression, ISto
 
   IJG_Planet copyOf();
 
+  void anonymize();
+
   void rename( String pNewName );
 
   IJG_Position position();

@@ -26,7 +26,7 @@ public class GalaxyGenerator {
     IJG_Game game = JG_Game.of( pGalaxyTemplate.name(), galaxy );
 
     for( int ix=0; ix<4; ix++ ) {
-      IJG_Player player = JG_Player.of( game, "player" + ix, "player" + ix );
+      IJG_Player player = JG_Player.of( game, null,null,"player" + ix, "player" + ix );
       IJG_Faction faction = JG_Faction.of( game, "faction" + ix, "faction" + ix );
       player.addFaction( faction );
       game.addFaction( faction );
