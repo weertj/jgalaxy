@@ -2,8 +2,11 @@ package org.jgalaxy.orders;
 
 public enum EJG_Order {
 
+  MESSAGE( "@" ),
   ALLIANCE( "a" ),
+  CHANGERACENAME( "c" ),
   DESIGN( "d" ),
+  ELIMINATE( "e" ),
   JOIN( "j"),
   LOAD("l"),
   UNLOAD("u"),

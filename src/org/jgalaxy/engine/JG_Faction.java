@@ -200,7 +200,8 @@ public class JG_Faction extends Entity implements IJG_Faction {
         case DECLAREWAR -> defaultDoOrders(EJG_Order.WAR );
         case LOAD -> defaultDoOrders(EJG_Order.LOAD );
         case UNLOAD -> defaultDoOrders(EJG_Order.UNLOAD );
-        case RENAME -> defaultDoOrders(EJG_Order.RENAME );
+        case RENAME -> defaultDoOrders(EJG_Order.RENAME, EJG_Order.CHANGERACENAME );
+        case ROUNDUP -> defaultDoOrders(EJG_Order.ELIMINATE, EJG_Order.MESSAGE );
       }
     }
     return;
@@ -210,7 +211,9 @@ public class JG_Faction extends Entity implements IJG_Faction {
     for (var order : mOrders.ordersBy(pOrder )) {
       try {
         switch (order.order()) {
+          case CHANGERACENAME -> SJG_OrderExecutor.orderCHANGERACENAME(mGame,this,order);
           case DESIGN -> SJG_OrderExecutor.orderDESIGN(mGame,this,order);
+          case ELIMINATE -> SJG_OrderExecutor.orderELIMINATE(mGame,this,order);
           case JOIN -> SJG_OrderExecutor.orderJOIN(mGame,this,order);
           case PRODUCE -> SJG_OrderExecutor.orderPRODUCE(mGame,this,order);
           case SEND -> SJG_OrderExecutor.orderSEND(mGame,this,order);
@@ -219,6 +222,7 @@ public class JG_Faction extends Entity implements IJG_Faction {
           case LOAD -> SJG_OrderExecutor.orderLOAD(mGame,this,order);
           case UNLOAD -> SJG_OrderExecutor.orderUNLOAD(mGame,this,order);
           case RENAME -> SJG_OrderExecutor.orderRENAME(order,mGame);
+          case MESSAGE -> SJG_OrderExecutor.orderMESSAGE(mGame,this,order);
         }
 //        SJG_OrderExecutor.exec(this, order, mGame);
       } catch (OrderException e) {

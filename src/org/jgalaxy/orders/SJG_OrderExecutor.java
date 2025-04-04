@@ -12,6 +12,23 @@ import org.jgalaxy.units.JG_UnitDesign;
 
 public class SJG_OrderExecutor {
 
+  static public void orderMESSAGE(IJG_Game pGame, IJG_Faction pFaction,IJG_Order pOrder) throws OrderException {
+    String name = pOrder.param(0 );
+    if (name == null || name.isEmpty()) {
+      // **** Global message
+
+    } else {
+      // **** Messsage to faction
+    }
+    return;
+  }
+
+
+  static public void orderCHANGERACENAME(IJG_Game pGame, IJG_Faction pFaction,IJG_Order pOrder) throws OrderException {
+    String name = pOrder.param(0 );
+    pFaction.setName(name);
+    return;
+  }
 
   static public void orderDESIGN( IJG_Game pGame, IJG_Faction pFaction,IJG_Order pOrder) throws OrderException {
     String name = pOrder.param(0 );
@@ -141,6 +158,12 @@ public class SJG_OrderExecutor {
     return;
   }
 
+  static public void orderELIMINATE(  IJG_Game pGame, IJG_Faction pFaction, IJG_Order pOrder ) {
+    String name = pOrder.param(0 );
+//    throw new UnsupportedOperationException();
+    return;
+  }
+
   /**
    * orderRENAME
    * @param pOrder
@@ -149,7 +172,7 @@ public class SJG_OrderExecutor {
   static public void orderRENAME( IJG_Order pOrder, IJG_Game pGame ) {
     IJG_Planet planet = pGame.galaxy().map().planets().findPlanetByName(pOrder.parameters().get(0) );
     if (planet!=null) {
-      planet.rename( pOrder.parameters().get(1) );
+      planet.setName( pOrder.parameters().get(1) );
     }
     return;
   }

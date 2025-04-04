@@ -9,6 +9,8 @@ public interface IJG_GameInfo extends IStorage, IEntity {
 
   void init();
 
+  int firstTurnNumber();
+
   int currentTurnNumber();
 
 }

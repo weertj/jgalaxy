@@ -27,6 +27,7 @@ public class JGL_GameTest {
   public void testGameTest() throws Throwable {
     File gamedir = new File("workdir/games/test1");
     IJG_Game game = JG_Game.of( gamedir,null, 0 );
+    for( int i=1; i<10; i++ ) { game.removeTurnNumber(gamedir,i); }
     IJG_Player player = game.getPlayerByName("Player 0");
     game.timeProgression(game, Duration.ofDays(4*365));
     game.storeObject(gamedir, null, null,"");
@@ -43,8 +44,6 @@ public class JGL_GameTest {
     game.timeProgression(game, Duration.ofDays(4*365));
     game.storeObject(gamedir, null, null,"");
     System.out.println(game.reportForPlayerAs(player,"plain"));
-//    game.removeTurnNumber(gamedir,2);
-//    game.removeTurnNumber(gamedir,3);
   }
 
 //  @Test

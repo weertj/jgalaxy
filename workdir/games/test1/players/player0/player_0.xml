@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no"?>
 <root>
-    <player id="player0" name="Player 0">
+    <player id="player0" name="Player 0" username="weert">
         <faction id="faction0"/>
     </player>
 </root>

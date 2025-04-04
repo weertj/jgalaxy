@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<root>
+    <game name="autoruntest1" turnIntervalSecs="10" timeProgressionDays="7" nextRun="2025-04-04">
+        <map xs="0.0" ys="0.0" xe="20.0" ye="20.0">
+            <planet id="p0" name="p0" size="100" population="0.0" x="2.0" y="2.0"/>
+            <planet id="p1" name="p1" size="100" population="0.0" x="10.0" y="10.0"/>
+            <planet id="home0" name="home0" size="1000" population="1000.0" industry="1000" owner="faction0" x="2.0" y="3.0"/>
+            <planet id="second0" name="second0" size="431" x="3.12" y="4.32"/>
+            <planet id="home1" name="home1" size="1000" population="1000.0" industry="1000" owner="faction1" x="8.0" y="3.3"/>
+        </map>
+    </game>
+</root>

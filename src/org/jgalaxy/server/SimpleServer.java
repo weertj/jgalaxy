@@ -18,7 +18,12 @@ import java.net.URI;
 import java.nio.charset.Charset;
 import java.nio.charset.StandardCharsets;
 import java.time.Duration;
+import java.time.ZonedDateTime;
+import java.time.format.DateTimeFormatter;
+import java.util.Date;
 import java.util.Objects;
+import java.util.Timer;
+import java.util.TimerTask;
 
 public class SimpleServer {
 
@@ -116,8 +121,22 @@ public class SimpleServer {
               for (String qelem : qelems) {
                 String[] qval = qelem.split("=");
                 if ("nextTurn".equals(qelem)) {
-                  game.timeProgression( game, Duration.ofDays(365));
-                  game.storeObject(gamedir, null, null,"");
+                  nextTurn( gamedir, game );
+//                  game.timeProgression( game, Duration.ofDays((long)game.timeProgressionDays()));
+//                  game.calcNextRun();
+//                  game.storeObject(gamedir, null, null,"");
+//                  if (game.nextRun()!=null) {
+//                    DateTimeFormatter formatter = DateTimeFormatter.ISO_OFFSET_DATE_TIME;
+//                    ZonedDateTime zdt = ZonedDateTime.parse(game.nextRun(), formatter);
+//                    TimerTask task = new TimerTask() {
+//                      @Override
+//                      public void run() {
+//
+//                      }
+//                    };
+//                    Timer timer = new Timer();
+//                    timer.schedule(task, Date.from(zdt.toInstant()));
+//                  }
                 }
               }
             }
@@ -136,6 +155,35 @@ public class SimpleServer {
 
     }
 
+  }
+
+  static private void nextTurn( File pDir, IJG_Game pGame ) {
+    pGame.timeProgression( pGame, Duration.ofDays((long)pGame.timeProgressionDays()));
+    pGame.calcNextRun();
+    pGame.storeObject(pDir, null, null,"");
+    if (pGame.nextRun()!=null) {
+      DateTimeFormatter formatter = DateTimeFormatter.ISO_OFFSET_DATE_TIME;
+      ZonedDateTime zdt = ZonedDateTime.parse(pGame.nextRun(), formatter);
+      long turnNumber = pGame.turnNumber();
+      TimerTask task = new TimerTask() {
+        @Override
+        public void run() {
+          try {
+            IJG_Game game = JG_Game.of(pDir, null, turnNumber);
+            nextTurn(pDir, game);
+          } catch (Throwable e) {
+            e.printStackTrace();
+          }
+        }
+      };
+      zdt = zdt.plusSeconds(pGame.turnIntervalSecs());
+      Timer timer = new Timer();
+      timer.schedule(task, Date.from(zdt.toInstant()));
+      if (pGame.turnNumber()>1) {
+        pGame.removeTurnNumber(pDir, pGame.turnNumber() - 1);
+      }
+    }
+    return;
   }
 
   private SimpleServer() throws IOException {

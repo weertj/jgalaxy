@@ -53,6 +53,9 @@ public class JG_Game extends Entity implements IJG_Game {
 
     IJG_Game game = of(name,galaxy);
     game.setTurnNumber(pTurnNumber);
+    game.setTurnIntervalSecs( Long.parseLong(XML_Utils.attr(gameNode, "turnIntervalSecs", "-1" )));
+    game.setNextRun(XML_Utils.attr(gameNode, "nextRun"));
+    game.setTimeProgressionDays(Double.parseDouble(XML_Utils.attr(gameNode, "timeProgressionDays", "365" )));
 
     if (pPath==null) {
 
@@ -114,7 +117,12 @@ public class JG_Game extends Entity implements IJG_Game {
   private final List<IJG_Faction> mFactions = new ArrayList<>(8);
   private final List<IJG_Player>  mPlayers = new ArrayList<>(8);
 
-  private       long mTurnNumber;
+  private final List<String>      mMessages = new ArrayList<>(8);
+
+  private       long      mTurnNumber;
+  private       long      mTurnIntervalSecs;
+  private       double    mTimeProgressionDays;
+  private       String    mNextRun;
 
   private JG_Game( String pName, IGalaxy pGalaxy ) {
     super(pName,pName);
@@ -131,6 +139,39 @@ public class JG_Game extends Entity implements IJG_Game {
   @Override
   public long turnNumber() {
     return mTurnNumber;
+  }
+
+  @Override
+  public long turnIntervalSecs() {
+    return mTurnIntervalSecs;
+  }
+
+  @Override
+  public void setTurnIntervalSecs(long pIntervalSecs) {
+    mTurnIntervalSecs = pIntervalSecs;
+    return;
+  }
+
+  @Override
+  public double timeProgressionDays() {
+    return mTimeProgressionDays;
+  }
+
+  @Override
+  public void setTimeProgressionDays(double pDays) {
+    mTimeProgressionDays = pDays;
+    return;
+  }
+
+  @Override
+  public String nextRun() {
+    return mNextRun;
+  }
+
+  @Override
+  public void setNextRun(String pNextRun) {
+    mNextRun = pNextRun;
+    return;
   }
 
   @Override
@@ -176,6 +217,11 @@ public class JG_Game extends Entity implements IJG_Game {
   @Override
   public IJG_Player getPlayerByUsername(String pUsername) {
     return mPlayers.stream().filter( p -> Objects.equals(p.getUsername(),pUsername)).findFirst().orElse(null);
+  }
+
+  @Override
+  public List<String> messagesMutable() {
+    return mMessages;
   }
 
   @Override
@@ -278,6 +324,7 @@ public class JG_Game extends Entity implements IJG_Game {
         faction.planets().addPlanet(planet);
       }
     }
+    factions().stream().forEach( f -> f.doOrders(EPhase.ROUNDUP));
     return;
   }
 
@@ -421,6 +468,16 @@ public class JG_Game extends Entity implements IJG_Game {
     Element gamenode = doc.createElement( "game" );
     gamenode.setAttribute("name", name() );
     gamenode.setAttribute("turnNumber", ""+turnNumber() );
+    gamenode.setAttribute("turnIntervalSecs", ""+turnIntervalSecs() );
+    gamenode.setAttribute("nextRun", nextRun() );
+    gamenode.setAttribute( "timeProgressionDays", ""+timeProgressionDays() );
+
+    for( String msg : mMessages ) {
+      Node n = doc.createElement("message");
+      n.setTextContent(msg);
+      gamenode.appendChild(n);
+    }
+
     try {
       mGalaxy.storeObject( null, gamenode, "", "" );
       if (pPath!=null) {

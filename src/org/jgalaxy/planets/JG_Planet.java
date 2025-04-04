@@ -1,5 +1,6 @@
 package org.jgalaxy.planets;
 
+import org.jgalaxy.Entity;
 import org.jgalaxy.IJG_Position;
 import org.jgalaxy.JG_Position;
 import org.jgalaxy.engine.IJG_Faction;
@@ -15,7 +16,7 @@ import org.w3c.dom.Node;
 import java.io.File;
 import java.time.Duration;
 
-public class JG_Planet implements IJG_Planet {
+public class JG_Planet extends Entity implements IJG_Planet {
 
   static public IJG_Planet of( Node pParent ) {
     String id = XML_Utils.attr(pParent, "id" );
@@ -52,8 +53,8 @@ public class JG_Planet implements IJG_Planet {
 
   static public double DEFAULT_POPINCPERHOUR = 0.08 / (24.0*365.0*4.0);
 
-  private final String mID;
-  private       String mName;
+//  private final String mID;
+//  private       String mName;
   private IJG_Position mPosition;
   private       String mFaction;
   private       double mSize;
@@ -73,8 +74,9 @@ public class JG_Planet implements IJG_Planet {
   private       double mIndustryPerCapital = 5;
 
   private JG_Planet( String pID, String pName, IJG_Position pPosition ) {
-    mID = pID;
-    mName = pName;
+    super(pID, pName);
+//    mID = pID;
+//    mName = pName;
     mPosition = pPosition;
     mPopulation = 0;
     return;
@@ -85,33 +87,12 @@ public class JG_Planet implements IJG_Planet {
     if (o == null || getClass() != o.getClass()) return false;
 
     JG_Planet jgPlanet = (JG_Planet) o;
-    return mID.equals(jgPlanet.mID);
-  }
-
-  @Override
-  public int hashCode() {
-    return mID.hashCode();
-  }
-
-  @Override
-  public String id() {
-    return mID;
-  }
-
-  @Override
-  public String name() {
-    return mName;
+    return id().equals(jgPlanet.id());
   }
 
   @Override
   public IJG_Position position() {
     return mPosition;
-  }
-
-  @Override
-  public void rename(String pNewName) {
-    mName = pNewName;
-    return;
   }
 
   @Override
@@ -553,7 +534,7 @@ public class JG_Planet implements IJG_Planet {
   public String toString() {
     return "JG_Planet{" +
       "mPosition=" + mPosition +
-      ", mID='" + mID + '\'' +
+      ", mID='" + id() + '\'' +
       ", mPopulation=" + mPopulation +
       ", mPopulationIncreasePerHour=" + mPopulationIncreasePerHour +
       '}';

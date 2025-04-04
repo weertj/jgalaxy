@@ -22,6 +22,12 @@ public class Entity implements IEntity {
   }
 
   @Override
+  public void setName(String pName) {
+    mName = pName;
+    return;
+  }
+
+  @Override
   public boolean equals(Object o) {
     if (o == null || getClass() != o.getClass()) return false;
     Entity entity = (Entity) o;

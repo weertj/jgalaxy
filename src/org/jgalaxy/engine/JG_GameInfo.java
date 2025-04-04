@@ -1,5 +1,6 @@
 package org.jgalaxy.engine;
 
+import org.jgalaxy.Entity;
 import org.jgalaxy.utils.XML_Utils;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
@@ -8,7 +9,7 @@ import org.w3c.dom.Node;
 import java.io.File;
 
 
-public class JG_GameInfo implements IJG_GameInfo {
+public class JG_GameInfo extends Entity implements IJG_GameInfo {
 
   static public IJG_GameInfo of(File pGameDir) throws Exception {
     return new JG_GameInfo(pGameDir.getName(), pGameDir,-1);
@@ -19,24 +20,13 @@ public class JG_GameInfo implements IJG_GameInfo {
   }
 
   private final File    mGameDir;
-  private final String  mName;
   private       int     mCurrentTurnNumber = -1;
 
   private JG_GameInfo( String pName, File pDir, int pCurrentTurnNumber ) {
-    mName = pName;
+    super(pName,pName);
     mGameDir = pDir;
     mCurrentTurnNumber = pCurrentTurnNumber;
     return;
-  }
-
-  @Override
-  public String id() {
-    return mName;
-  }
-
-  @Override
-  public String name() {
-    return mName;
   }
 
   @Override
@@ -48,6 +38,18 @@ public class JG_GameInfo implements IJG_GameInfo {
   public void init() {
     mGameDir.mkdirs();
     return;
+  }
+
+  @Override
+  public int firstTurnNumber() {
+    int minTurnNumber = 0;
+    for (File f : mGameDir.listFiles()) {
+      if (f.getName().startsWith("game_")) {
+        minTurnNumber = Math.min(minTurnNumber,
+          Integer.parseInt(f.getName().substring("game_".length(), f.getName().indexOf('.'))));
+      }
+    }
+    return minTurnNumber;
   }
 
   @Override
@@ -69,7 +71,8 @@ public class JG_GameInfo implements IJG_GameInfo {
   public void storeObject(File pPath, Node pParent, String pName, String pFilter) {
     Document doc = pParent.getOwnerDocument();
     Element gameinfonode = doc.createElement( "game" );
-    gameinfonode.setAttribute("name", mName );
+    gameinfonode.setAttribute("name", name() );
+    gameinfonode.setAttribute("firstTurnNumber", ""+firstTurnNumber() );
     gameinfonode.setAttribute("currentTurnNumber", ""+currentTurnNumber() );
     pParent.appendChild(gameinfonode);
     return;
