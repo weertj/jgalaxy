@@ -9,12 +9,14 @@ public interface IJG_Planets {
 
   void clear();
 
+  void replaceByCopyOf();
   void addPlanet(IJG_Planet pPlanet);
   void removePlanet(IJG_Planet pPlanet);
   IJG_Planet findPlanetById( String pId );
   IJG_Planet findPlanetByName( String pName );
   IJG_Planet findPlanetByPosition(IJG_Position pPosition );
   List<IJG_Planet> planetsOwnedBy(IJG_Faction pFaction);
+  List<IJG_Planet> planetsNotOwnedBy(IJG_Faction pFaction);
   List<IJG_Planet> planets();
   IJG_Planet planetByIndex( int pIndex );
 

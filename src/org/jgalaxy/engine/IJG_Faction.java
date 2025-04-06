@@ -3,18 +3,19 @@ package org.jgalaxy.engine;
 import org.jgalaxy.IEntity;
 import org.jgalaxy.IStorage;
 import org.jgalaxy.OrderException;
+import org.jgalaxy.ai.IAI_Faction;
 import org.jgalaxy.orders.IJG_Orders;
 import org.jgalaxy.planets.IJG_Planet;
 import org.jgalaxy.planets.IJG_Planets;
 import org.jgalaxy.tech.IJG_Tech;
-import org.jgalaxy.units.IJG_Group;
-import org.jgalaxy.units.IJG_Groups;
-import org.jgalaxy.units.IJG_Incoming;
-import org.jgalaxy.units.IJG_UnitDesign;
+import org.jgalaxy.units.*;
 
 import java.util.List;
 
 public interface IJG_Faction extends IEntity, IStorage {
+
+  void setAI(IAI_Faction pAI);
+  IAI_Faction getAI();
 
   List<String> atWarWith();
   void removeWarWith( String pFactionid );
@@ -47,6 +48,11 @@ public interface IJG_Faction extends IEntity, IStorage {
   void setCurrentGroupCounter( int pCurrentGroupCounter );
 
   List<IJG_Faction>   getOtherFactionsMutable();
+
   List<IJG_Incoming>  getIncomingMutable();
+  void addIncoming( IJG_Incoming pIncoming );
+
+  List<IJG_Bombing>  getBombingsMutable();
+  void addBombing( IJG_Bombing pBombing );
 
 }

@@ -3,6 +3,7 @@ package org.jgalaxy.units;
 import org.jgalaxy.IJG_Position;
 import org.jgalaxy.engine.IJG_Faction;
 import org.jgalaxy.engine.IJG_Game;
+import org.jgalaxy.map.IMAP_Map;
 import org.jgalaxy.planets.IJG_Planet;
 
 import java.util.*;
@@ -227,10 +228,11 @@ public class JG_Groups implements IJG_Groups {
         }
       }
       // **** the groups
+      IMAP_Map map = pGame.galaxy().map();
       for( IJG_Group group : getGroups() ) {
         if (group.getFleet()==null && !group.position().equals(group.toPosition())) {
-          IJG_Planet planet     = faction.planets().findPlanetByPosition(group.toPosition());
-          IJG_Planet fromplanet = faction.planets().findPlanetByPosition(group.lastStaticPosition());
+          IJG_Planet planet     = map.planets().findPlanetByPosition(group.toPosition());
+          IJG_Planet fromplanet = map.planets().findPlanetByPosition(group.lastStaticPosition());
           if (planet!=null && fromplanet!=null && planet.faction()!=null && !planet.faction().equals(group.faction())) {
             IJG_Incoming incoming = new JG_Incoming( group.lastStaticPosition(), group.position(), group.toPosition(), group.totalMass(pGame.getFactionById(group.faction())) );
             pGame.getFactionById(planet.faction()).getIncomingMutable().add(incoming);

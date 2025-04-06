@@ -121,7 +121,7 @@ public class SimpleServer {
               for (String qelem : qelems) {
                 String[] qval = qelem.split("=");
                 if ("nextTurn".equals(qelem)) {
-                  nextTurn( gamedir, game );
+                  nextTurn( gamedir, gameInfo,game );
 //                  game.timeProgression( game, Duration.ofDays((long)game.timeProgressionDays()));
 //                  game.calcNextRun();
 //                  game.storeObject(gamedir, null, null,"");
@@ -157,11 +157,45 @@ public class SimpleServer {
 
   }
 
-  static private void nextTurn( File pDir, IJG_Game pGame ) {
+  /**
+   * nextTurn
+   * @param pDir
+   * @param pGameInfo
+   * @param pGame
+   */
+  static private void nextTurn( File pDir, IJG_GameInfo pGameInfo, IJG_Game pGame ) {
+    pGame.setGameInfo(pGameInfo);
     pGame.timeProgression( pGame, Duration.ofDays((long)pGame.timeProgressionDays()));
     pGame.calcNextRun();
     pGame.storeObject(pDir, null, null,"");
-    if (pGame.nextRun()!=null) {
+    pGame.aiPhase(); // **** Run AI for next orders
+    if (pGame.nextRun()==null) {
+      if (pGame.runWhenAllOrdersAreIn()) {
+        // **** Do all orders in run check
+        long turnNumber = pGame.turnNumber();
+        Timer timer = new Timer();
+        TimerTask task = new TimerTask() {
+          @Override
+          public void run() {
+            try {
+              IJG_Game game = JG_Game.of(pDir, null, turnNumber);
+              game.setGameInfo(pGameInfo);
+              int ordersIn = game.factions().stream().filter(f -> f.orders()!=null).toList().size();
+              if (ordersIn==game.factions().size()) {
+                timer.cancel();
+                nextTurn(pDir, pGameInfo,game);
+              }
+            } catch (Throwable t) {
+              t.printStackTrace();
+            }
+          }
+        };
+        timer.schedule(task, 5000L, 5000L);
+        if (pGame.turnNumber()>1) {
+          pGame.removeTurnNumber(pDir, pGame.turnNumber() - 1);
+        }
+      }
+    } else {
       DateTimeFormatter formatter = DateTimeFormatter.ISO_OFFSET_DATE_TIME;
       ZonedDateTime zdt = ZonedDateTime.parse(pGame.nextRun(), formatter);
       long turnNumber = pGame.turnNumber();
@@ -170,7 +204,8 @@ public class SimpleServer {
         public void run() {
           try {
             IJG_Game game = JG_Game.of(pDir, null, turnNumber);
-            nextTurn(pDir, game);
+            game.setGameInfo(pGameInfo);
+            nextTurn(pDir, pGameInfo,game);
           } catch (Throwable e) {
             e.printStackTrace();
           }

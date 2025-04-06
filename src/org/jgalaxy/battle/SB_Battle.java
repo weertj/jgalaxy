@@ -4,6 +4,7 @@ import org.jgalaxy.engine.IJG_Faction;
 import org.jgalaxy.engine.IJG_Game;
 import org.jgalaxy.planets.IJG_Planet;
 import org.jgalaxy.units.IJG_Group;
+import org.jgalaxy.units.JG_Bombing;
 
 import java.util.List;
 
@@ -22,6 +23,7 @@ public class SB_Battle {
           for (IJG_Planet planet : pPlanets) {
             if (planet.position().equals(group.position())) {
               if (planet.faction() != null && !group.faction().equals(planet.faction())) {
+                IJG_Faction planetfaction = pGame.getFactionById(planet.faction());
                 if (pGame.getFactionById(group.faction()).atWarWith().contains(planet.faction())) {
                   group.shotsMutable().add( new B_Shot(
                     IB_Shot.TYPE.SHIP_PLANET,
@@ -32,6 +34,9 @@ public class SB_Battle {
                   planet.setCapitals(0);
                   planet.setMaterials(0);
                   planet.setSpent(0);
+                  planet.setProduceType(null,null);
+                  faction.addBombing( new JG_Bombing(group.faction(), group.id(), group.position() ));
+                  planetfaction.addBombing( new JG_Bombing(group.faction(), group.id(), group.position() ));
                 }
               }
             }

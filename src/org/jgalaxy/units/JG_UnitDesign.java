@@ -7,6 +7,7 @@ import org.w3c.dom.Element;
 import org.w3c.dom.Node;
 
 import java.io.File;
+import java.util.Objects;
 
 public class JG_UnitDesign extends Entity implements IJG_UnitDesign {
 
@@ -40,6 +41,30 @@ public class JG_UnitDesign extends Entity implements IJG_UnitDesign {
     mShields = pShields;
     mCargo = pCargo;
     return;
+  }
+
+  @Override
+  public boolean equals(Object o) {
+    if (o == null || getClass() != o.getClass()) return false;
+    JG_UnitDesign that = (JG_UnitDesign) o;
+    return Objects.equals(name(),that.name()) &&
+      Double.compare(mDrive, that.mDrive) == 0 &&
+      Double.compare(mWeapons, that.mWeapons) == 0 &&
+      mNrWeapons == that.mNrWeapons &&
+      Double.compare(mShields, that.mShields) == 0 &&
+      Double.compare(mCargo, that.mCargo) == 0;
+  }
+
+  @Override
+  public int hashCode() {
+    int result = 0;
+    result = 31 * result + name().hashCode();
+    result = 31 * result + Double.hashCode(mDrive);
+    result = 31 * result + Double.hashCode(mWeapons);
+    result = 31 * result + mNrWeapons;
+    result = 31 * result + Double.hashCode(mShields);
+    result = 31 * result + Double.hashCode(mCargo);
+    return result;
   }
 
   @Override

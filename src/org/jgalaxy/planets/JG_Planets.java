@@ -22,6 +22,14 @@ public class JG_Planets implements IJG_Planets {
   }
 
   @Override
+  public void replaceByCopyOf() {
+    var planets = mPlanets.stream().map(IJG_Planet::copyOf).toList();
+    mPlanets.clear();
+    mPlanets.addAll(planets);
+    return;
+  }
+
+  @Override
   public void addPlanet(IJG_Planet pPlanet) {
     mPlanets.add(pPlanet);
     return;
@@ -51,6 +59,11 @@ public class JG_Planets implements IJG_Planets {
   @Override
   public List<IJG_Planet> planetsOwnedBy(IJG_Faction pFaction) {
     return mPlanets.stream().filter(p -> pFaction.id().equals(p.faction())).toList();
+  }
+
+  @Override
+  public List<IJG_Planet> planetsNotOwnedBy(IJG_Faction pFaction) {
+    return mPlanets.stream().filter(p -> !pFaction.id().equals(p.faction())).toList();
   }
 
   @Override

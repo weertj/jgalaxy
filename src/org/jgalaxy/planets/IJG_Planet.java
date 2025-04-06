@@ -15,6 +15,10 @@ public interface IJG_Planet extends IFactionOwner,IEntity,ITimeProgression, ISto
 
   IJG_Position position();
 
+  default boolean populationFull() {
+    return population()>=size();
+  }
+
   double population();
   void setPopulation(double pPopulation);
 
@@ -54,7 +58,7 @@ public interface IJG_Planet extends IFactionOwner,IEntity,ITimeProgression, ISto
   double visibilityFor(IJG_Game pGame, IJG_Player   pPlayer);
   double visibilityFor(IJG_Game pGame, IJG_Faction  pFaction);
 
-  void setPlanetToVisibility( double pVisibility );
+  void setPlanetToVisibility( double pVisibility, IJG_Planet pRealPlanet );
 
   default String formatString() {
     return String.format( Locale.US, "%-12s %9.2f %9.2f %9.2f %9.2f",

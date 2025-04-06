@@ -1,10 +1,16 @@
 package org.jgalaxy.generator;
 
 
+import org.jgalaxy.utils.XML_Utils;
+import org.w3c.dom.Node;
+
+import java.util.ArrayList;
+import java.util.List;
+
 public class GalaxyTemplate implements IGalaxyTemplate {
 
-  static public IGalaxyTemplate of() {
-    return new GalaxyTemplate();
+  static public IGalaxyTemplate of( Node pTemplateNode ) {
+    return new GalaxyTemplate(pTemplateNode);
   }
 
   private final String mName;
@@ -13,37 +19,76 @@ public class GalaxyTemplate implements IGalaxyTemplate {
   private final double mXEnd;
   private final double mYEnd;
 
-  public GalaxyTemplate() {
+  private final Node mTemplateNode;
+  private final Node mGameNode;
+  private final Node mMapNode;
+  private final Node mMapColNode;
+
+  private GalaxyTemplate(Node pTemplateNode) {
+    mTemplateNode = pTemplateNode;
+    mGameNode = XML_Utils.childNodeByPath(pTemplateNode,"game").get();
+    mMapNode = XML_Utils.childNodeByPath(mGameNode,"map").get();
+    mMapColNode = XML_Utils.childNodeByPath(mMapNode,"mapcol").get();
+
     mName = "GenerateGame";
     mXStart = 0;
     mYStart = 0;
-    mXEnd = 50;
-    mYEnd = 50;
+    mXEnd = 200;
+    mYEnd = 200;
     return;
   }
 
   @Override
   public String name() {
-    return mName;
+    return XML_Utils.attr(mGameNode,"name");
   }
 
   @Override
   public double xStart() {
-    return mXStart;
+    return Double.parseDouble(XML_Utils.attr(XML_Utils.childNodeByPath(mMapColNode,"min").get(),"x"));
   }
 
   @Override
   public double yStart() {
-    return mYStart;
+    return Double.parseDouble(XML_Utils.attr(XML_Utils.childNodeByPath(mMapColNode,"min").get(),"y"));
   }
 
   @Override
   public double xEnd() {
-    return mXEnd;
+    return Double.parseDouble(XML_Utils.attr(XML_Utils.childNodeByPath(mMapColNode,"max").get(),"x"));
   }
 
   @Override
   public double yEnd() {
-    return mYEnd;
+    return Double.parseDouble(XML_Utils.attr(XML_Utils.childNodeByPath(mMapColNode,"max").get(),"y"));
+  }
+
+  @Override
+  public Node gameNode() {
+    return mGameNode;
+  }
+
+  @Override
+  public List<Node> planetGenerations() {
+    List<Node> pnodes = new ArrayList<>();
+    for( Node planet : XML_Utils.childElementsByName( mMapColNode, "planet" )) {
+      String gen = XML_Utils.attr(planet,"generate");
+      if (!gen.isBlank()) {
+        pnodes.add(planet);
+      }
+    }
+    return pnodes;
+  }
+
+  @Override
+  public List<Node> playerGenerations() {
+    List<Node> pnodes = new ArrayList<>();
+    for( Node player : XML_Utils.childElementsByName( mGameNode, "player" )) {
+      String gen = XML_Utils.attr(player,"generate");
+      if (!gen.isBlank()) {
+        pnodes.add(player);
+      }
+    }
+    return pnodes;
   }
 }

@@ -13,7 +13,7 @@ public class SJG_LoadOrder {
     double already = pGroup.load();
     cc -= already;
     String currentCarry = pGroup.loadType();
-    if (currentCarry.isBlank() || currentCarry.equals(pLoad)) {
+    if (currentCarry==null || currentCarry.equals(pLoad)) {
       if (cc > 0.0) {
         if ("COL".equals(pLoad)) {
           double available = pPlanet.cols();

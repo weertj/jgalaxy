@@ -106,7 +106,7 @@ public class SB_BattleField implements ISB_BattleField {
       double weapon = pAttackerDesign.effectiveWeapon( pAttacker.tech());
 //      double weapon = pAttacker.tech().weapons() * pAttackerDesign.weapons();
 //      double pkill = ((Math.log(weapon/shields)/Math.log(4))+1)/2;
-      double pkill = killChance(weapon/shields, mass);
+      double pkill = killChance(weapon,shields);
       if (pkill<0) {
         return null;
       }

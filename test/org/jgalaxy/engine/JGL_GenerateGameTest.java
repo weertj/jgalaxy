@@ -3,6 +3,7 @@ package org.jgalaxy.engine;
 import org.jgalaxy.generator.GalaxyGenerator;
 import org.jgalaxy.generator.GalaxyTemplate;
 import org.jgalaxy.generator.IGalaxyTemplate;
+import org.jgalaxy.utils.XML_Utils;
 import org.junit.*;
 
 import java.io.File;
@@ -28,7 +29,26 @@ public class JGL_GenerateGameTest {
 
   @Test
   public void testGenerateGameTest() throws Throwable {
-    IGalaxyTemplate template = GalaxyTemplate.of();
+
+    String xml = """
+    <root>
+        <game name="GenerateGame" timeProgressionDays="365" runWhenAllOrdersAreIn="true">
+          <map>
+            <mapcol>
+              <min x="0" y="0"/>
+              <max x="10" y="10"/>
+              <planet generate="2"/> 
+            </mapcol>
+          </map>
+          <player generate="2">
+            <faction>
+            </faction>
+          </player>
+        </game>
+    </root>
+      """;
+
+    IGalaxyTemplate template = GalaxyTemplate.of(XML_Utils.rootNodeBy(xml));
 
     IJG_Game game = GalaxyGenerator.generate(template);
 

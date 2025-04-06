@@ -1,5 +1,9 @@
 package org.jgalaxy.generator;
 
+import org.w3c.dom.Node;
+
+import java.util.List;
+
 public interface IGalaxyTemplate {
 
   String name();
@@ -8,6 +12,10 @@ public interface IGalaxyTemplate {
   double xEnd();
   double yStart();
   double yEnd();
+
+  Node gameNode();
+  List<Node> planetGenerations();
+  List<Node> playerGenerations();
 
 
 }

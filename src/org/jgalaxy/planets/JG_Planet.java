@@ -25,13 +25,17 @@ public class JG_Planet extends Entity implements IJG_Planet {
     double y  = Double.parseDouble(XML_Utils.attr(pParent, "y" ));
     IJG_Planet planet = new JG_Planet( id, name,JG_Position.of(x,y));
 
-    String owner = XML_Utils.attr(pParent, "owner" );
-    if (!owner.isBlank()) {
-      planet.setFaction(owner);
-      String produceType = XML_Utils.attr(pParent, "produceType" );
-      if (!produceType.isBlank()) {
-        String produceUnitDesign = XML_Utils.attr(pParent, "produceUnitDesign" );
-        planet.setProduceType( EProduceType.valueOf(produceType), produceUnitDesign );
+    String owner = XML_Utils.attr(pParent, "owner", null );
+    if (owner!=null) {
+      if (owner.isBlank()) {
+        planet.setFaction("");
+      } else {
+        planet.setFaction(owner);
+        String produceType = XML_Utils.attr(pParent, "produceType" );
+        if (!produceType.isBlank()) {
+          String produceUnitDesign = XML_Utils.attr(pParent, "produceUnitDesign" );
+          planet.setProduceType( EProduceType.valueOf(produceType), produceUnitDesign );
+        }
       }
     }
     planet.setSize( Double.parseDouble(XML_Utils.attr(pParent, "size", "-1" )));
@@ -266,13 +270,37 @@ public class JG_Planet extends Entity implements IJG_Planet {
   }
 
   @Override
-  public void setPlanetToVisibility(double pVisibility) {
+  public void setPlanetToVisibility(double pVisibility, IJG_Planet pRealPlanet) {
     if (pVisibility>=FLOS_Visibility.VIS_FULL) {
+      if (pRealPlanet!=null) {
+        mPopulation = pRealPlanet.population();
+        mCapitals = pRealPlanet.capitals();
+        mCols = pRealPlanet.cols();
+        mResources = pRealPlanet.resources();
+        mMaterials = pRealPlanet.materials();
+        mIndustry = pRealPlanet.industry();
+        mSize = pRealPlanet.size();
+        mPopulationPerCol = pRealPlanet.populationPerCol();
+        mInprogress = pRealPlanet.inProgress();
+        mSpent = pRealPlanet.spent();
+        mPopulationIncreasePerHour = pRealPlanet.populationIncreasePerHour();
+        mProducingShipType = pRealPlanet.produceUnitDesign();
+        mProducing = pRealPlanet.produceType();
+        mFaction = pRealPlanet.faction();
+      }
+      return;
+    } else if (pVisibility>=FLOS_Visibility.VIS_ID) {
+      setPlanetToVisibility(FLOS_Visibility.VIS_NOT,this);
+      mFaction = "";
+      return;
+    } else if (pVisibility>=FLOS_Visibility.VIS_MINIMUM) {
+      setPlanetToVisibility(FLOS_Visibility.VIS_NOT,this);
       return;
     }
     mPopulation = -1;
     mCapitals = -1;
     mCols = -1;
+    mResources = -1;
     mMaterials = -1;
     mIndustry = -1;
     mSize = -1;
@@ -317,7 +345,8 @@ public class JG_Planet extends Entity implements IJG_Planet {
   private void producePhase( IJG_Game pGame, Duration pDuration) {
     if (produceType()!=null) {
       var owner = pGame.getFactionById(mFaction);
-      double industry = industry() * 0.75 + population() * 0.25 - mSpent + mInprogress;
+      double ratio = pDuration.toDays()/(365.0*4.0);
+      double industry = ratio*(industry()*0.75 + population()*0.25) - mSpent + mInprogress;
       switch (produceType()) {
         case PR_SHIP -> {
           mSpent = 0.0;

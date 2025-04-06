@@ -2,6 +2,7 @@ package org.jgalaxy.engine;
 
 import org.jgalaxy.Entity;
 import org.jgalaxy.OrderException;
+import org.jgalaxy.ai.IAI_Faction;
 import org.jgalaxy.los.FLOS_Visibility;
 import org.jgalaxy.orders.EJG_Order;
 import org.jgalaxy.orders.IJG_Order;
@@ -66,7 +67,12 @@ public class JG_Faction extends Entity implements IJG_Faction {
 
     for(Element ud : XML_Utils.childElementsByName(pParent,"incoming")) {
       IJG_Incoming incoming = JG_Incoming.of(ud);
-      faction.getIncomingMutable().add(incoming);
+      faction.addIncoming(incoming);
+    }
+
+    for(Element ud : XML_Utils.childElementsByName(pParent,"bombings")) {
+      IJG_Bombing bombing = JG_Bombing.of(ud);
+      faction.addBombing(bombing);
     }
 
     for( Element ofact : XML_Utils.childElementsByName(pParent,"otherfaction")) {
@@ -74,6 +80,14 @@ public class JG_Faction extends Entity implements IJG_Faction {
       faction.getOtherFactionsMutable().add(ofaction);
     }
 
+    var ai = XML_Utils.attr(pParent,"ai", null);
+    if (ai!=null) {
+      try {
+        faction.setAI((IAI_Faction)Class.forName(ai).getConstructor().newInstance());
+      } catch (Throwable e) {
+        e.printStackTrace();
+      }
+    }
 
     return faction;
   }
@@ -92,9 +106,11 @@ public class JG_Faction extends Entity implements IJG_Faction {
   private final AtomicInteger         mCurrentGroupCount = new AtomicInteger(0);
 
   private final List<IJG_Incoming>    mIncomings = new ArrayList<>(8);
+  private final List<IJG_Bombing>     mBombings = new ArrayList<>(8);
 
   private final List<IJG_Faction>     mOtherFactions = new ArrayList<>(8);
 
+  private       IAI_Faction           mAIFaction;
   private       IJG_Orders            mOrders;
 
   private final transient List<OrderException> mOrderErrors = new ArrayList<>(8);
@@ -102,6 +118,17 @@ public class JG_Faction extends Entity implements IJG_Faction {
   private JG_Faction( IJG_Game pGame, String pID, String pName ) {
     super(pID,pName);
     mGame = pGame;
+    return;
+  }
+
+  @Override
+  public IAI_Faction getAI() {
+    return mAIFaction;
+  }
+
+  @Override
+  public void setAI(IAI_Faction pAI) {
+    mAIFaction = pAI;
     return;
   }
 
@@ -127,7 +154,9 @@ public class JG_Faction extends Entity implements IJG_Faction {
 
   @Override
   public void addUnitDesign(IJG_UnitDesign pDesign) {
-    mUnitDesigns.add(pDesign);
+    if (!mUnitDesigns.contains(pDesign)) {
+      mUnitDesigns.add(pDesign);
+    }
     return;
   }
 
@@ -288,6 +317,27 @@ public class JG_Faction extends Entity implements IJG_Faction {
   }
 
   @Override
+  public void addIncoming(IJG_Incoming pIncoming) {
+    if (!mIncomings.contains(pIncoming)) {
+      mIncomings.add(pIncoming);
+    }
+    return;
+  }
+
+  @Override
+  public List<IJG_Bombing> getBombingsMutable() {
+    return mBombings;
+  }
+
+  @Override
+  public void addBombing(IJG_Bombing pBombing) {
+    if (!mBombings.contains(pBombing)) {
+      mBombings.add(pBombing);
+    }
+    return;
+  }
+
+  @Override
   public void removeTurnNumber(File pPath, long pTurnNumber) {
     File factiondir = new File(pPath,id());
     File f = new File(factiondir, "faction_" + pTurnNumber + ".xml");
@@ -320,6 +370,9 @@ public class JG_Faction extends Entity implements IJG_Faction {
     factionnode.setAttribute("tech.cargo", ""+tech().cargo());
     factionnode.setAttribute("totalPop", ""+totalPop() );
     factionnode.setAttribute("totalIndustry", ""+totalIndustry() );
+    if (getAI()!=null) {
+      factionnode.setAttribute("ai", getAI().getClass().getName());
+    }
     if (!isOtherfaction) {
       factionnode.setAttribute("currentGroupCounter", "" + currentGroupCounter());
     }
@@ -328,10 +381,11 @@ public class JG_Faction extends Entity implements IJG_Faction {
       ud.storeObject(pPath,factionnode,"", "");
     }
     for( IJG_Planet planet : mPlanets.planets()) {
-      double vis = planet.visibilityFor(mGame, this);
-      IJG_Planet cplanet = planet.copyOf();
-      cplanet.setPlanetToVisibility(vis);
-      cplanet.storeObject(pPath, factionnode, "", "");
+      planet.storeObject(pPath, factionnode, "", "");
+//      double vis = planet.visibilityFor(mGame, this);
+//      IJG_Planet cplanet = planet.copyOf();
+//      cplanet.setPlanetToVisibility(vis,null);
+//      cplanet.storeObject(pPath, factionnode, "", "");
     }
     for( IJG_Group group : mGroups.getGroups()) {
       group.storeObject(pPath,factionnode,"", isOtherfaction?"shots":"");
@@ -351,6 +405,10 @@ public class JG_Faction extends Entity implements IJG_Faction {
     for( IJG_Incoming incoming : getIncomingMutable()) {
       incoming.storeObject( null,factionnode,"", "");
     }
+    // **** Bombings
+    for( IJG_Bombing bombing : getBombingsMutable()) {
+      bombing.storeObject( null,factionnode,"", "");
+    }
 
     root.appendChild(factionnode);
 
@@ -368,4 +426,8 @@ public class JG_Faction extends Entity implements IJG_Faction {
     return;
   }
 
+  @Override
+  public String toString() {
+    return "JG_Faction [id=" + id() + "]";
+  }
 }

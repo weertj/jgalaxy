@@ -31,7 +31,7 @@ public class JG_Group extends Entity implements IJG_Group {
     group.lastStaticPosition().setX(Double.parseDouble(XML_Utils.attr(pParent, "lastStaticX", "0" ) ));
     group.lastStaticPosition().setY(Double.parseDouble(XML_Utils.attr(pParent, "lastStaticY", "0" ) ));
     group.setUnitDesign(XML_Utils.attr(pParent, "unitDesign", "" ));
-    group.setLoadType(XML_Utils.attr(pParent, "loadType", "" ));
+    group.setLoadType(XML_Utils.attr(pParent, "loadType", null ));
     group.setLoad(Double.parseDouble(XML_Utils.attr(pParent, "load", "0" ) ));
     group.setFleet(XML_Utils.attr(pParent, "fleet", null ));
     group.tech().copyOf(JG_Tech.of(pParent));
@@ -252,7 +252,7 @@ public class JG_Group extends Entity implements IJG_Group {
     if (mFleet!=null) {
       groupnode.setAttribute("fleet", mFleet);
     }
-    if (mLoadType!=null) {
+    if (mLoadType!=null && !mLoadType.isBlank()) {
       groupnode.setAttribute( "loadType", mLoadType);
       groupnode.setAttribute("load", ""+mLoad);
     }

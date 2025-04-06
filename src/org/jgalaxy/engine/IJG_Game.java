@@ -13,11 +13,19 @@ import java.util.List;
 
 public interface IJG_Game extends IEntity,ITimeProgression, IStorage {
 
+  void aiPhase();
+
+  void setGameInfo( IJG_GameInfo pGameInfo);
+  IJG_GameInfo getGameInfo();
+
   long turnNumber();
   void setTurnNumber(long pNumber);
 
   long turnIntervalSecs();
   void setTurnIntervalSecs(long pIntervalSecs);
+  boolean runWhenAllOrdersAreIn();
+  void setRunWhenAllOrdersAreIn(boolean pRunWhenAllOrdersAreIn);
+
 
   double timeProgressionDays();
   void setTimeProgressionDays(double pDays);
@@ -35,7 +43,7 @@ public interface IJG_Game extends IEntity,ITimeProgression, IStorage {
     return;
   }
 
-  void addFaction(IJG_Faction pFaction);
+  void addFaction(IJG_Faction pOrigFaction,IJG_Faction pFaction);
   void addPlayer(IJG_Player pPlayer);
 
   List<IJG_Faction> factions();
