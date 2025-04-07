@@ -1,5 +1,7 @@
 package org.jgalaxy.utils;
 
+import org.jgalaxy.IJG_Position;
+
 import java.util.Random;
 import java.util.SplittableRandom;
 
@@ -30,6 +32,19 @@ public class GEN_Math {
 
   public int randomRange( final int pMin, final int pMax ) {
     return randoms().nextInt( pMax - pMin + 1) + pMin;
+  }
+
+
+  static public double distance( final double pX1, final double pY1, final double pX2, final double pY2 ) {
+    double x = pX1-pX2;
+    double y = pY1-pY2;
+    x = (x<=0.0) ? 0.0 - x : x;
+    y = (y<=0.0) ? 0.0 - y : y;
+    return Math.sqrt( x*x + y*y );
+  }
+
+  static public double distance( IJG_Position pP1, IJG_Position pP2 ) {
+    return distance( pP1.x(), pP1.y(), pP2.x(), pP2.y() );
   }
 
 }

@@ -2,6 +2,7 @@ package org.jgalaxy.planets;
 
 import org.jgalaxy.IJG_Position;
 import org.jgalaxy.engine.IJG_Faction;
+import org.jgalaxy.utils.GEN_Math;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -74,6 +75,12 @@ public class JG_Planets implements IJG_Planets {
   @Override
   public List<IJG_Planet> planets() {
     return new ArrayList<>(mPlanets);
+  }
+
+  @Override
+  public void sortByDistanceFrom(IJG_Position pFrom) {
+    IJG_Position.sortByDistance(mPlanets, pFrom );
+    return;
   }
 
   @Override

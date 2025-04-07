@@ -7,7 +7,7 @@ import org.jgalaxy.engine.IJG_Player;
 
 import java.util.Locale;
 
-public interface IJG_Planet extends IFactionOwner,IEntity,ITimeProgression, IStorage {
+public interface IJG_Planet extends IFactionOwner,IEntity,ITimeProgression, IStorage, IJG_Position {
 
   IJG_Planet copyOf();
 
@@ -68,5 +68,10 @@ public interface IJG_Planet extends IFactionOwner,IEntity,ITimeProgression, ISto
       population()
       );
   }
+
+  @Override default double x() { return position().x(); }
+  @Override default double y() { return position().y(); }
+  @Override default void setX(double x) { position().setX(x); }
+  @Override default void setY(double y) { position().setY(y); }
 
 }

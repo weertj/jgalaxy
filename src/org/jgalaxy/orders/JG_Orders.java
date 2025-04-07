@@ -55,7 +55,9 @@ public class JG_Orders implements IJG_Orders {
         if (!Objects.equals(p1.produceUnitDesign(), p2.produceUnitDesign()) && p2.produceUnitDesign()!=null) {
           orders.addOrder(JG_Order.of(EJG_Order.PRODUCE, List.of(p1.id(), p2.produceUnitDesign())));
         } else if (!Objects.equals(p1.produceType(), p2.produceType())) {
-          orders.addOrder(JG_Order.of(EJG_Order.PRODUCE, List.of(p1.id(), p2.produceType().order())));
+          if (p2.produceType()!=null) {
+            orders.addOrder(JG_Order.of(EJG_Order.PRODUCE, List.of(p1.id(), p2.produceType().order())));
+          }
         }
         if (!Objects.equals(p1.name(),p2.name())) {
           orders.addOrder(JG_Order.of(EJG_Order.RENAME, List.of(p1.id(), p2.name())));

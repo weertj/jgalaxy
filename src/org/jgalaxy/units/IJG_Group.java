@@ -11,7 +11,7 @@ import org.jgalaxy.tech.IJG_Tech;
 
 import java.util.List;
 
-public interface IJG_Group extends IEntity, IStorage, IFactionOwner {
+public interface IJG_Group extends IEntity, IStorage, IFactionOwner, IJG_Position {
 
   void copyOf( IJG_Group pGroup );
 
@@ -21,6 +21,20 @@ public interface IJG_Group extends IEntity, IStorage, IFactionOwner {
   IJG_Position lastStaticPosition();
   IJG_Position position();
   IJG_Position toPosition();
+
+  default @Override void setX(double x) {
+    position().setX(x);
+  }
+  default @Override void setY(double y) {
+    position().setY(y);
+  }
+
+  default @Override double x() {
+    return position().x();
+  }
+  default @Override double y() {
+    return position().y();
+  }
 
   double maxSpeed(IJG_Faction pFaction);
 

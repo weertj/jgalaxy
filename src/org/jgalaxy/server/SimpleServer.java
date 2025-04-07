@@ -191,9 +191,9 @@ public class SimpleServer {
           }
         };
         timer.schedule(task, 5000L, 5000L);
-        if (pGame.turnNumber()>1) {
-          pGame.removeTurnNumber(pDir, pGame.turnNumber() - 1);
-        }
+//        if (pGame.turnNumber()>1) {
+//          pGame.removeTurnNumber(pDir, pGame.turnNumber() - 1);
+//        }
       }
     } else {
       DateTimeFormatter formatter = DateTimeFormatter.ISO_OFFSET_DATE_TIME;
@@ -214,9 +214,9 @@ public class SimpleServer {
       zdt = zdt.plusSeconds(pGame.turnIntervalSecs());
       Timer timer = new Timer();
       timer.schedule(task, Date.from(zdt.toInstant()));
-      if (pGame.turnNumber()>1) {
-        pGame.removeTurnNumber(pDir, pGame.turnNumber() - 1);
-      }
+//      if (pGame.turnNumber()>1) {
+//        pGame.removeTurnNumber(pDir, pGame.turnNumber() - 1);
+//      }
     }
     return;
   }

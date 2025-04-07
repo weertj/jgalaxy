@@ -111,7 +111,7 @@ public class SJG_OrderExecutor {
     if (group == null) throw new OrderException(pFaction,pOrder,"Group "+groupfleetid+" not found");
     IJG_Planet planet = pGame.galaxy().map().planets().findPlanetByPosition(group.position());
     if (planet == null) throw new OrderException(pFaction,pOrder,"Planet on position "+group.position()+" not found");
-    SJG_LoadOrder.unloadOrder(group, planet, 9999999 );
+    SJG_LoadOrder.unloadOrder(pGame,group, planet, 9999999 );
     return;
   }
 

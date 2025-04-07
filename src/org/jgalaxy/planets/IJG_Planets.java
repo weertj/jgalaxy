@@ -20,6 +20,8 @@ public interface IJG_Planets {
   List<IJG_Planet> planets();
   IJG_Planet planetByIndex( int pIndex );
 
+  void sortByDistanceFrom( IJG_Position pFrom );
+
   int getSize();
 
 }

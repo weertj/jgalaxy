@@ -36,11 +36,11 @@ public class JGL_GenerateGameTest {
           <map>
             <mapcol>
               <min x="0" y="0"/>
-              <max x="10" y="10"/>
-              <planet generate="2"/> 
+              <max x="60" y="60"/>
+              <planet generate="12"/> 
             </mapcol>
           </map>
-          <player generate="2">
+          <player generate="4">
             <faction>
             </faction>
           </player>

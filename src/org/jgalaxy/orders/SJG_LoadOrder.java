@@ -1,5 +1,6 @@
 package org.jgalaxy.orders;
 
+import org.jgalaxy.engine.IJG_Game;
 import org.jgalaxy.planets.IJG_Planet;
 import org.jgalaxy.units.IJG_Group;
 import org.jgalaxy.units.IJG_UnitDesign;
@@ -48,7 +49,7 @@ public class SJG_LoadOrder {
     return loaded;
   }
 
-  static public double unloadOrder(IJG_Group pGroup, IJG_Planet pPlanet, double pAmountToUnLoad) {
+  static public double unloadOrder(IJG_Game pGame, IJG_Group pGroup, IJG_Planet pPlanet, double pAmountToUnLoad) {
     double unloaded = 0.0;
     String type = pGroup.loadType();
     double unload = Math.min(pGroup.load(),pAmountToUnLoad);
@@ -57,6 +58,7 @@ public class SJG_LoadOrder {
       unloaded = unload;
       if (pPlanet.faction() == null) {
         pPlanet.setFaction(pGroup.faction());
+        pGame.galaxy().map().planets().findPlanetById(pPlanet.id()).setFaction(pGroup.faction());
       }
       pGroup.setLoad(pGroup.load() - unload);
       if (pGroup.load() <= 0.0) {
@@ -65,9 +67,6 @@ public class SJG_LoadOrder {
     } else if ("CAP".equals(type)) {
       pPlanet.setCapitals(pPlanet.capitals() + unload);
       unloaded = unload;
-      if (pPlanet.faction()==null) {
-        pPlanet.setFaction(pGroup.faction());
-      }
       pGroup.setLoad(pGroup.load() - unload);
       if (pGroup.load()<=0.0) {
         pGroup.setLoadType(null);
@@ -75,9 +74,6 @@ public class SJG_LoadOrder {
     } else if ("MAT".equals(type)) {
       pPlanet.setMaterials(pPlanet.materials() + unload);
       unloaded = unload;
-      if (pPlanet.faction()==null) {
-        pPlanet.setFaction(pGroup.faction());
-      }
       pGroup.setLoad(pGroup.load() - unload);
       if (pGroup.load()<=0.0) {
         pGroup.setLoadType(null);
