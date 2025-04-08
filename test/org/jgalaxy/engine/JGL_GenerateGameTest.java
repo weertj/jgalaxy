@@ -32,7 +32,7 @@ public class JGL_GenerateGameTest {
 
     String xml = """
     <root>
-        <game name="GenerateGame" timeProgressionDays="365" runWhenAllOrdersAreIn="true">
+        <game name="GenerateGame" timeProgressionDays="365" runWhenAllOrdersAreIn="false">
           <map>
             <mapcol>
               <min x="0" y="0"/>
@@ -40,7 +40,7 @@ public class JGL_GenerateGameTest {
               <planet generate="12"/> 
             </mapcol>
           </map>
-          <player generate="4">
+          <player generate="2">
             <faction>
             </faction>
           </player>
