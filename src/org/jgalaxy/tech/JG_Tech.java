@@ -1,5 +1,6 @@
 package org.jgalaxy.tech;
 
+import org.jgalaxy.utils.GEN_Math;
 import org.jgalaxy.utils.XML_Utils;
 import org.w3c.dom.Element;
 import org.w3c.dom.Node;
@@ -77,25 +78,25 @@ public class JG_Tech implements IJG_Tech {
 
   @Override
   public void setDrive(double drive) {
-    mDrive = drive;
+    mDrive = GEN_Math.round01(drive);
     return;
   }
 
   @Override
   public void setWeapons(double weapons) {
-    mWeapons = weapons;
+    mWeapons = GEN_Math.round01(weapons);
     return;
   }
 
   @Override
   public void setShields(double shields) {
-    mShields = shields;
+    mShields = GEN_Math.round01(shields);
     return;
   }
 
   @Override
   public void setCargo(double cargo) {
-    mCargo = cargo;
+    mCargo = GEN_Math.round01(cargo);
     return;
   }
 

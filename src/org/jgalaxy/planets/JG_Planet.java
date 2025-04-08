@@ -1,6 +1,7 @@
 package org.jgalaxy.planets;
 
 import org.jgalaxy.Entity;
+import org.jgalaxy.Global;
 import org.jgalaxy.IJG_Position;
 import org.jgalaxy.JG_Position;
 import org.jgalaxy.engine.IJG_Faction;
@@ -9,6 +10,7 @@ import org.jgalaxy.engine.IJG_Player;
 import org.jgalaxy.los.FLOS_Visibility;
 import org.jgalaxy.units.IJG_Group;
 import org.jgalaxy.units.JG_Group;
+import org.jgalaxy.utils.GEN_Math;
 import org.jgalaxy.utils.XML_Utils;
 import org.w3c.dom.Element;
 import org.w3c.dom.Node;
@@ -180,7 +182,7 @@ public class JG_Planet extends Entity implements IJG_Planet {
 
   @Override
   public void setSize(double pSize) {
-    mSize = pSize;
+    mSize = GEN_Math.round02(pSize );
     return;
   }
 
@@ -420,7 +422,6 @@ public class JG_Planet extends Entity implements IJG_Planet {
     var owner = pGame.getFactionById(mFaction);
     if (owner!=null) {
       var prodship = owner.getUnitDesignById(produceUnitDesign() );
-      double INDPERSHIP = 10;
       double typeMass = prodship.mass();
       double indForProduction, indForMaterials;
       if (typeMass > 49.5) {
@@ -429,10 +430,10 @@ public class JG_Planet extends Entity implements IJG_Planet {
          * complain they get not built */
       }
 
-      int n = (int) (pIndustry / (typeMass * INDPERSHIP)) + 1;
+      int n = (int) (pIndustry / (typeMass * Global.INDPERSHIP)) + 1;
       int numberOfShips = 0;
       for (; n >= 0; n--) {
-        indForProduction = n * typeMass * INDPERSHIP;
+        indForProduction = n * typeMass * Global.INDPERSHIP;
         indForMaterials = (n * typeMass - mMaterials) / mResources;
         if (indForMaterials < 0) {
           indForMaterials = 0;
@@ -446,7 +447,7 @@ public class JG_Planet extends Entity implements IJG_Planet {
         /* Delay Construction to next turn */
         mInprogress = pIndustry;
       } else {
-        indForProduction = numberOfShips * typeMass * INDPERSHIP;
+        indForProduction = numberOfShips * typeMass * Global.INDPERSHIP;
         indForMaterials = (numberOfShips * typeMass - mMaterials) / mResources;
         if (indForMaterials < 0) {
           indForMaterials = 0;

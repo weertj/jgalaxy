@@ -2,6 +2,7 @@ package org.jgalaxy.units;
 
 import org.jgalaxy.Entity;
 import org.jgalaxy.tech.IJG_Tech;
+import org.jgalaxy.utils.GEN_Math;
 import org.jgalaxy.utils.XML_Utils;
 import org.w3c.dom.Element;
 import org.w3c.dom.Node;
@@ -35,11 +36,11 @@ public class JG_UnitDesign extends Entity implements IJG_UnitDesign {
 
   private JG_UnitDesign( String pId, String pName, double pDrive,double pWeapons,int pNrWeapons,double pShields,double pCargo) {
     super(pId,pName);
-    mDrive = pDrive;
-    mWeapons = pWeapons;
+    mDrive = GEN_Math.round02(pDrive);
+    mWeapons = GEN_Math.round02(pWeapons);
     mNrWeapons = pNrWeapons;
-    mShields = pShields;
-    mCargo = pCargo;
+    mShields = GEN_Math.round02(pShields);
+    mCargo = GEN_Math.round02(pCargo);
     return;
   }
 
@@ -120,5 +121,10 @@ public class JG_UnitDesign extends Entity implements IJG_UnitDesign {
     unitdesign.setAttribute("cargo", ""+cargo() );
     pParent.appendChild(unitdesign);
     return;
+  }
+
+  @Override
+  public String toString() {
+    return name();
   }
 }

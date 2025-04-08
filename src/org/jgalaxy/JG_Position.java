@@ -1,5 +1,7 @@
 package org.jgalaxy;
 
+import org.jgalaxy.utils.GEN_Math;
+
 public class JG_Position implements IJG_Position {
 
   static public IJG_Position of(double x, double y) {
@@ -10,8 +12,8 @@ public class JG_Position implements IJG_Position {
   private double mY;
 
   private JG_Position(double x, double y) {
-    mX = x;
-    mY = y;
+    setX( x );
+    setY( y );
     return;
   }
 
@@ -41,13 +43,13 @@ public class JG_Position implements IJG_Position {
 
   @Override
   public void setX(double x) {
-    mX = x;
+    mX = GEN_Math.round02(x );
     return;
   }
 
   @Override
   public void setY(double y) {
-    mY = y;
+    mY = GEN_Math.round02(y );
     return;
   }
 

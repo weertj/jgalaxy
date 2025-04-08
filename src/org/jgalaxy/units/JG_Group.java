@@ -145,7 +145,7 @@ public class JG_Group extends Entity implements IJG_Group {
   @Override
   public double maxSpeed(IJG_Faction pFaction) {
     IJG_UnitDesign unitdesign = pFaction.getUnitDesignById(unitDesign());
-    double speed = unitdesign.speed(tech(), 0); // TODO (cargo)
+    double speed = unitdesign.speed(tech(), totalCargoMass());
     return speed;
   }
 
@@ -184,6 +184,9 @@ public class JG_Group extends Entity implements IJG_Group {
 
   @Override
   public double totalCargoMass() {
+    if ("COL".equals(mLoadType) || "CAP".equals(mLoadType) || "MAT".equals(mLoadType)) {
+      return mLoad;
+    }
     return 0.0;
   }
 

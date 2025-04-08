@@ -47,4 +47,13 @@ public class GEN_Math {
     return distance( pP1.x(), pP1.y(), pP2.x(), pP2.y() );
   }
 
+  static public double round01( double pN ) {
+    return Math.round(pN * 10.0) / 10.0;
+  }
+
+  static public double round02( double pN ) {
+    return Math.round(pN * 100.0) / 100.0;
+  }
+
+
 }
