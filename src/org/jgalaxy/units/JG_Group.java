@@ -220,13 +220,25 @@ public class JG_Group extends Entity implements IJG_Group {
   }
 
   @Override
-  public IJG_Group breakOffGroup(IJG_Game pGame,int pNumberOf) {
+  public IJG_Group breakOffGroup(IJG_Game pGame,IJG_Faction pThisFaction, int pNumberOf) {
     if (pNumberOf>0) {
       if (pNumberOf>=mNumberOf) {
         return this;
       }
-      IJG_Group breakgroup = new JG_Group("group_" + pGame.getFactionById(faction()).currentGroupCounterAndIncrement(),name());
+      IJG_Group breakgroup;
+      if (pThisFaction==null) {
+        int newix = pGame.getFactionById(faction()).currentGroupCounterAndIncrement();
+        breakgroup = new JG_Group(id() + "-" + newix, name() + "-" + newix);
+      } else {
+        int newix = pThisFaction.currentGroupCounterAndIncrement();
+        breakgroup = new JG_Group(id() + "-" + newix, name() + "-" + newix);
+      }
       breakgroup.copyOf(this);
+      double ratio = (double)pNumberOf/(double)mNumberOf;
+      if (mLoad>0) {
+        mLoad *= ratio;
+        breakgroup.setLoad(breakgroup.load()*(1-ratio));
+      }
       mNumberOf -= pNumberOf;
       breakgroup.setNumberOf(pNumberOf);
       return breakgroup;

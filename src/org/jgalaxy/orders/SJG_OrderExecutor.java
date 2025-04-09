@@ -1,6 +1,7 @@
 package org.jgalaxy.orders;
 
 import org.jgalaxy.OrderException;
+import org.jgalaxy.common.C_Message;
 import org.jgalaxy.engine.IJG_Faction;
 import org.jgalaxy.engine.IJG_Game;
 import org.jgalaxy.planets.EProduceType;
@@ -13,12 +14,18 @@ import org.jgalaxy.units.JG_UnitDesign;
 public class SJG_OrderExecutor {
 
   static public void orderMESSAGE(IJG_Game pGame, IJG_Faction pFaction,IJG_Order pOrder) throws OrderException {
-    String name = pOrder.param(0 );
-    if (name == null || name.isEmpty()) {
+    String factionid = pOrder.param(0 );
+    String message = pOrder.param(1 );
+    if (message.isBlank()) return;
+    if (factionid == null || factionid.isEmpty()) {
       // **** Global message
-
+      pGame.factions().stream()
+        .forEach( f -> f.getMessagesMutable().add( new C_Message(true,message) ));
     } else {
       // **** Messsage to faction
+      IJG_Faction faction = pGame.getFactionById(factionid);
+      if (faction==null) throw new OrderException(null, pOrder, "Faction " + faction + " not found");
+      faction.getMessagesMutable().add( new C_Message( false,message));
     }
     return;
   }
@@ -127,9 +134,12 @@ public class SJG_OrderExecutor {
       if (pOrder.param(2).isBlank()) {
         group.toPosition().copyOf(planet.position());
       } else {
-        var breakgroup = group.breakOffGroup(pGame, Integer.parseInt(pOrder.param(2)));
+        var breakgroup = group.breakOffGroup(pGame, pFaction,Integer.parseInt(pOrder.param(2)));
         breakgroup.toPosition().copyOf(planet.position());
-        pFaction.groups().addGroup(breakgroup);
+        if (breakgroup==group) {
+        } else {
+          pFaction.groups().addGroup(breakgroup);
+        }
       }
     } else {
       // **** Move fleet

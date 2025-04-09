@@ -3,6 +3,7 @@ package org.jgalaxy.engine;
 import org.jgalaxy.Entity;
 import org.jgalaxy.OrderException;
 import org.jgalaxy.ai.IAI_Faction;
+import org.jgalaxy.common.IC_Message;
 import org.jgalaxy.los.FLOS_Visibility;
 import org.jgalaxy.orders.EJG_Order;
 import org.jgalaxy.orders.IJG_Order;
@@ -110,8 +111,11 @@ public class JG_Faction extends Entity implements IJG_Faction {
 
   private final List<IJG_Faction>     mOtherFactions = new ArrayList<>(8);
 
+  private final List<IC_Message>      mMessages = new ArrayList<>(8);
+
   private       IAI_Faction           mAIFaction;
   private       IJG_Orders            mOrders;
+
 
   private final transient List<OrderException> mOrderErrors = new ArrayList<>(8);
 
@@ -338,6 +342,11 @@ public class JG_Faction extends Entity implements IJG_Faction {
   }
 
   @Override
+  public List<IC_Message> getMessagesMutable() {
+    return mMessages;
+  }
+
+  @Override
   public void removeTurnNumber(File pPath, long pTurnNumber) {
     File factiondir = new File(pPath,id());
     File f = new File(factiondir, "faction_" + pTurnNumber + ".xml");
@@ -408,6 +417,10 @@ public class JG_Faction extends Entity implements IJG_Faction {
     // **** Bombings
     for( IJG_Bombing bombing : getBombingsMutable()) {
       bombing.storeObject( null,factionnode,"", "");
+    }
+    // **** Messages
+    for( IC_Message message : mMessages) {
+      message.storeObject( null,factionnode,"", "");
     }
 
     root.appendChild(factionnode);

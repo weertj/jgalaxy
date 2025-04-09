@@ -59,7 +59,7 @@ public interface IJG_Group extends IEntity, IStorage, IFactionOwner, IJG_Positio
   double totalCargoMass();
   double totalMass( IJG_Faction pFaction );
 
-  IJG_Group breakOffGroup(IJG_Game pGame, int pNumberOf );
+  IJG_Group breakOffGroup(IJG_Game pGame, IJG_Faction pThisFaction,int pNumberOf );
 
   List<IB_Shot> shotsMutable();
 

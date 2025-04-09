@@ -21,7 +21,7 @@ public class GalaxyGenerator {
 
     for( Node pgen : pGalaxyTemplate.planetGenerations()) {
       for(int ix = 0; ix<Integer.parseInt(XML_Utils.attr(pgen, "generate")); ix++) {
-        IJG_Planet planet = JG_Planet.of("planet" + ix, "planet" + ix,
+        IJG_Planet planet = JG_Planet.of("" + ix, "" + ix,
           JG_Position.of( Math.random()*(map.xEnd()-map.xStart()), Math.random()*(map.yEnd()-map.yStart()) ));
         planet.setSize( Math.random()*1000 );
         galaxy.map().planets().addPlanet( planet );

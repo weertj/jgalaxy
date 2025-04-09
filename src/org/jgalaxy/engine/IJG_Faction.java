@@ -4,6 +4,7 @@ import org.jgalaxy.IEntity;
 import org.jgalaxy.IStorage;
 import org.jgalaxy.OrderException;
 import org.jgalaxy.ai.IAI_Faction;
+import org.jgalaxy.common.IC_Message;
 import org.jgalaxy.orders.IJG_Orders;
 import org.jgalaxy.planets.IJG_Planet;
 import org.jgalaxy.planets.IJG_Planets;
@@ -54,5 +55,7 @@ public interface IJG_Faction extends IEntity, IStorage {
 
   List<IJG_Bombing>  getBombingsMutable();
   void addBombing( IJG_Bombing pBombing );
+
+  List<IC_Message> getMessagesMutable();
 
 }

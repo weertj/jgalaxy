@@ -459,7 +459,7 @@ public class JG_Planet extends Entity implements IJG_Planet {
         mInprogress = pIndustry;
 
         int id = owner.currentGroupCounterAndIncrement();
-        IJG_Group group = JG_Group.of(""+id , "group " + id );
+        IJG_Group group = JG_Group.of(""+id , "" + id );
         group.setNumberOf(numberOfShips);
         group.tech().copyOf(owner.tech());
         group.position().setX(position().x());

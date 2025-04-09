@@ -1,6 +1,8 @@
 package org.jgalaxy.engine;
 
 import org.jgalaxy.*;
+import org.jgalaxy.ai.AI_GameMasterFaction;
+import org.jgalaxy.ai.IAI_Faction;
 import org.jgalaxy.battle.SB_Battle;
 import org.jgalaxy.los.FLOS_Visibility;
 import org.jgalaxy.map.IMAP_Map;
@@ -59,7 +61,9 @@ public class JG_Game extends Entity implements IJG_Game {
     game.setRunWhenAllOrdersAreIn(Boolean.valueOf(XML_Utils.attr(gameNode, "runWhenAllOrdersAreIn", "false" )));
 
     if (pPath==null) {
-
+//      for( Element factionNode : XML_Utils.childElementsByName(root,"faction")) {
+//        game.addFaction( JG_Faction.of(game, factionNode), JG_Faction.of(game, factionNode));
+//      }
     } else {
       File factions = new File(pPath, "factions");
       for (File nf : factions.listFiles()) {
@@ -116,6 +120,7 @@ public class JG_Game extends Entity implements IJG_Game {
   }
 
   private final IGalaxy           mGalaxy;
+  private final IAI_Faction       mGameMaster = new AI_GameMasterFaction();
   private final List<IJG_Faction> mOrigFactions = new ArrayList<>(8);
   private final List<IJG_Faction> mFactions = new ArrayList<>(8);
   private final List<IJG_Player>  mPlayers = new ArrayList<>(8);
@@ -337,6 +342,8 @@ public class JG_Game extends Entity implements IJG_Game {
 
   @Override
   public void aiPhase() {
+    mGameMaster.createOrders(mGameInfo,this,null,null);
+    mGameMaster.sendOrders();
     int ix=0;
     for( IJG_Faction faction : factions() ) {
       if (faction.getAI()!=null) {
