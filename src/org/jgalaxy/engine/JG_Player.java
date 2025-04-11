@@ -111,6 +111,23 @@ public class JG_Player extends Entity implements IJG_Player {
     for( var faction : factions() ) {
       Element factionnode = doc.createElement( "faction" );
       factionnode.setAttribute("id", faction.id());
+      factionnode.setAttribute("name", faction.name());
+      double totpop = 0;
+      double totind = 0;
+      int nrplanets = 0;
+      for( IJG_Planet planet : faction.planets().planetsOwnedBy(faction)) {
+        totpop += planet.population();
+        totind += planet.industry();
+        nrplanets++;
+      }
+      factionnode.setAttribute("totalPop", "" + totpop );
+      factionnode.setAttribute("totalIndustry", "" + totind );
+      factionnode.setAttribute("tech", "" + faction.tech().totalTech() );
+      factionnode.setAttribute("tech.drive", ""+faction.tech().drive());
+      factionnode.setAttribute("tech.weapons", ""+faction.tech().weapons());
+      factionnode.setAttribute("tech.shields", ""+faction.tech().shields());
+      factionnode.setAttribute("tech.cargo", ""+faction.tech().cargo());
+      factionnode.setAttribute("nrPlanets", "" + nrplanets );
       playernode.appendChild(factionnode);
     }
     root.appendChild(playernode);

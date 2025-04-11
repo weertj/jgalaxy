@@ -41,6 +41,7 @@ public class JG_Planet extends Entity implements IJG_Planet {
       }
     }
     planet.setSize( Double.parseDouble(XML_Utils.attr(pParent, "size", "-1" )));
+    planet.setResources( Double.parseDouble(XML_Utils.attr(pParent, "resources","-1" )));
     planet.setPopulation( Double.parseDouble(XML_Utils.attr(pParent, "population","-1" )));
     planet.setIndustry( Double.parseDouble(XML_Utils.attr(pParent, "industry","-1" )));
     planet.setCapitals( Double.parseDouble(XML_Utils.attr(pParent, "capitals","-1" )));
@@ -196,6 +197,12 @@ public class JG_Planet extends Entity implements IJG_Planet {
   @Override
   public double resources() {
     return mResources;
+  }
+
+  @Override
+  public void setResources(double pResources) {
+    mResources = GEN_Math.round02(pResources);
+    return;
   }
 
   @Override
@@ -541,6 +548,7 @@ public class JG_Planet extends Entity implements IJG_Planet {
       planetnode.setAttribute("owner", mFaction);
     }
     if (size()>=0)        planetnode.setAttribute("size", ""+size());
+    if (resources()>=0)   planetnode.setAttribute("resources", ""+resources());
     if (population()>=0)  planetnode.setAttribute("population", ""+population());
     if (industry()>=0)    planetnode.setAttribute("industry", ""+industry());
     if (produceType()!=null) {

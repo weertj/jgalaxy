@@ -24,6 +24,7 @@ public class GalaxyGenerator {
         IJG_Planet planet = JG_Planet.of("" + ix, "" + ix,
           JG_Position.of( Math.random()*(map.xEnd()-map.xStart()), Math.random()*(map.yEnd()-map.yStart()) ));
         planet.setSize( Math.random()*1000 );
+        planet.setResources(Math.random()*10);
         galaxy.map().planets().addPlanet( planet );
       }
     }
@@ -51,6 +52,7 @@ public class GalaxyGenerator {
         IJG_Planet planet = JG_Planet.of("home" + ix, "home" + ix,
           JG_Position.of( Math.random()*(map.xEnd()-map.xStart()), Math.random()*(map.yEnd()-map.yStart()) ));
         planet.setSize( 1000 );
+        planet.setResources(10);
         planet.setPopulation(1000);
         planet.setIndustry(1000);
         planet.setFaction(faction.id());

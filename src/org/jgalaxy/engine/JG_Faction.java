@@ -33,8 +33,9 @@ import java.util.stream.Collectors;
 
 public class JG_Faction extends Entity implements IJG_Faction {
 
-  static public File getFactionDirectory( File pBaseDir, IJG_GameInfo pGameInfo, IJG_Faction pFaction ) {
-    File dir = new File( pBaseDir, "games/" + pGameInfo.id() + "/factions/" + pFaction.id() );
+  static public File getFactionDirectory( IJG_GameInfo pGameInfo, IJG_Faction pFaction ) {
+    File dir = new File( pGameInfo.getGameDir(), "/factions/" + pFaction.id() );
+//    File dir = new File( pBaseDir, "games/" + pGameInfo.id() + "/factions/" + pFaction.id() );
     return dir;
   }
 

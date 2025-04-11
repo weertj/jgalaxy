@@ -111,7 +111,8 @@ public class SimpleServer {
                     String orders = GEN_Streams.readAsString(exchange.getRequestBody(), Charset.defaultCharset());
                     Node root = XML_Utils.rootNodeBy(orders);
                     faction.setOrders(JG_Orders.of(game.turnNumber(),XML_Utils.childNodeByPath(root,"orders").get()));
-                    File factionDir = JG_Faction.getFactionDirectory( new File("workdir"), gameInfo, faction );
+                    File factionDir = JG_Faction.getFactionDirectory( gameInfo, faction );
+//                    File factionDir = JG_Faction.getFactionDirectory( new File("workdir"), gameInfo, faction );
                     GEN_Streams.writeStringToFile( orders, new File(factionDir,"orders_" + game.turnNumber() + ".xml" ));
                   }
                 }
@@ -163,7 +164,7 @@ public class SimpleServer {
    * @param pGameInfo
    * @param pGame
    */
-  static private void nextTurn( File pDir, IJG_GameInfo pGameInfo, IJG_Game pGame ) {
+  static public void nextTurn( File pDir, IJG_GameInfo pGameInfo, IJG_Game pGame ) {
     pGame.setGameInfo(pGameInfo);
     pGame.timeProgression( pGame, Duration.ofDays((long)pGame.timeProgressionDays()));
     pGame.calcNextRun();

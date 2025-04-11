@@ -35,6 +35,11 @@ public class JG_GameInfo extends Entity implements IJG_GameInfo {
   }
 
   @Override
+  public File getGameDir() {
+    return mGameDir;
+  }
+
+  @Override
   public void init() {
     mGameDir.mkdirs();
     return;

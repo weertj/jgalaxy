@@ -37,6 +37,8 @@ public interface IJG_Planet extends IFactionOwner,IEntity,ITimeProgression, ISto
   void setProduceType( EProduceType pType, String pDesign );
 
   double resources();
+  void setResources( double pResources );
+
   EProduceType produceType();
   String produceUnitDesign();
 

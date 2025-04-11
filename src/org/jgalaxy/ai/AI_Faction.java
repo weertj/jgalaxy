@@ -196,7 +196,8 @@ public class AI_Faction implements IAI_Faction {
         orders.storeObject(null, root, "", "");
         String result = XML_Utils.documentToString(doc);
         mFaction.setOrders(orders);
-        File factionDir = JG_Faction.getFactionDirectory( new File("workdir"), mGameInfo, mFaction );
+        File factionDir = JG_Faction.getFactionDirectory(  mGameInfo, mFaction );
+//        File factionDir = JG_Faction.getFactionDirectory( new File("workdir"), mGameInfo, mFaction );
         GEN_Streams.writeStringToFile( result, new File(factionDir,"orders_" + mGame.turnNumber() + ".xml" ));
 
       } catch (Throwable e) {
