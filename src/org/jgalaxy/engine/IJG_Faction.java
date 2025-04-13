@@ -1,12 +1,12 @@
 package org.jgalaxy.engine;
 
+import javafx.beans.property.IntegerProperty;
 import org.jgalaxy.IEntity;
 import org.jgalaxy.IStorage;
 import org.jgalaxy.OrderException;
 import org.jgalaxy.ai.IAI_Faction;
 import org.jgalaxy.common.IC_Message;
 import org.jgalaxy.orders.IJG_Orders;
-import org.jgalaxy.planets.IJG_Planet;
 import org.jgalaxy.planets.IJG_Planets;
 import org.jgalaxy.tech.IJG_Tech;
 import org.jgalaxy.units.*;
@@ -57,5 +57,9 @@ public interface IJG_Faction extends IEntity, IStorage {
   void addBombing( IJG_Bombing pBombing );
 
   List<IC_Message> getMessagesMutable();
+
+
+  IntegerProperty changeCounterProperty();
+  void newChange();
 
 }

@@ -13,7 +13,14 @@ import java.util.List;
 
 public interface IJG_Group extends IEntity, IStorage, IFactionOwner, IJG_Position {
 
-  void copyOf( IJG_Group pGroup );
+  String TYPE = "IJG_Group";
+
+  @Override
+  default String entityType() {
+    return TYPE;
+  }
+
+  void copyOf(IJG_Group pGroup );
 
   void setFleet(String pFleet);
   String getFleet();

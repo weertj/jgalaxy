@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no"?>
 <root>
-    <player id="player1" name="Player 1">
+    <player id="player1" name="Player 1" atwarwith="faction1">
         <faction id="faction1"/>
     </player>
 </root>

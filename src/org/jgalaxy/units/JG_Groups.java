@@ -154,6 +154,13 @@ public class JG_Groups implements IJG_Groups {
   }
 
   @Override
+  public List<IJG_Fleet> fleetsByPosition(IJG_Position pPosition) {
+    return fleets().stream()
+      .filter(f-> f.position()!=null && f.position().equals(pPosition))
+      .toList();
+  }
+
+  @Override
   public void removeGroup(IJG_Group pGroup) {
     mGroups.remove(pGroup);
     return;

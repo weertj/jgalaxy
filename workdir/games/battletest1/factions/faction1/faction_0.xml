@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no"?>
 <root>
-    <faction id="faction1" name="Faction 1">
+    <faction id="faction1" name="Faction 1" atWarWith="faction0">
         <unitdesign id="bMG" name="MG" drive="33" weapons="33" nrweapons="1" shields="33" cargo="0"/>
         <unitdesign id="bSG" name="SG" drive="33" weapons="3" nrweapons="10" shields="33" cargo="0"/>
         <unitdesign id="bLADG" name="LADG" drive="33" weapons="1" nrweapons="40" shields="33" cargo="0"/>

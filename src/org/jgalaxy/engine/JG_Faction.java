@@ -1,5 +1,7 @@
 package org.jgalaxy.engine;
 
+import javafx.beans.property.IntegerProperty;
+import javafx.beans.property.SimpleIntegerProperty;
 import org.jgalaxy.Entity;
 import org.jgalaxy.OrderException;
 import org.jgalaxy.ai.IAI_Faction;
@@ -114,15 +116,21 @@ public class JG_Faction extends Entity implements IJG_Faction {
 
   private final List<IC_Message>      mMessages = new ArrayList<>(8);
 
+  private final IntegerProperty       mChangeCounter = new SimpleIntegerProperty(0);
+
   private       IAI_Faction           mAIFaction;
   private       IJG_Orders            mOrders;
-
 
   private final transient List<OrderException> mOrderErrors = new ArrayList<>(8);
 
   private JG_Faction( IJG_Game pGame, String pID, String pName ) {
     super(pID,pName);
     mGame = pGame;
+    return;
+  }
+
+  @Override
+  public void close() {
     return;
   }
 
@@ -345,6 +353,19 @@ public class JG_Faction extends Entity implements IJG_Faction {
   @Override
   public List<IC_Message> getMessagesMutable() {
     return mMessages;
+  }
+
+  @Override
+  public IntegerProperty changeCounterProperty() {
+    return mChangeCounter;
+  }
+
+  @Override
+  public void newChange() {
+    synchronized (mChangeCounter) {
+      mChangeCounter.setValue(mChangeCounter.get() + 1);
+    }
+    return;
   }
 
   @Override

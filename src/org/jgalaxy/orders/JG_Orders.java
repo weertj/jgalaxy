@@ -21,6 +21,10 @@ public class JG_Orders implements IJG_Orders {
   static public IJG_Orders generateOf( long pNewTurnnumber, IJG_Faction pFromFaction, IJG_Faction pToFaction) {
     IJG_Orders orders = of(pNewTurnnumber);
 
+    // **** Faction
+    if (!Objects.equals(pFromFaction.name(),pToFaction.name())) {
+      orders.addOrder(JG_Order.of(EJG_Order.CHANGERACENAME,List.of(pToFaction.name())));
+    }
     if (!Objects.deepEquals(pFromFaction.atWarWith(),pToFaction.atWarWith())) {
       for( var warfaction : pToFaction.atWarWith()) {
         orders.addOrder(JG_Order.of(EJG_Order.WAR, List.of(warfaction)));
