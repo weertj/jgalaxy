@@ -370,16 +370,16 @@ public class JG_Planet extends Entity implements IJG_Planet {
           produceMat(industry);
         }
         case PR_DRIVE -> {
-          owner.tech().setDrive(owner.tech().drive() + industry/5000.0);
+          owner.tech().setDriveReal(owner.tech().drive() + industry/5000.0);
         }
         case PR_WEAPONS -> {
-          owner.tech().setWeapons(owner.tech().weapons() + industry/5000.0);
+          owner.tech().setWeaponsReal(owner.tech().weapons() + industry/5000.0);
         }
         case PR_SHIELDS -> {
-          owner.tech().setShields(owner.tech().shields() + industry/5000.0);
+          owner.tech().setShieldsReal(owner.tech().shields() + industry/5000.0);
         }
         case PR_CARGO -> {
-          owner.tech().setCargo(owner.tech().cargo() + industry/5000.0);
+          owner.tech().setCargoReal(owner.tech().cargo() + industry/5000.0);
         }
       }
     }

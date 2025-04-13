@@ -101,6 +101,30 @@ public class JG_Tech implements IJG_Tech {
   }
 
   @Override
+  public void setDriveReal(double drive) {
+    mDrive = drive;
+    return;
+  }
+
+  @Override
+  public void setWeaponsReal(double weapons) {
+    mWeapons = weapons;
+    return;
+  }
+
+  @Override
+  public void setShieldsReal(double shields) {
+    mShields = shields;
+    return;
+  }
+
+  @Override
+  public void setCargoReal(double cargo) {
+    mCargo = cargo;
+    return;
+  }
+
+  @Override
   public void storeObject(File pPath, Node pParent, String pName, String pFilter) {
     ((Element)pParent).setAttribute("tech.drive", ""+drive());
     ((Element)pParent).setAttribute("tech.weapons", ""+weapons());

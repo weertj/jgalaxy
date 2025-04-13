@@ -1,5 +1,6 @@
 package org.jgalaxy.battle;
 
+import org.jgalaxy.IJG_Position;
 import org.jgalaxy.engine.IJG_Faction;
 import org.jgalaxy.engine.IJG_Game;
 import org.jgalaxy.units.IJG_Group;
@@ -25,6 +26,18 @@ public class SB_BattleField implements ISB_BattleField {
   private SB_BattleField( IJG_Game pGame ) {
     mGame = pGame;
     return;
+  }
+
+  @Override
+  public IJG_Position getPosition() {
+    if (mField.isEmpty()) {
+      if (mDoneField.isEmpty()) {
+        return null;
+      }
+    } else {
+
+    }
+    return null;
   }
 
   @Override

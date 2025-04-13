@@ -54,7 +54,7 @@ public class SJG_OrderExecutor {
     return;
   }
 
-  static public void orderJOIN( IJG_Game pGame, IJG_Faction pFaction, IJG_Order pOrder ) {
+  static public void orderJOIN( IJG_Game pGame, IJG_Faction pFaction, IJG_Order pOrder ) throws OrderException {
     IJG_Group group = pFaction.groups().getGroupById(pOrder.param(0));
     IJG_Fleet tofleet = pFaction.groups().getFleetByName(pOrder.param(1));
     if (group==null) {
@@ -63,7 +63,15 @@ public class SJG_OrderExecutor {
         fleet.groups().stream().forEach( g->g.setFleet(tofleet.id()) );
       }
     } else if (tofleet!=null) {
-      group.setFleet(pOrder.param(1));
+      if (tofleet.position()==null) {
+        group.setFleet(pOrder.param(1));
+      } else {
+        if (group.position().equals(tofleet.position())) {
+          group.setFleet(pOrder.param(1));
+        } else {
+          throw new OrderException(pFaction, pOrder, "Fleet " + tofleet.name() + " not in position");
+        }
+      }
     }
     return;
   }

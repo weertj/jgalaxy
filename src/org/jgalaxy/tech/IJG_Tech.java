@@ -14,6 +14,11 @@ public interface IJG_Tech extends IStorage {
   void setShields(double shields);
   void setCargo(double cargo);
 
+  void setDriveReal(double drive);
+  void setWeaponsReal(double weapons);
+  void setShieldsReal(double shields);
+  void setCargoReal(double cargo);
+
   default double totalTech() {
     return drive()+weapons()+shields()+cargo();
   }
