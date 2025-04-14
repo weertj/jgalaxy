@@ -142,7 +142,7 @@ public class SJG_OrderExecutor {
       if (pOrder.param(2).isBlank()) {
         group.toPosition().copyOf(planet.position());
       } else {
-        var breakgroup = group.breakOffGroup(pGame, pFaction,Integer.parseInt(pOrder.param(2)));
+        var breakgroup = group.breakOffGroup(pGame, pFaction, null, Integer.parseInt(pOrder.param(2)));
         breakgroup.toPosition().copyOf(planet.position());
         if (breakgroup==group) {
         } else {

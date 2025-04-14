@@ -86,7 +86,7 @@ public class JG_Orders implements IJG_Orders {
     // **** Check groups
     for (IJG_Group group : pToFaction.groups().getGroups()) {
       if (group.to() != null && group.getFleet()==null) {
-        orders.addOrder(JG_Order.of(EJG_Order.SEND, List.of(group.id(), group.to())));
+        orders.addOrder(JG_Order.of(EJG_Order.SEND, List.of(group.id(), group.to(), ""+group.getNumberOf() )));
       }
     }
 

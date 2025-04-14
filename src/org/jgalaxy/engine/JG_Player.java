@@ -26,7 +26,8 @@ public class JG_Player extends Entity implements IJG_Player {
       String factionid = XML_Utils.attr(factionnode, "id", "");
       IJG_Faction faction = pGame.getFactionById(factionid);
       if (faction==null) {
-        player.addFaction(JG_Faction.of(pGame,XML_Utils.attr(factionnode,"id",null),XML_Utils.attr(factionnode,"name",null)));
+        player.addFaction(JG_Faction.of(pGame,factionnode));
+//        player.addFaction(JG_Faction.of(pGame,XML_Utils.attr(factionnode,"id",null),XML_Utils.attr(factionnode,"name",null)));
       } else {
         player.addFaction(faction);
       }

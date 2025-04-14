@@ -30,6 +30,7 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+import java.util.Objects;
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.stream.Collectors;
 
@@ -47,6 +48,9 @@ public class JG_Faction extends Entity implements IJG_Faction {
     IJG_Faction faction = of(pGame,id,name);
 
     faction.tech().copyOf(JG_Tech.of(pParent));
+
+    faction.setReconTotalPop( Double.parseDouble(XML_Utils.attr(pParent,"totalPop", "-1")));
+    faction.setReconTotalIndustry( Double.parseDouble(XML_Utils.attr(pParent,"totalIndustry", "-1")));
 
     String atWarWith = XML_Utils.attr(pParent,"atWarWith");
     Arrays.stream(atWarWith.split("\\|")).forEach(faction::addWarWith);
@@ -117,6 +121,9 @@ public class JG_Faction extends Entity implements IJG_Faction {
   private final List<IC_Message>      mMessages = new ArrayList<>(8);
 
   private final IntegerProperty       mChangeCounter = new SimpleIntegerProperty(0);
+
+  private       double                mReconTotalPop;
+  private       double                mReconTotalIndustry;
 
   private       IAI_Faction           mAIFaction;
   private       IJG_Orders            mOrders;
@@ -366,6 +373,41 @@ public class JG_Faction extends Entity implements IJG_Faction {
       mChangeCounter.setValue(mChangeCounter.get() + 1);
     }
     return;
+  }
+
+  @Override
+  public IJG_Faction resolveFactionById(String pFactionId) {
+    if (Objects.equals(id(), pFactionId)) {
+      return this;
+    }
+    for( IJG_Faction faction : getOtherFactionsMutable()) {
+      if (faction.id().equals(pFactionId)) {
+        return faction;
+      }
+    }
+    return null;
+  }
+
+  @Override
+  public void setReconTotalPop(double pReconTotalPop) {
+    mReconTotalPop = pReconTotalPop;
+    return;
+  }
+
+  @Override
+  public double getReconTotalPop() {
+    return mReconTotalPop;
+  }
+
+  @Override
+  public void setReconTotalIndustry(double pReconTotalIndustry) {
+    mReconTotalIndustry = pReconTotalIndustry;
+    return;
+  }
+
+  @Override
+  public double getReconTotalIndustry() {
+    return mReconTotalIndustry;
   }
 
   @Override

@@ -58,8 +58,14 @@ public interface IJG_Faction extends IEntity, IStorage {
 
   List<IC_Message> getMessagesMutable();
 
-
   IntegerProperty changeCounterProperty();
   void newChange();
+
+  IJG_Faction resolveFactionById( String pFactionId );
+
+  void setReconTotalPop( double pReconTotalPop );
+  double getReconTotalPop();
+  void setReconTotalIndustry( double pReconTotalIndustry );
+  double getReconTotalIndustry();
 
 }

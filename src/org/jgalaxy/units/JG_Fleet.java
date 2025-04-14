@@ -44,6 +44,14 @@ public class JG_Fleet extends JG_Group implements IJG_Fleet {
   }
 
   @Override
+  public String faction() {
+    if (!mGroups.isEmpty()) {
+      return mGroups.getFirst().faction();
+    }
+    return super.faction();
+  }
+
+  @Override
   public void storeObject(File pPath, Node pParent, String pName, String pFilter ) {
     Element fleetnode = pParent.getOwnerDocument().createElement( "fleet" );
     fleetnode.setAttribute("id", id());

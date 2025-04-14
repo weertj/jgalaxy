@@ -50,6 +50,11 @@ public class JG_Groups implements IJG_Groups {
   }
 
   @Override
+  public boolean isGroupAtPosition(IJG_Position pPosition) {
+    return mGroups.stream().filter(g->g.position().equals(pPosition)).findAny().isPresent();
+  }
+
+  @Override
   public IJG_Groups groupsByPosition(IJG_Position pPosition) {
     return of( mGroups.stream().filter(g->g.position().equals(pPosition)).collect(Collectors.toList()));
   }

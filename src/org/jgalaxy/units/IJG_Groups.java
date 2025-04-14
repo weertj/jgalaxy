@@ -28,6 +28,7 @@ public interface IJG_Groups {
 
   List<IJG_Group> getGroups();
 
+  boolean isGroupAtPosition(IJG_Position pPosition );
   IJG_Groups groupsByPosition(IJG_Position pPosition);
   IJG_Groups groupsByFaction(IJG_Faction pFaction);
   IJG_Groups groupsByFactions( List<String> pFactions );

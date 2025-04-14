@@ -1,5 +1,6 @@
 package org.jgalaxy.engine;
 
+import javafx.scene.control.TreeItem;
 import org.jgalaxy.*;
 import org.jgalaxy.ai.AI_GameMasterFaction;
 import org.jgalaxy.ai.IAI_Faction;
@@ -27,10 +28,7 @@ import java.io.FileInputStream;
 import java.io.IOException;
 import java.nio.charset.Charset;
 import java.time.Duration;
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.List;
-import java.util.Objects;
+import java.util.*;
 
 public class JG_Game extends Entity implements IJG_Game {
 
@@ -382,14 +380,14 @@ public class JG_Game extends Entity implements IJG_Game {
    * reconPhase
    */
   private void reconPhase() {
-
     // **** Planets visibility
     for( IJG_Faction faction : factions() ) {
       faction.planets().replaceByCopyOf();
       for( IJG_Planet planet : faction.planets().planetsNotOwnedBy(faction)) {
         IJG_Planet realplanet = mGalaxy.map().planets().findPlanetById(planet.id());
         // **** Own ships above?
-        if (faction.groups().groupsByPosition(realplanet.position()).isEmpty()) {
+//        if (faction.groups().groupsByPosition(realplanet.position()).isEmpty()) {
+        if (!faction.groups().isGroupAtPosition(realplanet.position())) {
           if (realplanet.faction() == null) {
             planet.setPlanetToVisibility(FLOS_Visibility.VIS_MINIMUM, realplanet);
           } else {
@@ -620,6 +618,20 @@ public class JG_Game extends Entity implements IJG_Game {
       }
     }
     return;
+  }
+
+  @Override
+  public List<IJG_Faction> topFactions() {
+    List<IJG_Faction> topFactions = new ArrayList<>(16);
+    // **** TopFactions
+    for( IJG_Player player : players()) {
+      for( IJG_Faction faction : player.factions() ) {
+        topFactions.add(faction);
+      }
+    }
+    Collections.sort(topFactions, Comparator.comparingDouble( IJG_Faction::getReconTotalPop));
+    topFactions = topFactions.reversed();
+    return topFactions;
   }
 
   private String reportPlain(IJG_Player pPlayer ) {
