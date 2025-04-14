@@ -28,6 +28,15 @@ public class JG_UnitDesign extends Entity implements IJG_UnitDesign {
     return new JG_UnitDesign( pId, pName, pDrive,pWeapons,pNrWeapons,pShields,pCargo);
   }
 
+  static public double killChance( double pWeapon, double pShields ) {
+    return ((Math.log(pWeapon/pShields)/Math.log(4))+1)/2;
+  }
+
+  static public double shieldsImmuneForWeapons( double pShields ) {
+    return (Math.log(pShields)/Math.log(2));
+  }
+
+
   private final double mDrive;
   private final double mWeapons;
   private final int    mNrWeapons;
@@ -95,7 +104,11 @@ public class JG_UnitDesign extends Entity implements IJG_UnitDesign {
 
   @Override
   public double mass() {
-    return drive() + weapons() + weapons()*0.5*(nrweapons()-1) + shields() + cargo();
+    double weapons = weapons() + weapons()*0.5*(nrweapons()-1);
+    if (nrweapons()<=0) {
+      weapons = 0;
+    }
+    return drive() + weapons + shields() + cargo();
   }
 
   @Override

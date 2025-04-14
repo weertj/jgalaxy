@@ -3,10 +3,7 @@ package org.jgalaxy.battle;
 import org.jgalaxy.IJG_Position;
 import org.jgalaxy.engine.IJG_Faction;
 import org.jgalaxy.engine.IJG_Game;
-import org.jgalaxy.units.IJG_Group;
-import org.jgalaxy.units.IJG_Groups;
-import org.jgalaxy.units.IJG_UnitDesign;
-import org.jgalaxy.units.JG_Groups;
+import org.jgalaxy.units.*;
 import org.jgalaxy.utils.GEN_Math;
 
 import java.util.*;
@@ -76,7 +73,7 @@ public class SB_BattleField implements ISB_BattleField {
           var deffaction = mGame.getFactionById(group.faction());
           var udef = deffaction.getUnitDesignById(group.unitDesign());
           double shields = udef.effectiveShield(group.tech());
-          if (killChance(weapon,shields)>0) {
+          if (JG_UnitDesign.killChance(weapon,shields)>0) {
             return true;
           }
         }
@@ -95,9 +92,9 @@ public class SB_BattleField implements ISB_BattleField {
     return attackgroup;
   }
 
-  private double killChance( double pWeapon, double pShields ) {
-    return ((Math.log(pWeapon/pShields)/Math.log(4))+1)/2;
-  }
+//  private double killChance( double pWeapon, double pShields ) {
+//    return ((Math.log(pWeapon/pShields)/Math.log(4))+1)/2;
+//  }
 
 
   /**
@@ -119,7 +116,7 @@ public class SB_BattleField implements ISB_BattleField {
       double weapon = pAttackerDesign.effectiveWeapon( pAttacker.tech());
 //      double weapon = pAttacker.tech().weapons() * pAttackerDesign.weapons();
 //      double pkill = ((Math.log(weapon/shields)/Math.log(4))+1)/2;
-      double pkill = killChance(weapon,shields);
+      double pkill = JG_UnitDesign.killChance(weapon,shields);
       if (pkill<0) {
         return null;
       }
