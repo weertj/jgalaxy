@@ -17,6 +17,10 @@ public interface IJG_Fleet extends IJG_Group, IEntity, IStorage {
     return !groups().isEmpty();
   }
 
+  default int totalNumberOfShips() {
+    return groups().stream().mapToInt(IJG_Group::getNumberOf ).sum();
+  }
+
   @Override
   double maxSpeed(IJG_Faction pFaction);
 }

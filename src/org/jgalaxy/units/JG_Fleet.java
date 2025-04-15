@@ -40,7 +40,10 @@ public class JG_Fleet extends JG_Group implements IJG_Fleet {
 
   @Override
   public double maxSpeed(IJG_Faction pFaction) {
-    return mGroups.stream().mapToDouble(g->g.maxSpeed(pFaction)).max().orElse(0.0);
+    return mGroups.stream()
+      .mapToDouble(g->g.maxSpeed(pFaction))
+      .min()
+      .orElse(0.0);
   }
 
   @Override

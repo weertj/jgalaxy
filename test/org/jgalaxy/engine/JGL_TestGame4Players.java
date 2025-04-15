@@ -31,15 +31,15 @@ public class JGL_TestGame4Players {
 
     String xml = """
     <root>
-        <game name="TestGame4" timeProgressionDays="365" runWhenAllOrdersAreIn="false" minDistBetweenHomePlanets="20">
+        <game name="TestGame4" timeProgressionDays="1460" runWhenAllOrdersAreIn="false" minDistBetweenHomePlanets="20">
           <map>
             <mapcol>
               <min x="0" y="0"/>
-              <max x="60" y="60"/>
-              <planet generate="12"/> 
+              <max x="40" y="40"/>
+              <planet generate="10"/> 
             </mapcol>
           </map>
-          <player generate="4">
+          <player generate="2">
             <faction>
             </faction>
           </player>

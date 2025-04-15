@@ -16,6 +16,7 @@ import org.w3c.dom.Node;
 import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 
 public class JG_Group extends Entity implements IJG_Group {
 
@@ -39,6 +40,7 @@ public class JG_Group extends Entity implements IJG_Group {
     for( Node shotnode : XML_Utils.childElementsByName( pParent, "shot" )) {
       IB_Shot shot = new B_Shot(
         IB_Shot.TYPE.valueOf(XML_Utils.attr(shotnode,"type" )),
+        IB_Shot.RESULT.valueOf(XML_Utils.attr(shotnode,"result" )),
         Integer.parseInt(XML_Utils.attr(shotnode,"round" )),
         XML_Utils.attr(shotnode,"targetID" ),
         XML_Utils.attr(shotnode,"targetFaction" ),
@@ -70,6 +72,21 @@ public class JG_Group extends Entity implements IJG_Group {
   protected JG_Group( String pId, String pName ) {
     super( pId, pName );
     return;
+  }
+
+  @Override
+  public boolean equals(Object o) {
+    if (o == null || getClass() != o.getClass()) return false;
+    if (!super.equals(o)) return false;
+    JG_Group jgGroup = (JG_Group) o;
+    return Objects.equals(mFaction,jgGroup.mFaction);
+  }
+
+  @Override
+  public int hashCode() {
+    int result = super.hashCode();
+    result = 31 * result + mFaction.hashCode();
+    return result;
   }
 
   @Override
@@ -283,6 +300,7 @@ public class JG_Group extends Entity implements IJG_Group {
         Element shotnode = pParent.getOwnerDocument().createElement( "shot" );
         groupnode.appendChild(shotnode);
         shotnode.setAttribute("type", shot.type().name());
+        shotnode.setAttribute("result", shot.result().name());
         shotnode.setAttribute("round", ""+shot.round());
         shotnode.setAttribute("targetID", shot.targetID());
         shotnode.setAttribute("targetFaction", shot.targetFaction());

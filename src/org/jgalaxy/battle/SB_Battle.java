@@ -26,7 +26,7 @@ public class SB_Battle {
                 IJG_Faction planetfaction = pGame.getFactionById(planet.faction());
                 if (pGame.getFactionById(group.faction()).atWarWith().contains(planet.faction())) {
                   group.shotsMutable().add( new B_Shot(
-                    IB_Shot.TYPE.SHIP_PLANET,
+                    IB_Shot.TYPE.SHIP_PLANET, IB_Shot.RESULT.ALL_DESTROYED,
                     -1,planet.id(),planet.faction(),1));
                   planet.setFaction(null);
                   planet.setPopulation(0);

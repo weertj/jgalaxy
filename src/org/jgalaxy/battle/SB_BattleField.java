@@ -145,15 +145,18 @@ public class SB_BattleField implements ISB_BattleField {
             var target = selectTargetGroup(targets);
             if (target != null) {
               IJG_Faction deffaction = mGame.getFactionById(target.faction());
+              deffaction.addWarWith(faction.id());
               var udef = deffaction.getUnitDesignById(target.unitDesign());
               Boolean result = attack(uatt, attacker, deffaction, udef, target);
               if (result == null) {
                 // **** No chance to kill
-                attacker.shotsMutable().add(new B_Shot(IB_Shot.TYPE.SHIP_SHIP, mBattleRound, target.id(), target.faction(), -1));
+                attacker.shotsMutable().add(new B_Shot(IB_Shot.TYPE.SHIP_SHIP, IB_Shot.RESULT.NO_CHANCE, mBattleRound, target.id(), target.faction(), -1));
+                target.shotsMutable().add(new B_Shot(IB_Shot.TYPE.SHIP_SHIP_INCOMING, IB_Shot.RESULT.NO_CHANCE, mBattleRound, attacker.id(), attacker.faction(), -1));
               } else {
                 if (result) {
                   // **** Hit
-                  attacker.shotsMutable().add(new B_Shot(IB_Shot.TYPE.SHIP_SHIP, mBattleRound, target.id(), target.faction(), 1));
+                  attacker.shotsMutable().add(new B_Shot(IB_Shot.TYPE.SHIP_SHIP, target.getNumberOf()>1?IB_Shot.RESULT.DESTROYED: IB_Shot.RESULT.ALL_DESTROYED, mBattleRound, target.id(), target.faction(), 1));
+                  target.shotsMutable().add(new B_Shot(IB_Shot.TYPE.SHIP_SHIP_INCOMING, target.getNumberOf()>1?IB_Shot.RESULT.DESTROYED: IB_Shot.RESULT.ALL_DESTROYED,mBattleRound, attacker.id(), attacker.faction(), 1));
                   target.setNumberOf(target.getNumberOf() - 1);
                   if (target.getNumberOf() <= 0) {
                     // **** Destroyed
@@ -161,7 +164,8 @@ public class SB_BattleField implements ISB_BattleField {
                   }
                 } else {
                   // **** Shields
-                  attacker.shotsMutable().add(new B_Shot(IB_Shot.TYPE.SHIP_SHIP, mBattleRound, target.id(), target.faction(), 0));
+                  attacker.shotsMutable().add(new B_Shot(IB_Shot.TYPE.SHIP_SHIP, IB_Shot.RESULT.SHIELDS, mBattleRound, target.id(), target.faction(), 0));
+                  target.shotsMutable().add(new B_Shot(IB_Shot.TYPE.SHIP_SHIP_INCOMING, IB_Shot.RESULT.SHIELDS, mBattleRound, attacker.id(), attacker.faction(), 0));
                 }
               }
             }
