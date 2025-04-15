@@ -56,6 +56,14 @@ public class XML_Utils {
     return attr(pN,pItem,"");
   }
 
+  static public Double attrd(Node pNode, String pItem, Double pDefault ) {
+    var val = attr(pNode,pItem,null);
+    if (val==null) {
+      return pDefault;
+    }
+    return Double.parseDouble(val);
+  }
+
   static public String attr(NamedNodeMap pNNM, String pItem, String pDefault ) {
     Node n = pNNM.getNamedItem(pItem);
     if (n==null) {

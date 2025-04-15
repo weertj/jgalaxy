@@ -365,7 +365,7 @@ public class JG_Game extends Entity implements IJG_Game {
     return;
   }
 
-  private void roundUp() {
+  public void roundUp() {
     for( IJG_Faction faction : factions() ) {
       faction.planets().clear();
       for (IJG_Planet planet : mGalaxy.map().planets().planets()) {
@@ -379,7 +379,7 @@ public class JG_Game extends Entity implements IJG_Game {
   /**
    * reconPhase
    */
-  private void reconPhase() {
+  public void reconPhase() {
     // **** Planets visibility
     for( IJG_Faction faction : factions() ) {
       faction.planets().replaceByCopyOf();

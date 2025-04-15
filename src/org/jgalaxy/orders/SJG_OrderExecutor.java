@@ -165,7 +165,7 @@ public class SJG_OrderExecutor {
   static public void orderWAR(  IJG_Game pGame, IJG_Faction pFaction, IJG_Order pOrder ) {
     String factionid = pOrder.param(0 );
     pFaction.addWarWith(factionid);
-    pGame.getFactionById(factionid).addWarWith(pFaction.id());
+    pGame.getFactionById(pFaction.id()).addWarWith(factionid);
     return;
   }
 

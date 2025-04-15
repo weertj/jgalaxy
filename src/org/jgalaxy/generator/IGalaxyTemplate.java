@@ -17,5 +17,18 @@ public interface IGalaxyTemplate {
   List<Node> planetGenerations();
   List<Node> playerGenerations();
 
+  double homePlanetMin();
+  double homePlanetMax();
+
+  double planetMinSize();
+  double planetMaxSize();
+
+  double minDistBetweenPlanets();
+  double maxDistBetweenPlanets();
+
+  double homePlanetAttraction();
+
+  double minDistBetweenHomePlanets();
+  double maxDistBetweenHomePlanets();
 
 }

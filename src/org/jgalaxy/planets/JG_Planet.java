@@ -17,6 +17,7 @@ import org.w3c.dom.Node;
 
 import java.io.File;
 import java.time.Duration;
+import java.util.Objects;
 
 public class JG_Planet extends Entity implements IJG_Planet {
 
@@ -190,7 +191,10 @@ public class JG_Planet extends Entity implements IJG_Planet {
   @Override
   public void setProduceType(EProduceType pType, String pDesign) {
     mProducing = pType;
-    mProducingShipType = pDesign;
+    if (!Objects.equals(mProducingShipType, pDesign)) {
+      mProducingShipType = pDesign;
+      mInprogress = 0;
+    }
     return;
   }
 
