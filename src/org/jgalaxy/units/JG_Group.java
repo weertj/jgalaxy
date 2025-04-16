@@ -274,6 +274,19 @@ public class JG_Group extends Entity implements IJG_Group {
   }
 
   @Override
+  public int calcNumberOfBeforeBattle() {
+    int nr = getNumberOf();
+    for( IB_Shot shot : mShots ) {
+      if (shot.type()== IB_Shot.TYPE.SHIP_SHIP_INCOMING) {
+        if (shot.result() == IB_Shot.RESULT.DESTROYED || shot.result() == IB_Shot.RESULT.ALL_DESTROYED) {
+          nr += shot.hits();
+        }
+      }
+    }
+    return nr;
+  }
+
+  @Override
   public void storeObject(File pPath, Node pParent, String pName, String pFilter ) {
     Element groupnode = pParent.getOwnerDocument().createElement( "group" );
     groupnode.setAttribute("id", id());

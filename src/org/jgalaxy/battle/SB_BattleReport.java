@@ -7,6 +7,7 @@ import org.jgalaxy.units.IJG_Group;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 
 public class SB_BattleReport extends Entity implements ISB_BattleReport {
 
@@ -32,6 +33,41 @@ public class SB_BattleReport extends Entity implements ISB_BattleReport {
   }
 
   @Override
+  public IJG_Position position() {
+    return mPosition;
+  }
+
+  @Override
+  public int calcNumberOfBeforeBattle(IJG_Group pGroup) {
+    if (Objects.equals(mFaction.id(), pGroup.faction())) {
+      return pGroup.calcNumberOfBeforeBattle();
+    }
+    List<IJG_Group> groups = mFaction.groups().groupsByPosition(mPosition)
+      .getGroups().stream()
+      .filter(g -> !g.shotsMutable().isEmpty())
+      .toList();
+    int numberOf = pGroup.getNumberOf();
+    for( IJG_Group group : groups ) {
+      numberOf += hitsOnGroupForGroup(pGroup, group);
+    }
+    return numberOf;
+  }
+
+  @Override
+  public int hitsOnGroupForGroup( IJG_Group pTargetGroup, IJG_Group pSourceGroup ) {
+    int hits = 0;
+    for( IB_Shot shot : pSourceGroup.shotsMutable()) {
+      if (shot.type()==IB_Shot.TYPE.SHIP_SHIP &&
+          Objects.equals(shot.targetID(),pTargetGroup.id()) &&
+          shot.targetFaction().equals(pTargetGroup.faction())
+         ) {
+        hits += shot.hits();
+      }
+    }
+    return hits;
+  }
+
+  @Override
   public List<IJG_Group> groups() {
     List<IJG_Group> groups = new ArrayList<>(8);
     //var planet = mFaction.planets().findPlanetByPosition(mPosition);
@@ -43,7 +79,6 @@ public class SB_BattleReport extends Entity implements ISB_BattleReport {
     for( var faction : mFaction.getOtherFactionsMutable()) {
       groups.addAll(faction.groups().groupsByPosition(mPosition)
         .getGroups().stream()
-        .filter(g -> !g.shotsMutable().isEmpty())
         .toList()
       );
     }

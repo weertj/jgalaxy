@@ -70,4 +70,5 @@ public interface IJG_Group extends IEntity, IStorage, IFactionOwner, IJG_Positio
 
   List<IB_Shot> shotsMutable();
 
+  int calcNumberOfBeforeBattle();
 }
