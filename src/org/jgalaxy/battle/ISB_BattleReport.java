@@ -11,6 +11,10 @@ public interface ISB_BattleReport extends IEntity {
 
   IJG_Position position();
 
+  default boolean isBattle() {
+    return groups().stream().anyMatch( g -> !g.shotsMutable().isEmpty());
+  }
+
   boolean isInvolved(IJG_Faction pFaction);
 
   List<IJG_Group> groups();
