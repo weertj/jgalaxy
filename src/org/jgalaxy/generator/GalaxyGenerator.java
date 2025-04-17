@@ -50,6 +50,7 @@ public class GalaxyGenerator {
     Node gameNode = pGalaxyTemplate.gameNode();
     game.setTimeProgressionDays( Double.parseDouble(XML_Utils.attr(gameNode, "timeProgressionDays", "365" )));
     game.setTurnIntervalSecs( Integer.parseInt(XML_Utils.attr(gameNode, "turnIntervalSecs", "-1" )));
+    game.setTurnHistory( Integer.parseInt(XML_Utils.attr(gameNode, "turnHistory", "-1" )));
     game.setRunWhenAllOrdersAreIn(Boolean.valueOf(XML_Utils.attr(gameNode, "runWhenAllOrdersAreIn", "false" )));
 
 
@@ -64,7 +65,7 @@ public class GalaxyGenerator {
         game.addFaction( faction,faction );
         game.addPlayer(player);
         IJG_Planet homeplanet = null;
-        for( int i=0; i<1000; i++) {
+        for( int i=0; i<2000; i++) {
           IJG_Position pos = JG_Position.of(Math.random() * (map.xEnd() - map.xStart()), Math.random() * (map.yEnd() - map.yStart()));
           if (isValidHomePlanetPosition(pos,homeplanets,pGalaxyTemplate)) {
             homeplanet = JG_Planet.of("home" + ix, "home" + ix,
@@ -75,6 +76,7 @@ public class GalaxyGenerator {
             homeplanet.setIndustry(homeplanet.size());
             homeplanet.setFaction(faction.id());
             homeplanets.add(homeplanet);
+            break;
           }
         }
         faction.planets().addPlanet( homeplanet );
@@ -85,7 +87,7 @@ public class GalaxyGenerator {
     IJG_Planets planets = galaxy.map().planets();
     for( Node pgen : pGalaxyTemplate.planetGenerations()) {
       for(int ix = 0; ix<Integer.parseInt(XML_Utils.attr(pgen, "generate")); ix++) {
-        for( int i=0; i<1000; i++) {
+        for( int i=0; i<2000; i++) {
           IJG_Position pos = JG_Position.of(Math.random() * (map.xEnd() - map.xStart()), Math.random() * (map.yEnd() - map.yStart()));
           if (isValidPlanetPosition(pos,planets.planets(),pGalaxyTemplate)) {
             IJG_Planet planet = JG_Planet.of("" + ix, "" + ix, pos );

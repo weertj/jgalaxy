@@ -54,6 +54,7 @@ public class JG_Game extends Entity implements IJG_Game {
     IJG_Game game = of(name,galaxy);
     game.setTurnNumber(pTurnNumber);
     game.setTurnIntervalSecs( Long.parseLong(XML_Utils.attr(gameNode, "turnIntervalSecs", "-1" )));
+    game.setTurnHistory( Long.parseLong(XML_Utils.attr(gameNode, "turnHistory", "-1" )));
     game.setNextRun(XML_Utils.attr(gameNode, "nextRun"));
     game.setTimeProgressionDays(Double.parseDouble(XML_Utils.attr(gameNode, "timeProgressionDays", "365" )));
     game.setRunWhenAllOrdersAreIn(Boolean.valueOf(XML_Utils.attr(gameNode, "runWhenAllOrdersAreIn", "false" )));
@@ -128,6 +129,7 @@ public class JG_Game extends Entity implements IJG_Game {
   private       IJG_GameInfo mGameInfo;
   private       long      mTurnNumber;
   private       long      mTurnIntervalSecs;
+  private       long      mTurnHistory;
   private       boolean   mRunWhenAllOrdersAreIn;
   private       double    mTimeProgressionDays;
   private       String    mNextRun;
@@ -152,6 +154,17 @@ public class JG_Game extends Entity implements IJG_Game {
   public void setRunWhenAllOrdersAreIn(boolean pRunWhenAllOrdersAreIn) {
     mRunWhenAllOrdersAreIn = pRunWhenAllOrdersAreIn;
     return;
+  }
+
+  @Override
+  public void setTurnHistory(long pTurnHistory) {
+    mTurnHistory = pTurnHistory;
+    return;
+  }
+
+  @Override
+  public long turnHistory() {
+    return mTurnHistory;
   }
 
   @Override
@@ -541,6 +554,7 @@ public class JG_Game extends Entity implements IJG_Game {
     Element gamenode = doc.createElement( "game" );
     gamenode.setAttribute("name", name() );
     gamenode.setAttribute("turnNumber", ""+turnNumber() );
+    gamenode.setAttribute("turnHistory", ""+turnHistory() );
     gamenode.setAttribute("turnIntervalSecs", ""+turnIntervalSecs() );
     gamenode.setAttribute("nextRun", nextRun() );
     gamenode.setAttribute("timeProgressionDays", ""+timeProgressionDays() );

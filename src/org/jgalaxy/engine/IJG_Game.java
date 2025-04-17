@@ -26,6 +26,8 @@ public interface IJG_Game extends IEntity,ITimeProgression, IStorage {
   boolean runWhenAllOrdersAreIn();
   void setRunWhenAllOrdersAreIn(boolean pRunWhenAllOrdersAreIn);
 
+  void setTurnHistory( long pTurnHistory );
+  long turnHistory();
 
   double timeProgressionDays();
   void setTimeProgressionDays(double pDays);
