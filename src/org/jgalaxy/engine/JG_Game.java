@@ -366,14 +366,20 @@ public class JG_Game extends Entity implements IJG_Game {
     return;
   }
 
+  /**
+   * cleanUp
+   */
   private void cleanUp() {
     for( IJG_Faction faction : factions() ) {
       for( IJG_Group group : new ArrayList<>(faction.groups().getGroups()) ) {
         if (group.getNumberOf()==0) {
           faction.groups().removeGroup(group);
+        } else {
+          group.shotsMutable().clear();
         }
       }
       faction.getIncomingMutable().clear();
+      faction.getBombingsMutable().clear();
     }
     return;
   }
@@ -429,12 +435,14 @@ public class JG_Game extends Entity implements IJG_Game {
               if (Objects.equals(planet.faction(),faction.id())) {
                 if (planet.position().equals(group.position())) {
                   visOtherFaction.groups().addGroup(group);
+                  visOtherFaction.addUnitDesign(otherfaction.getUnitDesignById(group.unitDesign()));
                 }
               } else {
                 // **** Or an own fleet is in orbit
                 for( var g : faction.groups().groupsByPosition(planet.position()).getGroups()) {
                   if (g.position().equals(group.position())) {
                     visOtherFaction.groups().addGroup(group);
+                    visOtherFaction.addUnitDesign(otherfaction.getUnitDesignById(group.unitDesign()));
                   }
                 }
 //                if (!faction.groups().groupsByPosition(planet.position()).isEmpty()) {

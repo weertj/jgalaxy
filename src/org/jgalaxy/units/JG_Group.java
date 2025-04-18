@@ -258,8 +258,8 @@ public class JG_Group extends Entity implements IJG_Group {
       breakgroup.copyOf(this);
       double ratio = (double)pNumberOf/(double)mNumberOf;
       if (mLoad>0) {
-        mLoad *= ratio;
-        breakgroup.setLoad(breakgroup.load()*(1-ratio));
+        breakgroup.setLoad(breakgroup.load()*ratio);
+        mLoad *= (1-ratio);
       }
       mNumberOf -= pNumberOf;
       breakgroup.setNumberOf(pNumberOf);

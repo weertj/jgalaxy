@@ -47,6 +47,12 @@ public class JG_Groups implements IJG_Groups {
   }
 
   @Override
+  public void addGroupAlways(IJG_Group pGroup) {
+    mGroups.add(pGroup);
+    return;
+  }
+
+  @Override
   public List<IJG_Group> getGroups() {
     return new ArrayList<>(mGroups);
   }
@@ -82,6 +88,7 @@ public class JG_Groups implements IJG_Groups {
             group.position().equals(innergroup.position()) &&
             group.unitDesign().equals(innergroup.unitDesign()) &&
             group.tech().equals(innergroup.tech()) &&
+            Objects.equals(group.loadType(),innergroup.loadType()) &&
             Objects.equals(group.getFleet(),innergroup.getFleet())
           ) {
             group.setNumberOf(group.getNumberOf() + innergroup.getNumberOf());
@@ -232,11 +239,14 @@ public class JG_Groups implements IJG_Groups {
         if (!fleet.groups().isEmpty()) {
           IJG_Group group = fleet.groups().getFirst();
           if (!group.position().equals(group.toPosition())) {
-            IJG_Planet planet     = faction.planets().findPlanetByPosition(group.toPosition());
+            IJG_Planet toplanet   = faction.planets().findPlanetByPosition(group.toPosition());
             IJG_Planet fromplanet = faction.planets().findPlanetByPosition(group.lastStaticPosition());
-            if (planet!=null && fromplanet!=null && planet.faction()!=null && !planet.faction().equals(group.faction())) {
+            if (toplanet!=null && fromplanet!=null && toplanet.faction()!=null && !toplanet.faction().equals(group.faction())) {
               IJG_Incoming incoming = new JG_Incoming( group.lastStaticPosition(), group.position(), group.toPosition(), group.totalMass(pGame.getFactionById(group.faction())) );
-              pGame.getFactionById(planet.faction()).getIncomingMutable().add(incoming);
+              var tofact = pGame.getFactionById(toplanet.faction());
+              if (tofact!=null) {
+                tofact.getIncomingMutable().add(incoming);
+              }
             }
           }
         }
@@ -245,11 +255,15 @@ public class JG_Groups implements IJG_Groups {
       IMAP_Map map = pGame.galaxy().map();
       for( IJG_Group group : getGroups() ) {
         if (group.getFleet()==null && !group.position().equals(group.toPosition())) {
-          IJG_Planet planet     = map.planets().findPlanetByPosition(group.toPosition());
+          IJG_Planet toplanet   = map.planets().findPlanetByPosition(group.toPosition());
           IJG_Planet fromplanet = map.planets().findPlanetByPosition(group.lastStaticPosition());
-          if (planet!=null && fromplanet!=null && planet.faction()!=null && !planet.faction().equals(group.faction())) {
+          if (toplanet!=null && fromplanet!=null && toplanet.faction()!=null && !toplanet.faction().equals(group.faction())) {
             IJG_Incoming incoming = new JG_Incoming( group.lastStaticPosition(), group.position(), group.toPosition(), group.totalMass(pGame.getFactionById(group.faction())) );
-            pGame.getFactionById(planet.faction()).getIncomingMutable().add(incoming);
+            var tofact = pGame.getFactionById(toplanet.faction());
+            if (tofact!=null) {
+              tofact.getIncomingMutable().add(incoming);
+            }
+//            pGame.getFactionById(toplanet.faction()).getIncomingMutable().add(incoming);
           }
         }
       }

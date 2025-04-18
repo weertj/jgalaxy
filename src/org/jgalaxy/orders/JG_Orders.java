@@ -111,6 +111,13 @@ public class JG_Orders implements IJG_Orders {
         }
       }
     }
+    // **** Handle the new groups
+    for( int ix=groups.getSize(); ix<pToFaction.groups().getSize(); ix++ ) {
+      var g2 = pToFaction.groups().getGroupByGroupIndex(ix);
+      if (g2.getFleet()!=null) {
+        orders.addOrder(JG_Order.of( EJG_Order.JOIN, List.of(g2.id(),g2.getFleet(), ""+g2.getNumberOf())));
+      }
+    }
 
     return orders;
   }

@@ -10,7 +10,7 @@ public class SJG_LoadOrder {
   static public double loadOrder( IJG_Group pGroup, IJG_UnitDesign pUnitDesign, String pLoad, IJG_Planet pPlanet, double pAmountToLoad ) {
     double loaded = 0.0;
     double load = pAmountToLoad;
-    double cc = pUnitDesign.canCarry(pGroup.tech());
+    double cc = pUnitDesign.canCarry(pGroup.tech()) * pGroup.getNumberOf();
     double already = pGroup.load();
     cc -= already;
     String currentCarry = pGroup.loadType();

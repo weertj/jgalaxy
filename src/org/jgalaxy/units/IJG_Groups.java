@@ -17,6 +17,7 @@ public interface IJG_Groups {
   IJG_Group getGroupById( String pGroupId );
 
   void addGroup( IJG_Group pGroup );
+  void addGroupAlways( IJG_Group pGroup );
   default void addGroups( IJG_Groups pGroups ) {
     pGroups.getGroups().stream().forEach( this::addGroup );
     return;

@@ -78,7 +78,7 @@ public class JG_Faction extends Entity implements IJG_Faction {
       faction.addIncoming(incoming);
     }
 
-    for(Element ud : XML_Utils.childElementsByName(pParent,"bombings")) {
+    for(Element ud : XML_Utils.childElementsByName(pParent,"bombing")) {
       IJG_Bombing bombing = JG_Bombing.of(ud);
       faction.addBombing(bombing);
     }
@@ -174,7 +174,7 @@ public class JG_Faction extends Entity implements IJG_Faction {
 
   @Override
   public void addUnitDesign(IJG_UnitDesign pDesign) {
-    if (!mUnitDesigns.contains(pDesign)) {
+    if (!mUnitDesigns.contains(pDesign) && !pDesign.name().isBlank()) {
       mUnitDesigns.add(pDesign);
     }
     return;

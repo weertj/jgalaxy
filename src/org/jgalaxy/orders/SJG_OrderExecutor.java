@@ -13,6 +13,10 @@ import org.jgalaxy.units.JG_UnitDesign;
 
 public class SJG_OrderExecutor {
 
+  static private boolean paramIsAvailable( IJG_Order pOrder, int pP ) {
+    return pOrder.param(pP)!=null && !pOrder.param(pP).isBlank();
+  }
+
   static public void orderMESSAGE(IJG_Game pGame, IJG_Faction pFaction,IJG_Order pOrder) throws OrderException {
     String factionid = pOrder.param(0 );
     String message = pOrder.param(1 );
@@ -63,6 +67,16 @@ public class SJG_OrderExecutor {
         fleet.groups().stream().forEach( g->g.setFleet(tofleet.id()) );
       }
     } else if (tofleet!=null) {
+      // **** Transfer number of
+      if (paramIsAvailable(pOrder,2)) {
+        try {
+          int nr = Integer.parseInt(pOrder.param(2));
+          group = group.breakOffGroup(pGame,pFaction,null,nr);
+          pFaction.groups().addGroup(group);
+        } catch (NumberFormatException e) {
+          throw new OrderException(pFaction, pOrder, pOrder.param(2) + " not a number");
+        }
+      }
       if (tofleet.position()==null) {
         group.setFleet(pOrder.param(1));
       } else {
@@ -114,7 +128,8 @@ public class SJG_OrderExecutor {
     if (group == null) throw new OrderException(pFaction,pOrder,"Group "+groupfleetid+" not found");
     IJG_UnitDesign unitdesign = pFaction.getUnitDesignById(group.unitDesign());
     if (unitdesign == null) throw new OrderException(pFaction,pOrder,"Unit design "+group.unitDesign()+" not found");
-    IJG_Planet planet = pFaction.planets().findPlanetByPosition(group.position());
+    IJG_Planet planet = pGame.galaxy().map().planets().findPlanetByPosition(group.position());
+//    IJG_Planet planet = pFaction.planets().findPlanetByPosition(group.position());
     if (planet == null) throw new OrderException(pFaction,pOrder,"Planet on position "+group.position()+" not found");
     SJG_LoadOrder.loadOrder(group, unitdesign, pOrder.param(1), planet, 9999999 );
     return;
