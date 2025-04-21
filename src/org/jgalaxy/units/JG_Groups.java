@@ -12,19 +12,18 @@ import java.util.stream.Collectors;
 public class JG_Groups implements IJG_Groups {
 
   static public IJG_Groups of(List<IJG_Group> pGroups) {
-    IJG_Groups groups = new JG_Groups();
-    pGroups.stream().forEach(groups::addGroup);
-    return groups;
+    return new JG_Groups(pGroups);
   }
 
   static public IJG_Groups of() {
-    return new JG_Groups();
+    return new JG_Groups(List.of());
   }
 
   private final List<IJG_Fleet> mFleets = new ArrayList<>(64);
   private final List<IJG_Group> mGroups = new ArrayList<>(64);
 
-  private JG_Groups() {
+  private JG_Groups( List<IJG_Group> pGroups ) {
+    mGroups.addAll(pGroups);
     return;
   }
 
@@ -64,7 +63,9 @@ public class JG_Groups implements IJG_Groups {
 
   @Override
   public IJG_Groups groupsByPosition(IJG_Position pPosition) {
-    return of( mGroups.stream().filter(g->g.position().equals(pPosition)).collect(Collectors.toList()));
+    return of( mGroups.stream()
+      .filter(g->g.position().equals(pPosition))
+      .collect(Collectors.toList()));
   }
 
   @Override
@@ -189,9 +190,9 @@ public class JG_Groups implements IJG_Groups {
    * @param pGroup
    * @param pMaxSpeed
    */
-  private void moveGroup(IJG_Faction pFaction,IJG_Group pGroup, Double pMaxSpeed) {
+  private void moveGroup(IJG_Game pGame, IJG_Faction pFaction,IJG_Group pGroup, Double pMaxSpeed) {
 //    IJG_UnitDesign unitdesign = pFaction.getUnitDesignById(pGroup.unitDesign());
-    double speed = pGroup.maxSpeed(pFaction);
+    double speed = pGroup.maxSpeed(pGame,pFaction);
 //    double speed = unitdesign.speed(pGroup.tech()); // TODO (cargo)
     if (pMaxSpeed!=null) {
       speed = Math.min(speed,pMaxSpeed);
@@ -223,15 +224,15 @@ public class JG_Groups implements IJG_Groups {
   public void moveGroups(IJG_Game pGame,IJG_Faction pFaction) {
     // **** Move fleets
     for( IJG_Fleet fleet : fleets()) {
-      double maxspeed = fleet.maxSpeed(pFaction);
+      double maxspeed = fleet.maxSpeed(pGame,pFaction);
       for( IJG_Group group : fleet.groups() ) {
-        moveGroup(pFaction, group, maxspeed);
+        moveGroup(pGame,pFaction, group, maxspeed);
       }
     }
     // **** Move groups
     for( IJG_Group group : mGroups ) {
       if (group.getFleet()==null) {
-        moveGroup(pFaction, group, null);
+        moveGroup(pGame,pFaction, group, null);
       }
     }
 

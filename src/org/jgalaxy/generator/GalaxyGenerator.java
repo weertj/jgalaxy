@@ -55,6 +55,7 @@ public class GalaxyGenerator {
     game.setTurnIntervalSecs( Integer.parseInt(XML_Utils.attr(gameNode, "turnIntervalSecs", "-1" )));
     game.setTurnHistory( Integer.parseInt(XML_Utils.attr(gameNode, "turnHistory", "-1" )));
     game.setRunWhenAllOrdersAreIn(Boolean.valueOf(XML_Utils.attr(gameNode, "runWhenAllOrdersAreIn", "false" )));
+    game.setRealTime(Boolean.valueOf(XML_Utils.attr(gameNode, "realtime", "false" )));
 
 
     // **** playerGenerations

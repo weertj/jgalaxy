@@ -1,6 +1,5 @@
 package org.jgalaxy.engine;
 
-import javafx.scene.control.TreeItem;
 import org.jgalaxy.*;
 import org.jgalaxy.ai.AI_GameMasterFaction;
 import org.jgalaxy.ai.IAI_Faction;
@@ -29,6 +28,7 @@ import java.io.IOException;
 import java.nio.charset.Charset;
 import java.time.Duration;
 import java.util.*;
+import java.util.stream.Collectors;
 
 public class JG_Game extends Entity implements IJG_Game {
 
@@ -55,6 +55,7 @@ public class JG_Game extends Entity implements IJG_Game {
     game.setTurnNumber(pTurnNumber);
     game.setTurnIntervalSecs( Long.parseLong(XML_Utils.attr(gameNode, "turnIntervalSecs", "-1" )));
     game.setTurnHistory( Long.parseLong(XML_Utils.attr(gameNode, "turnHistory", "-1" )));
+    game.setRealTime(Boolean.valueOf(XML_Utils.attr(gameNode, "realtime", "false" )));
     game.setNextRun(XML_Utils.attr(gameNode, "nextRun"));
     game.setTimeProgressionDays(Double.parseDouble(XML_Utils.attr(gameNode, "timeProgressionDays", "365" )));
     game.setRunWhenAllOrdersAreIn(Boolean.valueOf(XML_Utils.attr(gameNode, "runWhenAllOrdersAreIn", "false" )));
@@ -133,6 +134,7 @@ public class JG_Game extends Entity implements IJG_Game {
   private       boolean   mRunWhenAllOrdersAreIn;
   private       double    mTimeProgressionDays;
   private       String    mNextRun;
+  private       boolean   mRealtime;
 
   private JG_Game( String pName, IGalaxy pGalaxy ) {
     super(pName,pName);
@@ -204,6 +206,17 @@ public class JG_Game extends Entity implements IJG_Game {
   public void setTimeProgressionDays(double pDays) {
     mTimeProgressionDays = pDays;
     return;
+  }
+
+  @Override
+  public void setRealTime(boolean pRealtime) {
+    mRealtime = pRealtime;
+    return;
+  }
+
+  @Override
+  public boolean isRealTime() {
+    return mRealtime;
   }
 
   @Override
@@ -378,6 +391,7 @@ public class JG_Game extends Entity implements IJG_Game {
           group.shotsMutable().clear();
         }
       }
+      faction.getMessagesMutable().clear();
       faction.getIncomingMutable().clear();
       faction.getBombingsMutable().clear();
     }
@@ -420,40 +434,72 @@ public class JG_Game extends Entity implements IJG_Game {
       }
     }
 
-    // **** Other factions
+    // **** Gather all recon positions
     for( IJG_Faction faction : factions() ) {
-      faction.getOtherFactionsMutable().clear();
-      for (IJG_Faction otherfaction : factions()) {
+      Map<String,IJG_Faction> visOtherFactions = new HashMap<>(256);
+      visOtherFactions.putAll(faction.getOtherFactionsMutable().stream().collect(Collectors.toMap(IEntity::id, f -> f)));
+      Map<String, IJG_Position> reconPositions = new HashMap<>(64);
+      for( var planet : faction.planets().planetsOwnedBy(faction)) {
+        reconPositions.put(planet.position().toString(), planet.position());
+      }
+      for( var group : faction.groups().getGroups()) {
+        reconPositions.put(group.position().toString(), group.position());
+      }
+      for( IJG_Faction otherfaction : factions() ) {
         if (otherfaction!=faction) {
-          IJG_Faction visOtherFaction = JG_Faction.of(this, otherfaction.id(),otherfaction.name());
-          faction.getOtherFactionsMutable().add(visOtherFaction);
+          IJG_Faction visOtherFaction = visOtherFactions.computeIfAbsent(otherfaction.id(), k -> {
+            IJG_Faction f = JG_Faction.of(this, otherfaction.id(),otherfaction.name());
+            faction.addOtherFaction(f);
+            return f;
+          });
+//          IJG_Faction visOtherFaction = JG_Faction.of(this, otherfaction.id(),otherfaction.name());
+//          faction.getOtherFactionsMutable().add(visOtherFaction);
           // **** Check for visible fleets/groups
           for( IJG_Group group : otherfaction.groups().getGroups()) {
-            // **** Orbit above planet?
-            for( var planet : faction.planets().planets()) {
-              // **** Own planet
-              if (Objects.equals(planet.faction(),faction.id())) {
-                if (planet.position().equals(group.position())) {
-                  visOtherFaction.groups().addGroup(group);
-                  visOtherFaction.addUnitDesign(otherfaction.getUnitDesignById(group.unitDesign()));
-                }
-              } else {
-                // **** Or an own fleet is in orbit
-                for( var g : faction.groups().groupsByPosition(planet.position()).getGroups()) {
-                  if (g.position().equals(group.position())) {
-                    visOtherFaction.groups().addGroup(group);
-                    visOtherFaction.addUnitDesign(otherfaction.getUnitDesignById(group.unitDesign()));
-                  }
-                }
-//                if (!faction.groups().groupsByPosition(planet.position()).isEmpty()) {
-//                  visOtherFaction.groups().addGroup(group);
-//                }
-              }
+            if (reconPositions.containsKey(group.position().toString())) {
+              visOtherFaction.groups().addGroup(group);
+              visOtherFaction.addUnitDesign(otherfaction.getUnitDesignById(group.unitDesign()));
             }
           }
         }
       }
     }
+
+
+//    // **** Other factions
+//    for( IJG_Faction faction : factions() ) {
+//      faction.getOtherFactionsMutable().clear();
+//      for (IJG_Faction otherfaction : factions()) {
+//        if (otherfaction!=faction) {
+//          IJG_Faction visOtherFaction = JG_Faction.of(this, otherfaction.id(),otherfaction.name());
+//          faction.getOtherFactionsMutable().add(visOtherFaction);
+//          // **** Check for visible fleets/groups
+//          for( IJG_Group group : otherfaction.groups().getGroups()) {
+//            // **** Orbit above planet?
+//            for( var planet : faction.planets().planets()) {
+//              // **** Own planet
+//              if (Objects.equals(planet.faction(),faction.id())) {
+//                if (planet.position().equals(group.position())) {
+//                  visOtherFaction.groups().addGroup(group);
+//                  visOtherFaction.addUnitDesign(otherfaction.getUnitDesignById(group.unitDesign()));
+//                }
+//              } else {
+//                // **** Or an own fleet is in orbit
+//                for( var g : faction.groups().groupsByPosition(planet.position()).getGroups()) {
+//                  if (g.position().equals(group.position())) {
+//                    visOtherFaction.groups().addGroup(group);
+//                    visOtherFaction.addUnitDesign(otherfaction.getUnitDesignById(group.unitDesign()));
+//                  }
+//                }
+////                if (!faction.groups().groupsByPosition(planet.position()).isEmpty()) {
+////                  visOtherFaction.groups().addGroup(group);
+////                }
+//              }
+//            }
+//          }
+//        }
+//      }
+//    }
 
     return;
   }
@@ -565,6 +611,7 @@ public class JG_Game extends Entity implements IJG_Game {
     gamenode.setAttribute("turnHistory", ""+turnHistory() );
     gamenode.setAttribute("turnIntervalSecs", ""+turnIntervalSecs() );
     gamenode.setAttribute("nextRun", nextRun() );
+    gamenode.setAttribute("realtime", ""+isRealTime() );
     gamenode.setAttribute("timeProgressionDays", ""+timeProgressionDays() );
     gamenode.setAttribute("runWhenAllOrdersAreIn", ""+runWhenAllOrdersAreIn() );
 

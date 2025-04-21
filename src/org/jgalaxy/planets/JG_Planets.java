@@ -5,11 +5,14 @@ import org.jgalaxy.engine.IJG_Faction;
 import org.jgalaxy.utils.GEN_Math;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 public class JG_Planets implements IJG_Planets {
 
   private final List<IJG_Planet> mPlanets = new ArrayList<>(8);
+  private final Map<String,IJG_Planet> mMapPlanets = new HashMap<>(256);
 
   public JG_Planets(List<IJG_Planet> pPlanets) {
     mPlanets.addAll(pPlanets);

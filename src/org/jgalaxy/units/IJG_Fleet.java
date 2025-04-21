@@ -4,6 +4,7 @@ import org.jgalaxy.IEntity;
 import org.jgalaxy.IJG_Position;
 import org.jgalaxy.IStorage;
 import org.jgalaxy.engine.IJG_Faction;
+import org.jgalaxy.engine.IJG_Game;
 
 import java.util.List;
 
@@ -22,5 +23,5 @@ public interface IJG_Fleet extends IJG_Group, IEntity, IStorage {
   }
 
   @Override
-  double maxSpeed(IJG_Faction pFaction);
+  double maxSpeed(IJG_Game pGame, IJG_Faction pFaction);
 }

@@ -93,6 +93,11 @@ public class GalaxyTemplate implements IGalaxyTemplate {
   }
 
   @Override
+  public boolean isRealtime() {
+    return Boolean.parseBoolean(XML_Utils.attr( mGameNode, "realtime", "false" ));
+  }
+
+  @Override
   public double homePlanetMin() {
     return XML_Utils.attrd( mGameNode, "homePlanetMin", 1000.0 );
   }

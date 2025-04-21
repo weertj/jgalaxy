@@ -160,9 +160,10 @@ public class JG_Group extends Entity implements IJG_Group {
   }
 
   @Override
-  public double maxSpeed(IJG_Faction pFaction) {
+  public double maxSpeed( IJG_Game pGame, IJG_Faction pFaction) {
     IJG_UnitDesign unitdesign = pFaction.getUnitDesignById(unitDesign());
     double speed = unitdesign.speed(tech(), totalCargoMass());
+    speed *= pGame.timeProgressionDays()/1460.0;
     return speed;
   }
 

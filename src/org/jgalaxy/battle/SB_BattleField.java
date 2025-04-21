@@ -133,6 +133,18 @@ public class SB_BattleField implements ISB_BattleField {
 
     IJG_Groups groups = JG_Groups.of(mField.values().stream().flatMap(g -> g.getGroups().stream()).collect(Collectors.toList()));
     groups.shuffle();
+
+    // **** War declarations
+    for( var faction : mField.keySet() ) {
+      for( var atwar : faction.atWarWith()) {
+        for( var checkfaction : mField.keySet() ) {
+          if (checkfaction.id().equals(atwar)) {
+            checkfaction.addWarWith(faction.id());
+          }
+        }
+      }
+    }
+
     for( IJG_Group attacker : groups.getGroups() ) {
       IJG_Faction faction = mGame.getFactionById(attacker.faction());
       var uatt = faction.getUnitDesignById(attacker.unitDesign());
@@ -145,7 +157,7 @@ public class SB_BattleField implements ISB_BattleField {
             var target = selectTargetGroup(targets);
             if (target != null) {
               IJG_Faction deffaction = mGame.getFactionById(target.faction());
-              deffaction.addWarWith(faction.id());
+//              deffaction.addWarWith(faction.id());
               var udef = deffaction.getUnitDesignById(target.unitDesign());
               Boolean result = attack(uatt, attacker, deffaction, udef, target);
               if (result == null) {

@@ -86,7 +86,7 @@ public class JG_Faction extends Entity implements IJG_Faction {
 
     for( Element ofact : XML_Utils.childElementsByName(pParent,"otherfaction")) {
       IJG_Faction ofaction = of(pGame,ofact );
-      faction.getOtherFactionsMutable().add(ofaction);
+      faction.addOtherFaction(ofaction);
     }
 
     for( Element omessage : XML_Utils.childElementsByName(pParent,"message")) {
@@ -180,7 +180,7 @@ public class JG_Faction extends Entity implements IJG_Faction {
 
   @Override
   public void addUnitDesign(IJG_UnitDesign pDesign) {
-    if (!mUnitDesigns.contains(pDesign) && !pDesign.name().isBlank()) {
+    if (!mUnitDesigns.contains(pDesign) && !pDesign.name().isBlank() && pDesign.mass()>0) {
       mUnitDesigns.add(pDesign);
     }
     return;
@@ -330,6 +330,12 @@ public class JG_Faction extends Entity implements IJG_Faction {
   @Override
   public int currentGroupCounterAndIncrement() {
     return mCurrentGroupCount.getAndIncrement();
+  }
+
+  @Override
+  public void addOtherFaction(IJG_Faction pFaction) {
+    mOtherFactions.add(pFaction);
+    return;
   }
 
   @Override

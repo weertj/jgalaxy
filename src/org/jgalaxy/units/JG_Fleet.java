@@ -4,6 +4,7 @@ import org.jgalaxy.Entity;
 import org.jgalaxy.IJG_Position;
 import org.jgalaxy.JG_Position;
 import org.jgalaxy.engine.IJG_Faction;
+import org.jgalaxy.engine.IJG_Game;
 import org.w3c.dom.Element;
 import org.w3c.dom.Node;
 
@@ -44,9 +45,9 @@ public class JG_Fleet extends JG_Group implements IJG_Fleet {
   }
 
   @Override
-  public double maxSpeed(IJG_Faction pFaction) {
+  public double maxSpeed(IJG_Game pGame, IJG_Faction pFaction) {
     return mGroups.stream()
-      .mapToDouble(g->g.maxSpeed(pFaction))
+      .mapToDouble(g->g.maxSpeed(pGame,pFaction))
       .min()
       .orElse(0.0);
   }

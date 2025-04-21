@@ -17,6 +17,8 @@ public interface IGalaxyTemplate {
   List<Node> planetGenerations();
   List<Node> playerGenerations();
 
+  boolean isRealtime();
+
   double homePlanetMin();
   double homePlanetMax();
 

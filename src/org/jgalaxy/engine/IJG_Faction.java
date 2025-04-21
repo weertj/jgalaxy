@@ -48,6 +48,7 @@ public interface IJG_Faction extends IEntity, IStorage {
   int currentGroupCounterAndIncrement();
   void setCurrentGroupCounter( int pCurrentGroupCounter );
 
+  void addOtherFaction( IJG_Faction pFaction );
   List<IJG_Faction>   getOtherFactionsMutable();
 
   List<IJG_Incoming>  getIncomingMutable();

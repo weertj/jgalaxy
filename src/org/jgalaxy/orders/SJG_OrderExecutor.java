@@ -204,8 +204,10 @@ public class SJG_OrderExecutor {
    */
   static public void orderRENAME( IJG_Order pOrder, IJG_Game pGame ) {
     IJG_Planet planet = pGame.galaxy().map().planets().findPlanetByName(pOrder.parameters().get(0) );
-    if (planet!=null) {
-      planet.setName( pOrder.parameters().get(1) );
+    if (planet!=null && pOrder.parameters().size()>1) {
+      if (!pOrder.parameters().get(1).isBlank()) {
+        planet.setName(pOrder.parameters().get(1));
+      }
     }
     return;
   }

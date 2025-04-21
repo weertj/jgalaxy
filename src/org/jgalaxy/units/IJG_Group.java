@@ -43,7 +43,7 @@ public interface IJG_Group extends IEntity, IStorage, IFactionOwner, IJG_Positio
     return position().y();
   }
 
-  double maxSpeed(IJG_Faction pFaction);
+  double maxSpeed( IJG_Game pGame, IJG_Faction pFaction);
 
   int getNumberOf();
   void  setNumberOf( int pNumber );

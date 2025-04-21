@@ -32,6 +32,9 @@ public interface IJG_Game extends IEntity,ITimeProgression, IStorage {
   double timeProgressionDays();
   void setTimeProgressionDays(double pDays);
 
+  void setRealTime( boolean pRealtime );
+  boolean isRealTime();
+
   String nextRun();
   void setNextRun(String pNextRun);
   default void calcNextRun() {
