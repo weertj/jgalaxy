@@ -145,6 +145,9 @@ public class JG_Groups implements IJG_Groups {
 
   @Override
   public IJG_Fleet getFleetByName(String pName) {
+    if (pName==null) {
+      return null;
+    }
     return fleets().stream().filter(f->f.name().equals(pName)).findFirst().orElse(null);
   }
 
