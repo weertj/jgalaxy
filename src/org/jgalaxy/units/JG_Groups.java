@@ -249,7 +249,7 @@ public class JG_Groups implements IJG_Groups {
               IJG_Incoming incoming = new JG_Incoming( group.lastStaticPosition(), group.position(), group.toPosition(), group.totalMass(pGame.getFactionById(group.faction())) );
               var tofact = pGame.getFactionById(toplanet.faction());
               if (tofact!=null) {
-                tofact.getIncomingMutable().add(incoming);
+                tofact.addIncoming(incoming);
               }
             }
           }
@@ -265,7 +265,7 @@ public class JG_Groups implements IJG_Groups {
             IJG_Incoming incoming = new JG_Incoming( group.lastStaticPosition(), group.position(), group.toPosition(), group.totalMass(pGame.getFactionById(group.faction())) );
             var tofact = pGame.getFactionById(toplanet.faction());
             if (tofact!=null) {
-              tofact.getIncomingMutable().add(incoming);
+              tofact.addIncoming(incoming);
             }
 //            pGame.getFactionById(toplanet.faction()).getIncomingMutable().add(incoming);
           }

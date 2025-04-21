@@ -394,6 +394,7 @@ public class JG_Game extends Entity implements IJG_Game {
       faction.getMessagesMutable().clear();
       faction.getIncomingMutable().clear();
       faction.getBombingsMutable().clear();
+      faction.getOtherFactionsMutable().clear();
     }
     return;
   }
