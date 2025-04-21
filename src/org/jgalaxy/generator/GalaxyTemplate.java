@@ -94,46 +94,46 @@ public class GalaxyTemplate implements IGalaxyTemplate {
 
   @Override
   public double homePlanetMin() {
-    return XML_Utils.attrd( mTemplateNode, "homePlanetMin", 1000.0 );
+    return XML_Utils.attrd( mGameNode, "homePlanetMin", 1000.0 );
   }
 
   @Override
   public double homePlanetMax() {
-    return XML_Utils.attrd( mTemplateNode, "homePlanetMax", 1000.0 );
+    return XML_Utils.attrd( mGameNode, "homePlanetMax", 1000.0 );
   }
 
   @Override
   public double minDistBetweenPlanets() {
-    return XML_Utils.attrd( mTemplateNode, "minDistBetweenPlanets", 5.0 );
+    return XML_Utils.attrd( mGameNode, "minDistBetweenPlanets", 5.0 );
   }
 
   @Override
   public double maxDistBetweenPlanets() {
-    return XML_Utils.attrd( mTemplateNode, "maxDistBetweenPlanets", 100.0 );
+    return XML_Utils.attrd( mGameNode, "maxDistBetweenPlanets", 100.0 );
   }
 
   @Override
   public double planetMinSize() {
-    return XML_Utils.attrd( mTemplateNode, "planetMinSize", 100.0 );
+    return XML_Utils.attrd( mGameNode, "planetMinSize", 100.0 );
   }
 
   @Override
   public double planetMaxSize() {
-    return XML_Utils.attrd( mTemplateNode, "planetMaxSize", 1000.0 );
+    return XML_Utils.attrd( mGameNode, "planetMaxSize", 1000.0 );
   }
 
   @Override
   public double homePlanetAttraction() {
-    return XML_Utils.attrd( mTemplateNode, "homePlanetAttraction", 0.0 );
+    return XML_Utils.attrd( mGameNode, "homePlanetAttraction", 0.0 );
   }
 
   @Override
   public double minDistBetweenHomePlanets() {
-    return XML_Utils.attrd( mTemplateNode, "minDistBetweenHomePlanets", 10.0 );
+    return XML_Utils.attrd( mGameNode, "minDistBetweenHomePlanets", 10.0 );
   }
 
   @Override
   public double maxDistBetweenHomePlanets() {
-    return XML_Utils.attrd( mTemplateNode, "maxDistBetweenHomePlanets", 100.0 );
+    return XML_Utils.attrd( mGameNode, "maxDistBetweenHomePlanets", 100.0 );
   }
 }

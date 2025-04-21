@@ -533,6 +533,7 @@ public class JG_Planet extends Entity implements IJG_Planet {
     planet.setProduceType(produceType(), produceUnitDesign());
     planet.setCapitals(capitals());
     planet.setMaterials(materials());
+    planet.setResources(resources());
     planet.setCols(cols());
     planet.setInProgress(inProgress());
     planet.setSpent(spent());

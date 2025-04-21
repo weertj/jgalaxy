@@ -58,6 +58,7 @@ public class SB_BattleReport extends Entity implements ISB_BattleReport {
     int hits = 0;
     for( IB_Shot shot : pSourceGroup.shotsMutable()) {
       if (shot.type()==IB_Shot.TYPE.SHIP_SHIP &&
+         (shot.result()== IB_Shot.RESULT.DESTROYED || shot.result()== IB_Shot.RESULT.ALL_DESTROYED) &&
           Objects.equals(shot.targetID(),pTargetGroup.id()) &&
           shot.targetFaction().equals(pTargetGroup.faction())
          ) {

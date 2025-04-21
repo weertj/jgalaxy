@@ -5,6 +5,7 @@ import javafx.beans.property.SimpleIntegerProperty;
 import org.jgalaxy.Entity;
 import org.jgalaxy.OrderException;
 import org.jgalaxy.ai.IAI_Faction;
+import org.jgalaxy.common.C_Message;
 import org.jgalaxy.common.IC_Message;
 import org.jgalaxy.los.FLOS_Visibility;
 import org.jgalaxy.orders.EJG_Order;
@@ -86,6 +87,11 @@ public class JG_Faction extends Entity implements IJG_Faction {
     for( Element ofact : XML_Utils.childElementsByName(pParent,"otherfaction")) {
       IJG_Faction ofaction = of(pGame,ofact );
       faction.getOtherFactionsMutable().add(ofaction);
+    }
+
+    for( Element omessage : XML_Utils.childElementsByName(pParent,"message")) {
+      IC_Message message = C_Message.of(omessage);
+      faction.getMessagesMutable().add(message);
     }
 
     var ai = XML_Utils.attr(pParent,"ai", null);

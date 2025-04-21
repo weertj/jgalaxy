@@ -26,6 +26,11 @@ public class JG_Fleet extends JG_Group implements IJG_Fleet {
   }
 
   @Override
+  public int getNumberOf() {
+    return mGroups.stream().mapToInt(IJG_Group::getNumberOf).sum();
+  }
+
+  @Override
   public IJG_Position position() {
     if (mGroups.isEmpty()) {
       return null;
@@ -52,6 +57,30 @@ public class JG_Fleet extends JG_Group implements IJG_Fleet {
       return mGroups.getFirst().faction();
     }
     return super.faction();
+  }
+
+  @Override
+  public String to() {
+    if (!mGroups.isEmpty()) {
+      return mGroups.getFirst().to();
+    }
+    return super.to();
+  }
+
+  @Override
+  public IJG_Position toPosition() {
+    if (!mGroups.isEmpty()) {
+      return mGroups.getFirst().toPosition();
+    }
+    return super.toPosition();
+  }
+
+  @Override
+  public IJG_Position lastStaticPosition() {
+    if (!mGroups.isEmpty()) {
+      return mGroups.getFirst().lastStaticPosition();
+    }
+    return super.lastStaticPosition();
   }
 
   @Override

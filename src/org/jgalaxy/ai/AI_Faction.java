@@ -83,15 +83,15 @@ public class AI_Faction implements IAI_Faction {
   }
 
   private void reconer() {
-    mFaction.addUnitDesign(JG_UnitDesign.of("rec-"+Global.uniqueID(), "recon1", 4,1,1,2,0 ));
-    mFaction.addUnitDesign(JG_UnitDesign.of("rec-"+Global.uniqueID(), "recon2", 8,3,1,4,0 ));
+    mFaction.addUnitDesign(JG_UnitDesign.of("rec-1", "recon1", 4,1,1,2,0 ));
+    mFaction.addUnitDesign(JG_UnitDesign.of("rec-2", "recon2", 8,3,1,4,0 ));
     return;
   }
 
   private void colonizer() {
-    mFaction.addUnitDesign(JG_UnitDesign.of("col-"+Global.uniqueID(), "colrecon", 10,3,1,3,5 ));
-    mFaction.addUnitDesign(JG_UnitDesign.of("col-"+Global.uniqueID(), "col1", 10,0,0,0,10 ));
-    mFaction.addUnitDesign(JG_UnitDesign.of("col-"+Global.uniqueID(), "col2", 20,0,0,0,20 ));
+    mFaction.addUnitDesign(JG_UnitDesign.of("col-1", "colrecon", 10,3,1,3,5 ));
+    mFaction.addUnitDesign(JG_UnitDesign.of("col-2", "col1", 10,0,0,0,10 ));
+    mFaction.addUnitDesign(JG_UnitDesign.of("col-3", "col2", 20,0,0,0,20 ));
     return;
   }
 

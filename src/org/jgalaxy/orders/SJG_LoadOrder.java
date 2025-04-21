@@ -14,6 +14,7 @@ public class SJG_LoadOrder {
     double already = pGroup.load();
     cc -= already;
     String currentCarry = pGroup.loadType();
+    cc = Math.min(cc,pAmountToLoad);
     if (currentCarry==null || currentCarry.equals(pLoad)) {
       if (cc > 0.0) {
         if ("COL".equals(pLoad)) {
@@ -31,7 +32,7 @@ public class SJG_LoadOrder {
           if (load > 0.0) {
             pGroup.setLoadType("CAP");
             pGroup.setLoad(pGroup.load() + load);
-            pPlanet.setCols(pPlanet.cols() - load);
+            pPlanet.setCapitals(pPlanet.capitals() - load);
             loaded = load;
           }
         } else if ("MAT".equals(pLoad)) {
@@ -40,7 +41,7 @@ public class SJG_LoadOrder {
           if (load > 0.0) {
             pGroup.setLoadType("MAT");
             pGroup.setLoad(pGroup.load() + load);
-            pPlanet.setCols(pPlanet.cols() - load);
+            pPlanet.setMaterials(pPlanet.materials() - load);
             loaded = load;
           }
         }

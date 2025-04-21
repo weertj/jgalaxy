@@ -30,7 +30,7 @@ public class JG_Orders implements IJG_Orders {
         orders.addOrder(JG_Order.of(EJG_Order.WAR, List.of(warfaction)));
       }
       var from2 = new ArrayList<>(pFromFaction.atWarWith());
-      from2.removeAll(List.of(pToFaction.atWarWith()));
+      from2.removeAll(pToFaction.atWarWith());
       for( var peacefaction : from2) {
         orders.addOrder(JG_Order.of(EJG_Order.ALLIANCE, List.of(peacefaction)));
       }

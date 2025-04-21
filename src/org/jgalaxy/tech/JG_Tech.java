@@ -13,7 +13,7 @@ public class JG_Tech implements IJG_Tech {
     IJG_Tech tech = of();
     tech.setDrive( Double.parseDouble(XML_Utils.attr(pNode,"tech.drive","1")) );
     tech.setWeapons( Double.parseDouble(XML_Utils.attr(pNode,"tech.weapons","1")) );
-    tech.setShields( Double.parseDouble(XML_Utils.attr(pNode,"tech.shield","1")) );
+    tech.setShields( Double.parseDouble(XML_Utils.attr(pNode,"tech.shields","1")) );
     tech.setCargo( Double.parseDouble(XML_Utils.attr(pNode,"tech.cargo","1")) );
     return tech;
   }
