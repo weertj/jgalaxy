@@ -29,6 +29,13 @@ public interface IJG_Group extends IEntity, IStorage, IFactionOwner, IJG_Positio
   IJG_Position position();
   IJG_Position toPosition();
 
+  default IJG_Position calcCurrentPosition() {
+    if (position()!=null && position().x()!=0 && position().y()!=0) {
+      return position();
+    }
+    return lastStaticPosition();
+  }
+
   default @Override void setX(double x) {
     position().setX(x);
   }
