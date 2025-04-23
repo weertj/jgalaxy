@@ -153,6 +153,14 @@ public class JG_Groups implements IJG_Groups {
   }
 
   @Override
+  public IJG_Fleet getFleetByID(String pID) {
+    if (pID==null) {
+      return null;
+    }
+    return fleets().stream().filter(f->f.id().equals(pID)).findFirst().orElse(null);
+  }
+
+  @Override
   public List<IJG_Fleet> fleets() {
     List<IJG_Fleet> fleets = new ArrayList<>(8);
     var fleetnames = mGroups.stream()

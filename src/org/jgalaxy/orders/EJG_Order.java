@@ -4,6 +4,7 @@ public enum EJG_Order {
 
   MESSAGE( "@" ),
   ALLIANCE( "a" ),
+  BREAKOFF( "b" ),
   CHANGERACENAME( "c" ),
   DESIGN( "d" ),
   ELIMINATE( "e" ),

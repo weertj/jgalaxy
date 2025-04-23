@@ -57,6 +57,17 @@ public class SJG_OrderExecutor {
     }
     return;
   }
+  static public void orderBREAKOFF( IJG_Game pGame, IJG_Faction pFaction, IJG_Order pOrder ) throws OrderException {
+    IJG_Group group = pFaction.groups().getGroupById(pOrder.param(0));
+    if (group!=null) {
+      if (paramIsAvailable(pOrder,2)) {
+        if (pOrder.param(2).equals("FLEET")) {
+          group.setFleet(null);
+        }
+      }
+    }
+    return;
+  }
 
   static public void orderJOIN( IJG_Game pGame, IJG_Faction pFaction, IJG_Order pOrder ) throws OrderException {
     IJG_Group group = pFaction.groups().getGroupById(pOrder.param(0));

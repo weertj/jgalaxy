@@ -238,17 +238,8 @@ public class JG_Faction extends Entity implements IJG_Faction {
   public void doOrders( EPhase pPhase ) {
     if (mOrders!=null) {
       switch (pPhase) {
-//        case 1 -> {
-//          for (var order : mOrders.ordersBy(EJG_Order.DESIGN,EJG_Order.PRODUCE, EJG_Order.SEND, EJG_Order.WAR)) {
-//            try {
-//              SJG_OrderExecutor.exec(this, order, mGame);
-//            } catch (OrderException e) {
-//              mOrderErrors.add(e);
-//            }
-//          }
-//        }
         case DESIGN -> defaultDoOrders(EJG_Order.DESIGN );
-        case JOIN -> defaultDoOrders(EJG_Order.JOIN );
+        case JOIN -> defaultDoOrders(EJG_Order.JOIN, EJG_Order.BREAKOFF );
         case PLANET_PRODUCTION -> defaultDoOrders(EJG_Order.PRODUCE );
         case SEND -> defaultDoOrders(EJG_Order.SEND );
         case DECLAREALLIANCE -> defaultDoOrders(EJG_Order.ALLIANCE );
@@ -270,6 +261,7 @@ public class JG_Faction extends Entity implements IJG_Faction {
           case DESIGN -> SJG_OrderExecutor.orderDESIGN(mGame,this,order);
           case ELIMINATE -> SJG_OrderExecutor.orderELIMINATE(mGame,this,order);
           case JOIN -> SJG_OrderExecutor.orderJOIN(mGame,this,order);
+          case BREAKOFF -> SJG_OrderExecutor.orderBREAKOFF(mGame,this,order);
           case PRODUCE -> SJG_OrderExecutor.orderPRODUCE(mGame,this,order);
           case SEND -> SJG_OrderExecutor.orderSEND(mGame,this,order);
           case ALLIANCE -> SJG_OrderExecutor.orderALLIANCE(mGame,this,order);

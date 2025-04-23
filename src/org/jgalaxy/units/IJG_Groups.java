@@ -50,6 +50,7 @@ public interface IJG_Groups {
 
   IJG_Fleet addFleet( String pID, String pName );
   IJG_Fleet getFleetByName( String pName );
+  IJG_Fleet getFleetByID( String pID );
   List<IJG_Fleet> fleets();
   List<IJG_Fleet> fleetsByPosition(IJG_Position pPosition);
 

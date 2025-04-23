@@ -107,7 +107,11 @@ public class JG_Orders implements IJG_Orders {
           }
         }
         if (!Objects.equals(g2.getFleet(),g1.getFleet())) {
-          orders.addOrder(JG_Order.of( EJG_Order.JOIN, List.of(g1.id(),g2.getFleet())));
+          if (g2.getFleet()==null) {
+            orders.addOrder(JG_Order.of(EJG_Order.BREAKOFF, List.of(g2.id(),"FLEET")));
+          } else {
+            orders.addOrder(JG_Order.of(EJG_Order.JOIN, List.of(g1.id(), g2.getFleet())));
+          }
         }
       }
     }
