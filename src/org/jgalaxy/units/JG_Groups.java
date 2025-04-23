@@ -40,7 +40,7 @@ public class JG_Groups implements IJG_Groups {
   @Override
   public void addGroup(IJG_Group pGroup) {
     if (!mGroups.contains(pGroup)) {
-      mGroups.add(pGroup);
+      addGroupAlways(pGroup);
     }
     return;
   }

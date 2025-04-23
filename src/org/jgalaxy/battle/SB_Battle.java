@@ -84,17 +84,22 @@ public class SB_Battle {
   }
 
   static public ISB_BattleField createBattleField(IJG_Game pGame,IJG_Planet pPlanet) {
-    ISB_BattleField field = SB_BattleField.of(pGame);
-    var groups = pGame.groupsByPosition(pPlanet.position());
-    if (!groups.isEmpty()) {
-      for (var faction : pGame.factions()) {
-        var factionGroups = groups.groupsByFaction(faction);
-        if (!factionGroups.isEmpty()) {
-          field.addEntry(faction, factionGroups );
+    try {
+      ISB_BattleField field = SB_BattleField.of(pGame);
+      var groups = pGame.groupsByPosition(pPlanet.position());
+      if (!groups.isEmpty()) {
+        for (var faction : pGame.factions()) {
+          var factionGroups = groups.groupsByFaction(faction);
+          if (!factionGroups.isEmpty()) {
+            field.addEntry(faction, factionGroups);
+          }
         }
       }
+      return field;
+    } catch (Throwable e) {
+      e.printStackTrace();
+      return null;
     }
-    return field;
   }
 
 
