@@ -143,6 +143,16 @@ public class JG_Faction extends Entity implements IJG_Faction {
   }
 
   @Override
+  public IJG_Faction copyOf( IJG_Game pGame ) {
+    JG_Faction faction = new JG_Faction( pGame, id(),name() );
+    faction.mAtWarWith.addAll(mAtWarWith);
+    faction.mTech.copyOf(mTech);
+    mPlanets.planets().stream().map(IJG_Planet::copyOf).forEach(faction.mPlanets::addPlanet);
+    faction.mUnitDesigns.addAll(mUnitDesigns);
+    return faction;
+  }
+
+  @Override
   public void close() {
     return;
   }

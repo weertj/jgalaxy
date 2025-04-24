@@ -11,6 +11,8 @@ import java.util.List;
 
 public interface IJG_Game extends IEntity,ITimeProgression, IStorage {
 
+  IJG_Game copyOf();
+
   void roundUp();
   void reconPhase();
   void aiPhase();

@@ -8,6 +8,8 @@ import java.util.List;
 
 public interface IJG_Player extends IEntity, IStorage {
 
+  IJG_Player copyOf();
+
   String getUsername();
   String getPasswordEnc();
 

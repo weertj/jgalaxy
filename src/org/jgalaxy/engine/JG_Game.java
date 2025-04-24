@@ -655,6 +655,27 @@ public class JG_Game extends Entity implements IJG_Game {
     return;
   }
 
+  @Override
+  public IJG_Game copyOf() {
+    JG_Game game = new JG_Game(name(),mGalaxy.copyOf());
+
+    game.mOrigFactions.addAll( mOrigFactions.stream().map(f -> f.copyOf(game)).toList() );
+    game.mFactions.addAll( mFactions.stream().map(f -> f.copyOf(game)).toList() );
+    game.mPlayers.addAll( mPlayers.stream().map( IJG_Player::copyOf).toList() );
+    game.mMessages.addAll( mMessages );
+//
+//    private       IJG_GameInfo mGameInfo;
+//    private       long      mTurnNumber;
+//    private       long      mTurnIntervalSecs;
+//    private       long      mTurnHistory;
+//    private       boolean   mRunWhenAllOrdersAreIn;
+//    private       double    mTimeProgressionDays;
+//    private       String    mNextRun;
+//    private       boolean   mRealtime;
+
+
+    return game;
+  }
 
   @Override
   public String reportForPlayerAs(IJG_Player pPlayer, String pFormat) {

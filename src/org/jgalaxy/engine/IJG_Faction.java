@@ -15,6 +15,8 @@ import java.util.List;
 
 public interface IJG_Faction extends IEntity, IStorage {
 
+  IJG_Faction copyOf(IJG_Game pGame);
+
   void setAI(IAI_Faction pAI);
   IAI_Faction getAI();
 
