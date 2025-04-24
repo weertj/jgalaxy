@@ -210,10 +210,11 @@ public class GameContext implements IGameContext {
         mCurrentPlayer.set( player );
         IJG_Player playerchanged = mCurrentGameChanged.get().getPlayerByID(mPlayerName);
         mCurrentPlayerChanged.set( playerchanged );
-        IJG_Faction faction = player.getFactionByID(player.factions().getFirst().id() );
+        IJG_Faction faction = mCurrentGame.get().getFactionById(player.factions().getFirst().id() );
         mCurrentFaction.set( faction );
-        IJG_Faction factionchanged = player.getFactionByID(player.factions().getFirst().id() );
+        IJG_Faction factionchanged = mCurrentGameChanged.get().getFactionById(player.factions().getFirst().id() );
         mCurrentFactionChanged.set( factionchanged );
+        factionchanged.changeCounterProperty().addListener(mFactionChanged);
       } catch (Exception e) {
         throw new RuntimeException(e);
       }
@@ -335,6 +336,8 @@ public class GameContext implements IGameContext {
   public void sendCurrentOrders() {
 
     if (mDirectory!=null) {
+      IJG_Orders orders = JG_Orders.generateOf( Long.parseLong(getTurnNumber()), mCurrentFaction.get(), mCurrentFactionChanged.get());
+      mCurrentFactionChanged.get().setOrders(orders);
       return;
     }
 

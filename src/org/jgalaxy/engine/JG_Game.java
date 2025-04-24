@@ -401,10 +401,19 @@ public class JG_Game extends Entity implements IJG_Game {
 
   public void roundUp() {
     for( IJG_Faction faction : factions() ) {
-      faction.planets().clear();
       for (IJG_Planet planet : mGalaxy.map().planets().planets()) {
-        faction.planets().addPlanet(planet);
+        IJG_Planet findplanet = faction.planets().findPlanetById(planet.id());
+        if (findplanet==null) {
+          faction.planets().addPlanet(planet);
+        } else {
+          findplanet.copyFrom(planet);
+        }
       }
+
+//      faction.planets().clear();
+//      for (IJG_Planet planet : mGalaxy.map().planets().planets()) {
+//        faction.planets().addPlanet(planet);
+//      }
     }
     factions().stream().forEach( f -> f.doOrders(EPhase.ROUNDUP));
     return;
@@ -416,7 +425,7 @@ public class JG_Game extends Entity implements IJG_Game {
   public void reconPhase() {
     // **** Planets visibility
     for( IJG_Faction faction : factions() ) {
-      faction.planets().replaceByCopyOf();
+//      faction.planets().replaceByCopyOf();
       for( IJG_Planet planet : faction.planets().planetsNotOwnedBy(faction)) {
         IJG_Planet realplanet = mGalaxy.map().planets().findPlanetById(planet.id());
         // **** Own ships above?

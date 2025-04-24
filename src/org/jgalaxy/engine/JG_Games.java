@@ -1,6 +1,5 @@
 package org.jgalaxy.engine;
 
-import org.jgalaxy.utils.GEN_Streams;
 import org.jgalaxy.utils.XML_Utils;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
@@ -8,13 +7,11 @@ import org.w3c.dom.Node;
 
 import java.io.File;
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 
 public class JG_Games implements IJG_Games {
 
-  static public final Map<String,IJG_Game> REALTIMEGAMES = new HashMap<>(16);
+//  static public final Map<String,IJG_Game> REALTIMEGAMES = new HashMap<>(16);
 
   static public IJG_Games of(File pGamesDir) throws Exception {
     return new JG_Games(pGamesDir);

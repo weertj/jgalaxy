@@ -11,6 +11,8 @@ public interface IJG_Planet extends IFactionOwner,IEntity,ITimeProgression, ISto
 
   IJG_Planet copyOf();
 
+  void copyFrom( IJG_Planet pSource );
+
   void anonymize();
 
   IJG_Position position();

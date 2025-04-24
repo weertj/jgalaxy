@@ -54,6 +54,12 @@ public class JG_Player extends Entity implements IJG_Player {
   }
 
   @Override
+  public IJG_Player copyOf() {
+    throw new UnsupportedOperationException();
+
+  }
+
+  @Override
   public void addFaction(IJG_Faction faction) {
     mFactions.add(faction);
     return;

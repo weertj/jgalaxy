@@ -21,6 +21,12 @@ public class Galaxy implements IGalaxy {
   }
 
   @Override
+  public IGalaxy copyOf() {
+    throw new UnsupportedOperationException();
+
+  }
+
+  @Override
   public IMAP_Map map() {
     return mMap;
   }

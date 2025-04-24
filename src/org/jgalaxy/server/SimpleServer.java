@@ -68,12 +68,12 @@ public class SimpleServer {
               if ("current".equals(path[4])) {
                 // **** Realtime mode
                 IJG_Game game;
-                game = JG_Games.REALTIMEGAMES.get(gamedir.getName());
-                if (game==null) {
+//                game = JG_Games.REALTIMEGAMES.get(gamedir.getName());
+//                if (game==null) {
                   game = JG_Game.of(gamedir, null, gameInfo.currentTurnNumber());
                   game.prepareGameAsUser(username);
-                } else {
-                }
+//                } else {
+//                }
 //                game.prepareGameAsUser(username);
                 storage = game;
                 if (path.length > 5) {
@@ -223,11 +223,11 @@ public class SimpleServer {
     pGame.setGameInfo(pGameInfo);
     pGame.timeProgression( pGame, Duration.ofDays((long)pGame.timeProgressionDays()));
     pGame.calcNextRun();
-    if (pGame.isRealTime()) {
-      JG_Games.REALTIMEGAMES.put(pGame.id(), pGame);
-    } else {
+//    if (pGame.isRealTime()) {
+//      JG_Games.REALTIMEGAMES.put(pGame.id(), pGame);
+//    } else {
       pGame.storeObject(pDir, null, null, "");
-    }
+//    }
     pGame.aiPhase(); // **** Run AI for next orders
     if (pGame.nextRun()==null) {
       if (pGame.runWhenAllOrdersAreIn()) {
@@ -264,11 +264,11 @@ public class SimpleServer {
         public void run() {
           try {
             IJG_Game game;
-            if (JG_Games.REALTIMEGAMES.containsKey(pGame.id())) {
-              game = JG_Games.REALTIMEGAMES.get(pGame.id());
-            } else {
+//            if (JG_Games.REALTIMEGAMES.containsKey(pGame.id())) {
+//              game = JG_Games.REALTIMEGAMES.get(pGame.id());
+//            } else {
               game = JG_Game.of(pDir, null, turnNumber);
-            }
+//            }
             game.setGameInfo(pGameInfo);
             nextTurn(pDir, pGameInfo,game);
           } catch (Throwable e) {

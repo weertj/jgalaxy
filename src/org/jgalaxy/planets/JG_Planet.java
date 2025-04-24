@@ -544,6 +544,24 @@ public class JG_Planet extends Entity implements IJG_Planet {
   }
 
   @Override
+  public void copyFrom(IJG_Planet pSource) {
+    setFaction(pSource.faction());
+    setSize(pSource.size());
+    setPopulation(pSource.population());
+    setIndustry(pSource.industry());
+    setProduceType(pSource.produceType(), pSource.produceUnitDesign());
+    setCapitals(pSource.capitals());
+    setMaterials(pSource.materials());
+    setResources(pSource.resources());
+    setCols(pSource.cols());
+    setInProgress(pSource.inProgress());
+    setSpent(pSource.spent());
+    setPopulationPerCol(pSource.populationPerCol());
+    setPopulationIncreasePerHour(pSource.populationIncreasePerHour());
+    return;
+  }
+
+  @Override
   public void storeObject(File pPath, Node pParent, String pName, String pFilter ) {
     Element planetnode = pParent.getOwnerDocument().createElement( "planet" );
     planetnode.setAttribute("id", id());
