@@ -77,5 +77,6 @@ public interface IJG_Planet extends IFactionOwner,IEntity,ITimeProgression, ISto
   @Override default double y() { return position().y(); }
   @Override default void setX(double x) { position().setX(x); }
   @Override default void setY(double y) { position().setY(y); }
+  @Override default void setPosition(double x, double y) { position().setPosition(x,y); }
 
 }

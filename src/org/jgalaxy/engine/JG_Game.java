@@ -53,12 +53,14 @@ public class JG_Game extends Entity implements IJG_Game {
 
     IJG_Game game = of(name,galaxy);
     game.setTurnNumber(pTurnNumber);
+    game.setGameType(XML_Utils.attr(gameNode,"gameType",""));
     game.setTurnIntervalSecs( Long.parseLong(XML_Utils.attr(gameNode, "turnIntervalSecs", "-1" )));
     game.setTurnHistory( Long.parseLong(XML_Utils.attr(gameNode, "turnHistory", "-1" )));
     game.setRealTime(Boolean.valueOf(XML_Utils.attr(gameNode, "realtime", "false" )));
     game.setNextRun(XML_Utils.attr(gameNode, "nextRun"));
     game.setTimeProgressionDays(Double.parseDouble(XML_Utils.attr(gameNode, "timeProgressionDays", "365" )));
     game.setRunWhenAllOrdersAreIn(Boolean.valueOf(XML_Utils.attr(gameNode, "runWhenAllOrdersAreIn", "false" )));
+    game.setUTCTime(Long.parseLong(XML_Utils.attr(gameNode, "gameTime", "0" )));
 
     if (pPath==null) {
 //      for( Element factionNode : XML_Utils.childElementsByName(root,"faction")) {
@@ -128,6 +130,7 @@ public class JG_Game extends Entity implements IJG_Game {
   private final List<String>      mMessages = new ArrayList<>(8);
 
   private       IJG_GameInfo mGameInfo;
+  private       String    mGameType = "";
   private       long      mTurnNumber;
   private       long      mTurnIntervalSecs;
   private       long      mTurnHistory;
@@ -135,6 +138,7 @@ public class JG_Game extends Entity implements IJG_Game {
   private       double    mTimeProgressionDays;
   private       String    mNextRun;
   private       boolean   mRealtime;
+  private       long      mUTCGameTime = 0L;
 
   private JG_Game( String pName, IGalaxy pGalaxy ) {
     super(pName,pName);
@@ -145,6 +149,17 @@ public class JG_Game extends Entity implements IJG_Game {
   @Override
   public IJG_GameInfo getGameInfo() {
     return mGameInfo;
+  }
+
+  @Override
+  public String gameType() {
+    return mGameType;
+  }
+
+  @Override
+  public void setGameType(String pType) {
+    mGameType = pType;
+    return;
   }
 
   @Override
@@ -205,6 +220,17 @@ public class JG_Game extends Entity implements IJG_Game {
   @Override
   public void setTimeProgressionDays(double pDays) {
     mTimeProgressionDays = pDays;
+    return;
+  }
+
+  @Override
+  public long UTCTime() {
+    return mUTCGameTime;
+  }
+
+  @Override
+  public void setUTCTime(long pTime) {
+    mUTCGameTime = pTime;
     return;
   }
 
@@ -299,6 +325,9 @@ public class JG_Game extends Entity implements IJG_Game {
 
   @Override
   public void timeProgression(IJG_Game pGame, Duration pTimeStep) {
+
+    setUTCTime(pGame.UTCTime() + pTimeStep.toMillis());
+
     mGalaxy.timeProgression(pGame, pTimeStep);
 
     aiPhase();
@@ -357,7 +386,7 @@ public class JG_Game extends Entity implements IJG_Game {
 
     roundUp();
 
-    reconPhase();
+    reconPhase(false);
 
     mTurnNumber++;
 
@@ -372,7 +401,9 @@ public class JG_Game extends Entity implements IJG_Game {
     for( IJG_Faction faction : factions() ) {
       if (faction.getAI()!=null) {
         faction.getAI().createOrders(mGameInfo, this, mOrigFactions.get(ix),faction);
-        faction.getAI().sendOrders();
+        if (!isRealTime()) {
+          faction.getAI().sendOrders();
+        }
       }
       ix++;
     }
@@ -422,10 +453,13 @@ public class JG_Game extends Entity implements IJG_Game {
   /**
    * reconPhase
    */
-  public void reconPhase() {
+  @Override
+  public void reconPhase( boolean pInit ) {
     // **** Planets visibility
     for( IJG_Faction faction : factions() ) {
-//      faction.planets().replaceByCopyOf();
+      if (pInit || !isRealTime()) {
+        faction.planets().replaceByCopyOf();
+      }
       for( IJG_Planet planet : faction.planets().planetsNotOwnedBy(faction)) {
         IJG_Planet realplanet = mGalaxy.map().planets().findPlanetById(planet.id());
         // **** Own ships above?
@@ -617,6 +651,7 @@ public class JG_Game extends Entity implements IJG_Game {
     }
     Element gamenode = doc.createElement( "game" );
     gamenode.setAttribute("name", name() );
+    gamenode.setAttribute("gameType", gameType() );
     gamenode.setAttribute("turnNumber", ""+turnNumber() );
     gamenode.setAttribute("turnHistory", ""+turnHistory() );
     gamenode.setAttribute("turnIntervalSecs", ""+turnIntervalSecs() );
@@ -624,6 +659,7 @@ public class JG_Game extends Entity implements IJG_Game {
     gamenode.setAttribute("realtime", ""+isRealTime() );
     gamenode.setAttribute("timeProgressionDays", ""+timeProgressionDays() );
     gamenode.setAttribute("runWhenAllOrdersAreIn", ""+runWhenAllOrdersAreIn() );
+    gamenode.setAttribute("gameTime", ""+UTCTime() );
 
 
     for( String msg : mMessages ) {

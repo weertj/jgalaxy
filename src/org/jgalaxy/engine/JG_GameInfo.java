@@ -51,11 +51,6 @@ public class JG_GameInfo extends Entity implements IJG_GameInfo {
   }
 
   @Override
-  public EGameType getGameType() {
-    return EGameType.GALAXNG;
-  }
-
-  @Override
   public File getGameDir() {
     return mGameDir;
   }

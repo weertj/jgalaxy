@@ -43,6 +43,10 @@ public interface IJG_Group extends IEntity, IStorage, IFactionOwner, IJG_Positio
     position().setY(y);
   }
 
+  default @Override void setPosition(double x, double y) {
+    position().setPosition(x,y);
+  }
+
   default @Override double x() {
     return position().x();
   }

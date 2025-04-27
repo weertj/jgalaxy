@@ -214,7 +214,7 @@ public class SJG_OrderExecutor {
    * @param pGame
    */
   static public void orderRENAME( IJG_Order pOrder, IJG_Game pGame ) {
-    IJG_Planet planet = pGame.galaxy().map().planets().findPlanetByName(pOrder.parameters().get(0) );
+    IJG_Planet planet = pGame.galaxy().map().planets().findPlanetById(pOrder.parameters().get(0) );
     if (planet!=null && pOrder.parameters().size()>1) {
       if (!pOrder.parameters().get(1).isBlank()) {
         planet.setName(pOrder.parameters().get(1));

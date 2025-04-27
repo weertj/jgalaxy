@@ -545,6 +545,7 @@ public class JG_Planet extends Entity implements IJG_Planet {
 
   @Override
   public void copyFrom(IJG_Planet pSource) {
+    setName(pSource.name());
     setFaction(pSource.faction());
     setSize(pSource.size());
     setPopulation(pSource.population());

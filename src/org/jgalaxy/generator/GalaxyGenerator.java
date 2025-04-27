@@ -51,6 +51,7 @@ public class GalaxyGenerator {
 
     IJG_Game game = JG_Game.of( pGalaxyTemplate.name(), galaxy );
     Node gameNode = pGalaxyTemplate.gameNode();
+    game.setGameType(XML_Utils.attr(gameNode, "gameType",""));
     game.setTimeProgressionDays( Double.parseDouble(XML_Utils.attr(gameNode, "timeProgressionDays", "365" )));
     game.setTurnIntervalSecs( Integer.parseInt(XML_Utils.attr(gameNode, "turnIntervalSecs", "-1" )));
     game.setTurnHistory( Integer.parseInt(XML_Utils.attr(gameNode, "turnHistory", "-1" )));

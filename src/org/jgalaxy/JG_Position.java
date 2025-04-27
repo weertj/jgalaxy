@@ -54,6 +54,13 @@ public class JG_Position implements IJG_Position {
   }
 
   @Override
+  public void setPosition(double x, double y) {
+    mX = x;
+    mY = y;
+    return;
+  }
+
+  @Override
   public String toString() {
     return "JG_Position{" +
       "mX=" + mX +

@@ -47,6 +47,12 @@ public class JG_Planets implements IJG_Planets {
 
   @Override
   public IJG_Planet findPlanetById(String pId) {
+//    if (mMapPlanets.isEmpty()) {
+//      for( IJG_Planet planet : mPlanets ) {
+//        mMapPlanets.put(planet.id(),planet);
+//      }
+//    }
+//    return mMapPlanets.get(pId);
     return mPlanets.stream().filter(p -> p.id().equals(pId)).findFirst().orElse(null);
   }
 

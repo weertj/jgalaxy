@@ -15,8 +15,24 @@ public interface IJG_Position {
   double x();
   double y();
 
+  /**
+   * setX (round02)
+   * @param x
+   */
   void setX(double x);
+
+  /**
+   * setY (round02)
+   * @param y
+   */
   void setY(double y);
+
+  /**
+   * setPosition (as is)
+   * @param x
+   * @param y
+   */
+  void setPosition(double x, double y);
 
   default void copyOf( IJG_Position position ) {
     setX( position.x() );

@@ -217,8 +217,7 @@ public class JG_Groups implements IJG_Groups {
       double directionY = dy / distance;
       double newX = pGroup.position().x() + directionX * speed;
       double newY = pGroup.position().y() + directionY * speed;
-      pGroup.position().setX(newX);
-      pGroup.position().setY(newY);
+      pGroup.setPosition(newX,newY);
     }
     return;
   }

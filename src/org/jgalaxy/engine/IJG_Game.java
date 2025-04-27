@@ -11,10 +11,16 @@ import java.util.List;
 
 public interface IJG_Game extends IEntity,ITimeProgression, IStorage {
 
+  long UTCTime();
+  void setUTCTime( long pTime );
+
+  String gameType();
+  void setGameType( String pType );
+
   IJG_Game copyOf();
 
   void roundUp();
-  void reconPhase();
+  void reconPhase( boolean pInit );
   void aiPhase();
 
   void setGameInfo( IJG_GameInfo pGameInfo);
