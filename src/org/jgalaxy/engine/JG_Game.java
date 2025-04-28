@@ -554,7 +554,12 @@ public class JG_Game extends Entity implements IJG_Game {
   }
 
   private void combinePhase() {
-    mFactions.stream().forEach( f -> f.groups().combineGroups() );
+    for( IJG_Faction faction : mFactions ) {
+      if (faction.groups().combineGroups()) {
+        faction.newChange();
+      }
+    }
+//    mFactions.stream().forEach( f -> f.groups().combineGroups() );
     return;
   }
 

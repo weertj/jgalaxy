@@ -32,6 +32,7 @@ public class JG_Group extends Entity implements IJG_Group {
     group.lastStaticPosition().setX(Double.parseDouble(XML_Utils.attr(pParent, "lastStaticX", "0" ) ));
     group.lastStaticPosition().setY(Double.parseDouble(XML_Utils.attr(pParent, "lastStaticY", "0" ) ));
     group.setUnitDesign(XML_Utils.attr(pParent, "unitDesign", "" ));
+    group.setAnnotation(XML_Utils.attr(pParent, "annotation", "" ));
     group.setLoadType(XML_Utils.attr(pParent, "loadType", null ));
     group.setLoad(Double.parseDouble(XML_Utils.attr(pParent, "load", "0" ) ));
     group.setFleet(XML_Utils.attr(pParent, "fleet", null ));
@@ -68,6 +69,7 @@ public class JG_Group extends Entity implements IJG_Group {
   private       String        mFrom;
   private       String        mTo;
   private final List<IB_Shot> mShots = new ArrayList<>(32);
+  private       String        mAnnotation = "";
 
   protected JG_Group( String pId, String pName ) {
     super( pId, pName );
@@ -288,6 +290,17 @@ public class JG_Group extends Entity implements IJG_Group {
   }
 
   @Override
+  public void setAnnotation(String pAnnotation) {
+    mAnnotation = pAnnotation;
+    return;
+  }
+
+  @Override
+  public String annotation() {
+    return mAnnotation;
+  }
+
+  @Override
   public void storeObject(File pPath, Node pParent, String pName, String pFilter ) {
     Element groupnode = pParent.getOwnerDocument().createElement( "group" );
     groupnode.setAttribute("id", id());
@@ -300,6 +313,7 @@ public class JG_Group extends Entity implements IJG_Group {
     groupnode.setAttribute("lastStaticX", ""+lastStaticPosition().x());
     groupnode.setAttribute("lastStaticY", ""+lastStaticPosition().y());
     groupnode.setAttribute("unitDesign", mUnitDesign);
+    groupnode.setAttribute("annotation", mAnnotation);
     if (mFleet!=null) {
       groupnode.setAttribute("fleet", mFleet);
     }

@@ -34,7 +34,7 @@ public interface IJG_Groups {
   IJG_Groups groupsByFaction(IJG_Faction pFaction);
   IJG_Groups groupsByFactions( List<String> pFactions );
 
-  void combineGroups();
+  boolean combineGroups();
   void moveGroups(IJG_Game pGame, IJG_Faction pFaction);
 
   void removeGroup( IJG_Group pGroup );

@@ -430,7 +430,7 @@ public class JG_Planet extends Entity implements IJG_Planet {
    * SOURCE
    */
   private void produceShip( IJG_Game pGame, double pIndustry ) {
-    var owner = pGame.getFactionById(mFaction);
+    IJG_Faction owner = pGame.getFactionById(mFaction);
     if (owner!=null) {
       var prodship = owner.getUnitDesignById(produceUnitDesign() );
       double typeMass = prodship.mass();
@@ -482,6 +482,7 @@ public class JG_Planet extends Entity implements IJG_Planet {
         group.lastStaticPosition().setY(position().y());
         group.setUnitDesign(prodship.id());
         owner.groups().addGroup( group );
+        owner.newChange();
       }
     }
     return;

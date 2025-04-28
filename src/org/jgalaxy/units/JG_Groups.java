@@ -79,8 +79,9 @@ public class JG_Groups implements IJG_Groups {
   }
 
   @Override
-  public void combineGroups() {
+  public boolean combineGroups() {
     boolean rerun = true;
+    boolean combined = false;
     while (rerun) {
       rerun = false;
       for (IJG_Group group : new ArrayList<>(mGroups)) {
@@ -94,6 +95,7 @@ public class JG_Groups implements IJG_Groups {
           ) {
             group.setNumberOf(group.getNumberOf() + innergroup.getNumberOf());
             mGroups.remove(innergroup);
+            combined = true;
             rerun = true;
             break;
           }
@@ -103,7 +105,7 @@ public class JG_Groups implements IJG_Groups {
         }
       }
     }
-    return;
+    return combined;
   }
 
   @Override
@@ -200,24 +202,26 @@ public class JG_Groups implements IJG_Groups {
    */
   private void moveGroup(IJG_Game pGame, IJG_Faction pFaction,IJG_Group pGroup, Double pMaxSpeed) {
 //    IJG_UnitDesign unitdesign = pFaction.getUnitDesignById(pGroup.unitDesign());
-    double speed = pGroup.maxSpeed(pGame,pFaction);
+    if (pGroup.getNumberOf()>0) {
+      double speed = pGroup.maxSpeed(pGame, pFaction);
 //    double speed = unitdesign.speed(pGroup.tech()); // TODO (cargo)
-    if (pMaxSpeed!=null) {
-      speed = Math.min(speed,pMaxSpeed);
-    }
+      if (pMaxSpeed != null) {
+        speed = Math.min(speed, pMaxSpeed);
+      }
 
-    double dx = pGroup.toPosition().x() - pGroup.position().x();
-    double dy = pGroup.toPosition().y() - pGroup.position().y();
-    double distance = Math.sqrt(dx * dx + dy * dy);
-    if (distance <= speed) {
-      pGroup.position().copyOf(pGroup.toPosition());
-      pGroup.lastStaticPosition().copyOf(pGroup.toPosition());
-    } else {
-      double directionX = dx / distance;
-      double directionY = dy / distance;
-      double newX = pGroup.position().x() + directionX * speed;
-      double newY = pGroup.position().y() + directionY * speed;
-      pGroup.setPosition(newX,newY);
+      double dx = pGroup.toPosition().x() - pGroup.position().x();
+      double dy = pGroup.toPosition().y() - pGroup.position().y();
+      double distance = Math.sqrt(dx * dx + dy * dy);
+      if (distance <= speed) {
+        pGroup.position().copyOf(pGroup.toPosition());
+        pGroup.lastStaticPosition().copyOf(pGroup.toPosition());
+      } else {
+        double directionX = dx / distance;
+        double directionY = dy / distance;
+        double newX = pGroup.position().x() + directionX * speed;
+        double newY = pGroup.position().y() + directionY * speed;
+        pGroup.setPosition(newX, newY);
+      }
     }
     return;
   }
