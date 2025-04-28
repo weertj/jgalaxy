@@ -8,6 +8,7 @@ import org.jgalaxy.utils.GEN_Streams;
 import org.jgalaxy.utils.XML_Utils;
 import org.json.XML;
 import org.w3c.dom.Document;
+import org.w3c.dom.Element;
 import org.w3c.dom.Node;
 
 import java.io.File;
@@ -28,7 +29,8 @@ import java.util.TimerTask;
 
 public class SimpleServer {
 
-  private int mPort = 8765;
+  static private String mGamesdir = "workdir/games/";
+  static private int mPort = 8765;
 
   static private class GamesHandler implements HttpHandler {
     @Override
@@ -43,31 +45,40 @@ public class SimpleServer {
         String[] path = uri.getPath().split("/");
         byte[] response = "".getBytes();
         try {
-          File gamedir = new File("workdir/games/" + path[3]);
-          IJG_GameInfo gameInfo = JG_GameInfo.of(gamedir);
-          IStorage storage = gameInfo;
-          if (path.length>4) {
-            if ("banners".equals(path[4])) {
-              File bannersDir = new File( gamedir, "banners");
-              if (bannersDir.exists() && path.length>5) {
-                File banner = new File(bannersDir, path[5]);
-                if (banner.exists()) {
-                  response = Files.readAllBytes(banner.toPath());
-                  exchange.sendResponseHeaders(200, response.length);
-                  exchange.getResponseHeaders().add("Content-Type", "image/png");
-                  try (OutputStream os = exchange.getResponseBody()) {
-                    os.write(response );//.getBytes(StandardCharsets.UTF_8));
+          IStorage storage = null;
+
+          if (path.length==3) {
+            // **** Games listing
+            File gamesdir = new File(mGamesdir);
+            storage = JG_Games.of(gamesdir);
+          }
+
+          if (path.length>3) {
+            File gamedir = new File(mGamesdir + path[3]);
+            IJG_GameInfo gameInfo = JG_GameInfo.of(gamedir);
+            storage = gameInfo;
+            if (path.length > 4) {
+              if ("banners".equals(path[4])) {
+                File bannersDir = new File(gamedir, "banners");
+                if (bannersDir.exists() && path.length > 5) {
+                  File banner = new File(bannersDir, path[5]);
+                  if (banner.exists()) {
+                    response = Files.readAllBytes(banner.toPath());
+                    exchange.sendResponseHeaders(200, response.length);
+                    exchange.getResponseHeaders().add("Content-Type", "image/png");
+                    try (OutputStream os = exchange.getResponseBody()) {
+                      os.write(response);//.getBytes(StandardCharsets.UTF_8));
+                    }
+                    return;
                   }
+                } else {
+                  exchange.sendResponseHeaders(404, -1);
                   return;
                 }
               } else {
-                exchange.sendResponseHeaders(404, -1);
-                return;
-              }
-            } else {
-              if ("current".equals(path[4])) {
-                // **** Realtime mode
-                IJG_Game game;
+                if ("current".equals(path[4])) {
+                  // **** Realtime mode
+                  IJG_Game game;
 //                game = JG_Games.REALTIMEGAMES.get(gamedir.getName());
 //                if (game==null) {
                   game = JG_Game.of(gamedir, null, gameInfo.currentTurnNumber());
@@ -75,42 +86,43 @@ public class SimpleServer {
 //                } else {
 //                }
 //                game.prepareGameAsUser(username);
-                storage = game;
-                if (path.length > 5) {
-                  IJG_Player player = game.getPlayerByID(path[5]);
-                  if (!Objects.equals(player.getUsername(), username)) {
-                    exchange.sendResponseHeaders(401, -1);
-                    return;
-                  }
-                  storage = player;
-                  if (path.length > 6) {
-                    IJG_Faction faction = player.getFactionByID(path[6]);
-                    storage = faction;
-                    if (path.length > 7) {
-                      if (path[7].equals("orders")) {
-                        storage = faction.orders();
+                  storage = game;
+                  if (path.length > 5) {
+                    IJG_Player player = game.getPlayerByID(path[5]);
+                    if (!Objects.equals(player.getUsername(), username)) {
+                      exchange.sendResponseHeaders(401, -1);
+                      return;
+                    }
+                    storage = player;
+                    if (path.length > 6) {
+                      IJG_Faction faction = player.getFactionByID(path[6]);
+                      storage = faction;
+                      if (path.length > 7) {
+                        if (path[7].equals("orders")) {
+                          storage = faction.orders();
+                        }
                       }
                     }
                   }
-                }
 
-              } else {
-                IJG_Game game = JG_Game.of(gamedir, null, Integer.parseInt(path[4]));
-                game.prepareGameAsUser(username);
-                storage = game;
-                if (path.length > 5) {
-                  IJG_Player player = game.getPlayerByID(path[5]);
-                  if (!Objects.equals(player.getUsername(), username)) {
-                    exchange.sendResponseHeaders(401, -1);
-                    return;
-                  }
-                  storage = player;
-                  if (path.length > 6) {
-                    IJG_Faction faction = player.getFactionByID(path[6]);
-                    storage = faction;
-                    if (path.length > 7) {
-                      if (path[7].equals("orders")) {
-                        storage = faction.orders();
+                } else {
+                  IJG_Game game = JG_Game.of(gamedir, null, Integer.parseInt(path[4]));
+                  game.prepareGameAsUser(username);
+                  storage = game;
+                  if (path.length > 5) {
+                    IJG_Player player = game.getPlayerByID(path[5]);
+                    if (!Objects.equals(player.getUsername(), username)) {
+                      exchange.sendResponseHeaders(401, -1);
+                      return;
+                    }
+                    storage = player;
+                    if (path.length > 6) {
+                      IJG_Faction faction = player.getFactionByID(path[6]);
+                      storage = faction;
+                      if (path.length > 7) {
+                        if (path[7].equals("orders")) {
+                          storage = faction.orders();
+                        }
                       }
                     }
                   }
@@ -287,14 +299,17 @@ public class SimpleServer {
   }
 
   private SimpleServer() throws IOException {
+
+    mPort = 3000;
+
     System.out.println("Simple Galaxy Reloaded server started at port " + mPort);
     HttpServer server = HttpServer.create(new InetSocketAddress(mPort), 0);
     server.setExecutor(null); // Uses the default executor
     HttpContext context = server.createContext("/jgalaxy/games", new GamesHandler());
-    context.setAuthenticator(new BasicAuthenticator("jgalaxy") {
+    context.setAuthenticator(new BasicAuthenticator("galaxy") {
       @Override
       public boolean checkCredentials(String username, String password) {
-        if ("weert".equals(username) && "weert".equals(password)) {
+        if ("galaxy".equals(username) && "reloaded".equals(password)) {
           return true;
         }
         return false;
