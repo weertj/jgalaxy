@@ -426,11 +426,13 @@ public class JG_Faction extends Entity implements IJG_Faction {
 
   @Override
   public void removeTurnNumber(File pPath, long pTurnNumber) {
-    File factiondir = new File(pPath,id());
-    File f = new File(factiondir, "faction_" + pTurnNumber + ".xml");
-    f.delete();
-    f = new File(factiondir, "orders_" + pTurnNumber + ".xml");
-    f.delete();
+    if (pTurnNumber>0) {
+      File factiondir = new File(pPath, id());
+      File f = new File(factiondir, "faction_" + pTurnNumber + ".xml");
+      f.delete();
+      f = new File(factiondir, "orders_" + pTurnNumber + ".xml");
+      f.delete();
+    }
     return;
   }
 

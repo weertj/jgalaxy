@@ -311,6 +311,22 @@ public class SimpleServer {
       public boolean checkCredentials(String username, String password) {
         if ("galaxy".equals(username) && "reloaded".equals(password)) {
           return true;
+        } else if ("player0".equals(username) && "player0".equals(password)) {
+          return true;
+        } else if ("player1".equals(username) && "player1".equals(password)) {
+          return true;
+        } else if ("player2".equals(username) && "player2".equals(password)) {
+          return true;
+        } else if ("player3".equals(username) && "player3".equals(password)) {
+          return true;
+        } else if ("player4".equals(username) && "player4".equals(password)) {
+          return true;
+        } else if ("player5".equals(username) && "player5".equals(password)) {
+          return true;
+        } else if ("player6".equals(username) && "player6".equals(password)) {
+          return true;
+        } else if ("player7".equals(username) && "player7".equals(password)) {
+          return true;
         }
         return false;
       }

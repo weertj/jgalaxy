@@ -11,15 +11,19 @@ import java.util.List;
 
 public class JG_Games implements IJG_Games {
 
-//  static public final Map<String,IJG_Game> REALTIMEGAMES = new HashMap<>(16);
-
   static public IJG_Games of(File pGamesDir) throws Exception {
-    return new JG_Games(pGamesDir);
+    return new JG_Games(null,pGamesDir);
   }
 
+  static public IJG_Games of(Node pRoot) throws Exception {
+    return new JG_Games(pRoot,null);
+  }
+
+  private Node mGamesNode;
   private File mGamesDir;
 
-  private JG_Games(File pGamesDir) {
+  private JG_Games(Node pGamesNode, File pGamesDir) {
+    mGamesNode = pGamesNode;
     mGamesDir = pGamesDir;
     return;
   }
@@ -27,13 +31,23 @@ public class JG_Games implements IJG_Games {
   @Override
   public List<IJG_GameInfo> games() {
     List<IJG_GameInfo> games = new ArrayList<>(8);
-    for( File gdir : mGamesDir.listFiles()) {
-      if (gdir.isDirectory()) {
-        File gamecheck = new File(gdir,"game_0.xml");
-        if (gamecheck.exists()) {
-          try {
-            games.add(JG_GameInfo.of(gdir));
-          } catch (Exception e) {
+    if (mGamesDir==null) {
+      for( Element game : XML_Utils.childElementsByName(mGamesNode,"game")) {
+        try {
+          games.add(JG_GameInfo.of(game));
+        } catch (Exception e) {
+          e.printStackTrace();
+        }
+      }
+    } else {
+      for (File gdir : mGamesDir.listFiles()) {
+        if (gdir.isDirectory()) {
+          File gamecheck = new File(gdir, "game_0.xml");
+          if (gamecheck.exists()) {
+            try {
+              games.add(JG_GameInfo.of(gdir));
+            } catch (Exception e) {
+            }
           }
         }
       }

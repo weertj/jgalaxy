@@ -17,7 +17,7 @@ public class GEN_Math {
   private final Random            mRandom;
   private       SplittableRandom  mRandomS;
 
-  private GEN_Math( final long pSeed ) {
+  public GEN_Math( final long pSeed ) {
     mRandom  = new Random(pSeed);
     mRandomS = new SplittableRandom(pSeed);
     return;

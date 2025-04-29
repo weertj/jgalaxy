@@ -258,13 +258,15 @@ public class JG_Game extends Entity implements IJG_Game {
 
   @Override
   public void removeTurnNumber(File pPath,long pNumber) {
-    File f = new File( pPath, "game_" + pNumber + ".xml");
-    f.delete();
-    for( var faction : factions() ) {
-      faction.removeTurnNumber(new File(pPath,"factions"),pNumber);
-    }
-    for( var player : players() ) {
-      player.removeTurnNumber(new File(pPath,"players"),pNumber);
+    if (pNumber>0) {
+      File f = new File(pPath, "game_" + pNumber + ".xml");
+      f.delete();
+      for (var faction : factions()) {
+        faction.removeTurnNumber(new File(pPath, "factions"), pNumber);
+      }
+      for (var player : players()) {
+        player.removeTurnNumber(new File(pPath, "players"), pNumber);
+      }
     }
     return;
   }

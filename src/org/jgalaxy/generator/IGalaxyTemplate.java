@@ -6,6 +6,8 @@ import java.util.List;
 
 public interface IGalaxyTemplate {
 
+  long seed();
+
   String name();
 
   double xStart();

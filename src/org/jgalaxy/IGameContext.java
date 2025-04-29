@@ -4,13 +4,17 @@ import javafx.beans.property.ObjectProperty;
 import javafx.beans.property.StringProperty;
 import javafx.beans.value.ChangeListener;
 import javafx.scene.image.Image;
-import org.jgalaxy.engine.IJG_Faction;
-import org.jgalaxy.engine.IJG_Game;
-import org.jgalaxy.engine.IJG_GameInfo;
-import org.jgalaxy.engine.IJG_Player;
+import org.jgalaxy.engine.*;
 
 
 public interface IGameContext {
+
+  String gameName();
+  void setGameName(String pGameName);
+  String playerName();
+  void setPlayerName(String pPlayerName);
+
+  String userName();
 
   String getTurnNumber();
   void setTurnNumber(String number);
@@ -21,6 +25,7 @@ public interface IGameContext {
   void addFactionChangeListener( ChangeListener<Number> pFactionChangedListener );
   void removeFactionChangeListener( ChangeListener<Number> pFactionChangedListener );
 
+  IJG_Games loadGames();
   IJG_GameInfo loadGameInfo();
   IJG_Faction loadFaction();
   void loadBanners();
@@ -33,6 +38,8 @@ public interface IGameContext {
   default IJG_GameInfo currentGameInfo() {
     return currentGameInfoProperty().get();
   }
+
+  ObjectProperty<IJG_Games> currentGamesProperty();
   ObjectProperty<IJG_GameInfo> currentGameInfoProperty();
   ObjectProperty<IJG_Game> currentGameProperty();
   ObjectProperty<IJG_Game> currentGameChangedProperty();

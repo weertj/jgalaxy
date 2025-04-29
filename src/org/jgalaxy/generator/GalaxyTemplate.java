@@ -39,6 +39,11 @@ public class GalaxyTemplate implements IGalaxyTemplate {
   }
 
   @Override
+  public long seed() {
+    return 1234L;
+  }
+
+  @Override
   public String name() {
     return XML_Utils.attr(mGameNode,"name");
   }

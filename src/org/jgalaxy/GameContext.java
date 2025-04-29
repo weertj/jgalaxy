@@ -38,6 +38,7 @@ public class GameContext implements IGameContext {
 //  private String mTurnNumber;
 
   private final StringProperty                mCurrentTurnNumber = new SimpleStringProperty();
+  private final ObjectProperty<IJG_Games>     mCurrentGames = new SimpleObjectProperty<>();
   private final ObjectProperty<IJG_GameInfo>  mCurrentGameInfo = new SimpleObjectProperty<>();
   private final ObjectProperty<IJG_Game>      mCurrentGame = new SimpleObjectProperty<>();
   private final ObjectProperty<IJG_Game>      mCurrentGameChanged = new SimpleObjectProperty<>();
@@ -69,6 +70,33 @@ public class GameContext implements IGameContext {
   }
 
   @Override
+  public String gameName() {
+    return mGameName;
+  }
+
+  @Override
+  public void setGameName(String pGameName) {
+    mGameName = pGameName;
+    return;
+  }
+
+  @Override
+  public String playerName() {
+    return mPlayerName;
+  }
+
+  @Override
+  public String userName() {
+    return mUserName;
+  }
+
+  @Override
+  public void setPlayerName(String pPlayerName) {
+    mPlayerName = pPlayerName;
+    return;
+  }
+
+  @Override
   public void setTurnNumber(String number) {
     mCurrentTurnNumber.setValue(number);
     return;
@@ -96,6 +124,11 @@ public class GameContext implements IGameContext {
   @Override
   public String getTurnNumber() {
     return mCurrentTurnNumber.get();
+  }
+
+  @Override
+  public ObjectProperty<IJG_Games> currentGamesProperty() {
+    return mCurrentGames;
   }
 
   @Override
@@ -156,6 +189,32 @@ public class GameContext implements IGameContext {
     return null;
   }
 
+  @Override
+  public IJG_Games loadGames() {
+    if (mDirectory==null) {
+      String url = mURL;
+      HttpRequest request = HttpRequest.newBuilder(URI.create(url + "?alt=xml"))
+        .GET()
+        .build();
+      Node root;
+      try {
+        HttpResponse response = SimpleClient.createClient(mUserName, mPassword).send(request, HttpResponse.BodyHandlers.ofString());
+        String result = response.body().toString();
+        root = XML_Utils.rootNodeBy(result);
+        mCurrentGames.set(JG_Games.of(XML_Utils.childNodeByPath(root, "games").get()));
+      } catch (Throwable e) {
+        e.printStackTrace();
+      }
+
+    } else {
+      try {
+        mCurrentGames.set(JG_Games.of(new File(mDirectory)));
+      } catch (Exception e) {
+        e.printStackTrace();
+      }
+    }
+    return mCurrentGames.get();
+  }
 
   @Override
   public IJG_GameInfo loadGameInfo() {

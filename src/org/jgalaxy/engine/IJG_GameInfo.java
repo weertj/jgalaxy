@@ -8,6 +8,10 @@ import java.util.List;
 
 public interface IJG_GameInfo extends IStorage, IEntity {
 
+  default String getName() {
+    return name();
+  }
+
   File getGameDir();
 
   void init();
@@ -17,5 +21,7 @@ public interface IJG_GameInfo extends IStorage, IEntity {
   int currentTurnNumber();
 
   List<String> factions();
+
+  List<IJG_Player> players();
 
 }

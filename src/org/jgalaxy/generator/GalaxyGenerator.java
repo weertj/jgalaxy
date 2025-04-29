@@ -22,13 +22,16 @@ import java.util.List;
 public class GalaxyGenerator {
 
   static private boolean isValidPlanetPosition(IJG_Position newPos, List<IJG_Planet> existingPlanets, IGalaxyTemplate pTemplate ) {
+    if (existingPlanets.isEmpty()) {
+      return true;
+    }
     for (IJG_Planet existing : existingPlanets) {
       double dist = GEN_Math.distance(existing, newPos);
-      if (dist>=pTemplate.minDistBetweenPlanets()  && dist<=pTemplate.maxDistBetweenPlanets()) {
-        return true;
+      if (dist<pTemplate.minDistBetweenPlanets()) {
+        return false;
       }
     }
-    return false;
+    return true;
   }
 
   static private boolean isValidHomePlanetPosition(IJG_Position newPos, List<IJG_Planet> existingPlanets, IGalaxyTemplate pTemplate ) {
@@ -37,14 +40,16 @@ public class GalaxyGenerator {
     }
     for (IJG_Planet existing : existingPlanets) {
       double dist = GEN_Math.distance(existing, newPos);
-      if (dist>=pTemplate.minDistBetweenHomePlanets() && dist<=pTemplate.maxDistBetweenHomePlanets()) {
-        return true;
+      if (dist<pTemplate.minDistBetweenHomePlanets()) {
+        return false;
       }
     }
-    return false;
+    return true;
   }
 
   static public IJG_Game generate( IGalaxyTemplate pGalaxyTemplate ) {
+
+    GEN_Math math = new GEN_Math(pGalaxyTemplate.seed());
 
     IMAP_Map map = MAP_Map.of(pGalaxyTemplate.xStart(), pGalaxyTemplate.yStart(), pGalaxyTemplate.xEnd(), pGalaxyTemplate.yEnd());
     IGalaxy galaxy = Galaxy.of(map);
@@ -63,7 +68,7 @@ public class GalaxyGenerator {
     List<IJG_Planet> homeplanets = new ArrayList<>(8);
     for( Node pgen : pGalaxyTemplate.playerGenerations()) {
       for (int ix = 0; ix < Integer.parseInt(XML_Utils.attr(pgen, "generate")); ix++) {
-        IJG_Player player = JG_Player.of( game, null,null,"player" + ix, "player" + ix );
+        IJG_Player player = JG_Player.of( game, "player" + ix,null,"player" + ix, "player" + ix );
         IJG_Faction faction = JG_Faction.of( game, "faction" + ix, "faction" + ix );
         faction.setAI(new AI_Faction());
         player.addFaction( faction );
@@ -71,11 +76,10 @@ public class GalaxyGenerator {
         game.addPlayer(player);
         IJG_Planet homeplanet = null;
         int i = 0;
-        for( ; i<200000; i++) {
-          IJG_Position pos = JG_Position.of(Math.random() * (map.xEnd() - map.xStart()), Math.random() * (map.yEnd() - map.yStart()));
+        for( ; i<800000; i++) {
+          IJG_Position pos = JG_Position.of(math.nextRandom() * (map.xEnd() - map.xStart()), math.nextRandom() * (map.yEnd() - map.yStart()));
           if (isValidHomePlanetPosition(pos,homeplanets,pGalaxyTemplate)) {
-            homeplanet = JG_Planet.of("home" + ix, "home" + ix,
-              JG_Position.of(Math.random() * (map.xEnd() - map.xStart()), Math.random() * (map.yEnd() - map.yStart())));
+            homeplanet = JG_Planet.of("home" + ix, "home" + ix, pos);
             homeplanet.setSize(pGalaxyTemplate.homePlanetMin() + Math.random() * (pGalaxyTemplate.homePlanetMax() - pGalaxyTemplate.homePlanetMin()));
             homeplanet.setResources(10);
             homeplanet.setPopulation(homeplanet.size());
@@ -85,8 +89,8 @@ public class GalaxyGenerator {
             break;
           }
         }
-        if (i==200000) {
-          System.out.printf("Cannot generate Home planets");
+        if (i==800000) {
+          System.out.printf("Cannot generate Home planets (" + ix + ")");
           return null;
         }
         faction.planets().addPlanet( homeplanet );
@@ -95,20 +99,23 @@ public class GalaxyGenerator {
     }
 
     IJG_Planets planets = galaxy.map().planets();
+    int np = 0;
     for( Node pgen : pGalaxyTemplate.planetGenerations()) {
       for(int ix = 0; ix<Integer.parseInt(XML_Utils.attr(pgen, "generate")); ix++) {
-        for( int i=0; i<20000; i++) {
-          IJG_Position pos = JG_Position.of(Math.random() * (map.xEnd() - map.xStart()), Math.random() * (map.yEnd() - map.yStart()));
+        for( int i=0; i<80000; i++) {
+          IJG_Position pos = JG_Position.of(math.nextRandom() * (map.xEnd() - map.xStart()), math.nextRandom() * (map.yEnd() - map.yStart()));
           if (isValidPlanetPosition(pos,planets.planets(),pGalaxyTemplate)) {
             IJG_Planet planet = JG_Planet.of("" + ix, "" + ix, pos );
-            planet.setSize( pGalaxyTemplate.planetMinSize() + Math.random()*(pGalaxyTemplate.planetMaxSize()-pGalaxyTemplate.planetMinSize()) );
-            planet.setResources(Math.random()*10);
+            planet.setSize( pGalaxyTemplate.planetMinSize() + math.nextRandom()*(pGalaxyTemplate.planetMaxSize()-pGalaxyTemplate.planetMinSize()) );
+            planet.setResources(math.nextRandom()*10);
             planets.addPlanet( planet );
+            np++;
             break;
           }
         }
       }
     }
+    System.out.printf("Planet generated = " + np);
 
     return game;
   }

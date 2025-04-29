@@ -2,6 +2,7 @@ package org.jgalaxy.engine;
 
 import javafx.scene.image.Image;
 import org.jgalaxy.Entity;
+import org.jgalaxy.utils.GEN_Streams;
 import org.jgalaxy.utils.XML_Utils;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
@@ -9,6 +10,8 @@ import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
 
 import java.io.File;
+import java.io.FileInputStream;
+import java.nio.charset.Charset;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -27,7 +30,8 @@ public class JG_GameInfo extends Entity implements IJG_GameInfo {
 
   private final File    mGameDir;
   private       int     mCurrentTurnNumber = -1;
-  private final List<String> mPlayers = new ArrayList<>();
+//  private final List<String> mPlayers = new ArrayList<>();
+  private final List<IJG_Player> mRealPlayers = new ArrayList<>();
   private final List<String> mFactions = new ArrayList<>();
 
   private JG_GameInfo( Node pRoot, String pName, File pDir, int pCurrentTurnNumber ) {
@@ -40,7 +44,8 @@ public class JG_GameInfo extends Entity implements IJG_GameInfo {
         Node n = nl.item(i);
         if (n.getNodeType() == Node.ELEMENT_NODE) {
           if (n.getNodeName().isBlank() || n.getNodeName().startsWith("player")) {
-            mPlayers.add(n.getNodeName());
+//            mPlayers.add(n.getNodeName());
+            mRealPlayers.add(JG_Player.of(null,n));
           } else if (n.getNodeName().isBlank() || n.getNodeName().startsWith("faction")) {
             mFactions.add(n.getNodeName());
           }
@@ -94,6 +99,11 @@ public class JG_GameInfo extends Entity implements IJG_GameInfo {
   }
 
   @Override
+  public List<IJG_Player> players() {
+    return mRealPlayers;
+  }
+
+  @Override
   public void storeObject(File pPath, Node pParent, String pName, String pFilter) {
     Document doc = pParent.getOwnerDocument();
     Element gameinfonode = doc.createElement( "game" );
@@ -104,7 +114,14 @@ public class JG_GameInfo extends Entity implements IJG_GameInfo {
     File players = new File(mGameDir,"players");
     for( File player : players.listFiles()) {
       if (player.getName().startsWith("player")) {
-        gameinfonode.appendChild(doc.createElement(player.getName()));
+        try (FileInputStream fis = new FileInputStream(new File(player,"player_0.xml"))) {
+          String xml = GEN_Streams.readAsString(fis, Charset.defaultCharset());
+          Node root = doc.importNode(XML_Utils.childElementsByName(XML_Utils.rootNodeBy(xml),"player").get(0),true);
+          gameinfonode.appendChild(root);
+        } catch (Exception e) {
+          e.printStackTrace();
+        }
+//        gameinfonode.appendChild(doc.createElement(player.getName()));
       }
     }
     // **** Factions
