@@ -3,6 +3,7 @@ package org.jgalaxy.engine;
 import org.jgalaxy.*;
 import org.jgalaxy.ai.AI_GameMasterFaction;
 import org.jgalaxy.ai.IAI_Faction;
+import org.jgalaxy.ai.IAI_Fleet;
 import org.jgalaxy.battle.SB_Battle;
 import org.jgalaxy.los.FLOS_Visibility;
 import org.jgalaxy.map.IMAP_Map;
@@ -10,6 +11,7 @@ import org.jgalaxy.map.MAP_Map;
 import org.jgalaxy.orders.IJG_Orders;
 import org.jgalaxy.orders.JG_Orders;
 import org.jgalaxy.planets.IJG_Planet;
+import org.jgalaxy.units.IJG_Fleet;
 import org.jgalaxy.units.IJG_Group;
 import org.jgalaxy.units.IJG_Groups;
 import org.jgalaxy.units.JG_Groups;
@@ -140,9 +142,23 @@ public class JG_Game extends Entity implements IJG_Game {
   private       boolean   mRealtime;
   private       long      mUTCGameTime = 0L;
 
+  private final List<IAI_Fleet> mFleetAIListeners = new ArrayList<>(4);
+
   private JG_Game( String pName, IGalaxy pGalaxy ) {
     super(pName,pName);
     mGalaxy = pGalaxy;
+    return;
+  }
+
+  @Override
+  public void addFleetAIListener(IAI_Fleet pFleetAI) {
+    mFleetAIListeners.add(pFleetAI);
+    return;
+  }
+
+  @Override
+  public void removeFleetAIListener(IAI_Fleet pFleetAI) {
+    mFleetAIListeners.remove(pFleetAI);
     return;
   }
 
@@ -407,6 +423,16 @@ public class JG_Game extends Entity implements IJG_Game {
           faction.getAI().sendOrders();
         }
       }
+
+
+
+      // **** Handle fleet AI
+      for(IJG_Fleet fleet : faction.groups().fleets()) {
+        for( IAI_Fleet fleetAI : mFleetAIListeners) {
+          fleetAI.run( this, faction, fleet);
+        }
+      }
+
       ix++;
     }
     return;

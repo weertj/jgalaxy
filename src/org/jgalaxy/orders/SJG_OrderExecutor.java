@@ -159,13 +159,16 @@ public class SJG_OrderExecutor {
   static public void orderSEND(  IJG_Game pGame, IJG_Faction pFaction, IJG_Order pOrder ) throws OrderException {
     String groupfleetid = pOrder.param(0 );
     String planetid = pOrder.param(1);
-    IJG_Planet planet = pGame.galaxy().map().planets().findPlanetById(planetid);
+    var planets = pGame.galaxy().map().planets();
+    IJG_Planet planet = planets.findPlanetById(planetid);
     if (planet == null) throw new OrderException(pFaction, pOrder, "Planet " + planetid + " not found");
     IJG_Fleet fleet = pFaction.groups().getFleetByName(groupfleetid);
     if (fleet==null) {
       IJG_Group group = pFaction.groups().getGroupById(groupfleetid);
       if (group == null) throw new OrderException(pFaction, pOrder, "Group " + groupfleetid + " not found");
+      if (planets.findPlanetByPosition(group.position())==null) throw new OrderException(pFaction,pOrder,"Group " + groupfleetid + " in flight");
       if (pOrder.param(2).isBlank()) {
+        group.setTo(planet.id());
         group.toPosition().copyOf(planet.position());
       } else {
         var breakgroup = group.breakOffGroup(pGame, pFaction, null, Integer.parseInt(pOrder.param(2)));

@@ -6,6 +6,7 @@ import javafx.beans.property.SimpleStringProperty;
 import javafx.beans.property.StringProperty;
 import javafx.beans.value.ChangeListener;
 import javafx.scene.image.Image;
+import org.jgalaxy.ai.IAI_Fleet;
 import org.jgalaxy.engine.*;
 import org.jgalaxy.orders.IJG_Orders;
 import org.jgalaxy.orders.JG_Orders;
