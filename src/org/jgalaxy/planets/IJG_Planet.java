@@ -73,6 +73,9 @@ public interface IJG_Planet extends IFactionOwner,IEntity,ITimeProgression, ISto
       );
   }
 
+  String annotation();
+  void setAnnotation( String pAnnotation );
+
   @Override default double x() { return position().x(); }
   @Override default double y() { return position().y(); }
   @Override default void setX(double x) { position().setX(x); }

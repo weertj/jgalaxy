@@ -41,6 +41,7 @@ public class JG_Planet extends Entity implements IJG_Planet {
         }
       }
     }
+    planet.setAnnotation(XML_Utils.attr(pParent, "annotation", "" ));
     planet.setSize( Double.parseDouble(XML_Utils.attr(pParent, "size", "-1" )));
     planet.setResources( Double.parseDouble(XML_Utils.attr(pParent, "resources","-1" )));
     planet.setPopulation( Double.parseDouble(XML_Utils.attr(pParent, "population","-1" )));
@@ -80,6 +81,8 @@ public class JG_Planet extends Entity implements IJG_Planet {
   private       double mPopulationPerCol = 8;
   private       double mPopulationIncreasePerHour = DEFAULT_POPINCPERHOUR;
   private       double mIndustryPerCapital = 5;
+
+  private       String mAnnotation = "";
 
   private JG_Planet( String pID, String pName, IJG_Position pPosition ) {
     super(pID, pName);
@@ -337,6 +340,17 @@ public class JG_Planet extends Entity implements IJG_Planet {
     return mProducingShipType;
   }
 
+  @Override
+  public void setAnnotation(String pAnnotation) {
+    mAnnotation = pAnnotation;
+    return;
+  }
+
+  @Override
+  public String annotation() {
+    return mAnnotation;
+  }
+
   /****f* Phase/convertcap
    * NAME
    *   convertcap -- convert capital into industry.
@@ -570,6 +584,7 @@ public class JG_Planet extends Entity implements IJG_Planet {
     planetnode.setAttribute("name", name());
     planetnode.setAttribute("x", ""+position().x());
     planetnode.setAttribute("y", ""+position().y());
+    planetnode.setAttribute("annotation", mAnnotation);
     if (mFaction !=null) {
       planetnode.setAttribute("owner", mFaction);
     }
