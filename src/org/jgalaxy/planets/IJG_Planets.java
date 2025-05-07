@@ -19,6 +19,7 @@ public interface IJG_Planets {
   List<IJG_Planet> planetsNotOwnedBy(IJG_Faction pFaction);
   List<IJG_Planet> planets();
   IJG_Planet planetByIndex( int pIndex );
+  List<IJG_Planet> planetsInTheRange( IJG_Position pPosition, double pRange);
 
   void sortByDistanceFrom( IJG_Position pFrom );
 

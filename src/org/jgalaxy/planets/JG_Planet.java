@@ -21,12 +21,12 @@ import java.util.Objects;
 
 public class JG_Planet extends Entity implements IJG_Planet {
 
-  static public IJG_Planet of( Node pParent ) {
+  static public IJG_Planet of(Node pParent ) {
     String id = XML_Utils.attr(pParent, "id" );
     String name = XML_Utils.attr(pParent, "name" );
     double x  = Double.parseDouble(XML_Utils.attr(pParent, "x" ));
     double y  = Double.parseDouble(XML_Utils.attr(pParent, "y" ));
-    IJG_Planet planet = new JG_Planet( id, name,JG_Position.of(x,y));
+    IJG_Planet planet = new JG_Planet( id, name, JG_Position.of(x,y));
 
     String owner = XML_Utils.attr(pParent, "owner", null );
     if (owner!=null) {
@@ -39,6 +39,8 @@ public class JG_Planet extends Entity implements IJG_Planet {
           String produceUnitDesign = XML_Utils.attr(pParent, "produceUnitDesign" );
           planet.setProduceType( EProduceType.valueOf(produceType), produceUnitDesign );
         }
+        String numberToProduce = XML_Utils.attr(pParent, "numberToProduce" );
+        planet.setNumberToProduce(Double.parseDouble(numberToProduce));
       }
     }
     planet.setAnnotation(XML_Utils.attr(pParent, "annotation", "" ));
@@ -56,13 +58,13 @@ public class JG_Planet extends Entity implements IJG_Planet {
     return planet;
   }
 
-  static public IJG_Planet of( String pID, String pName, IJG_Position pPosition ) {
+  static public IJG_Planet of(String pID, String pName, IJG_Position pPosition ) {
     return new JG_Planet( pID, pName, pPosition );
   }
 
   static public double DEFAULT_POPINCPERHOUR = 0.08 / (24.0*365.0*4.0);
 
-//  private final String mID;
+  //  private final String mID;
 //  private       String mName;
   private IJG_Position mPosition;
   private       String mFaction;
@@ -70,8 +72,9 @@ public class JG_Planet extends Entity implements IJG_Planet {
   private       double mResources = 10.0;
   private       double mPopulation;
   private       double mIndustry;
-  private       EProduceType mProducing;
+  private EProduceType mProducing;
   private       String mProducingShipType;
+  private       Double mNumberToProduce;
   private       double mCapitals;
   private       double mMaterials;
   private       double mCols;
@@ -114,6 +117,7 @@ public class JG_Planet extends Entity implements IJG_Planet {
     mIndustry = -1;
     mProducing = null;
     mProducingShipType = null;
+    mNumberToProduce = null;
     mCapitals = -1;
     mMaterials = -1;
     mCols = -1;
@@ -198,6 +202,15 @@ public class JG_Planet extends Entity implements IJG_Planet {
       mProducingShipType = pDesign;
       mInprogress = 0;
     }
+    return;
+  }
+
+  @Override
+  public void clearProduction() {
+    mInprogress = 0;
+    mProducingShipType = null;
+    mProducing = null;
+    mNumberToProduce = null;
     return;
   }
 
@@ -287,7 +300,7 @@ public class JG_Planet extends Entity implements IJG_Planet {
 
   @Override
   public void setPlanetToVisibility(double pVisibility, IJG_Planet pRealPlanet) {
-    if (pVisibility>=FLOS_Visibility.VIS_FULL) {
+    if (pVisibility>= FLOS_Visibility.VIS_FULL) {
       if (pRealPlanet!=null) {
         mPopulation = pRealPlanet.population();
         mCapitals = pRealPlanet.capitals();
@@ -302,14 +315,15 @@ public class JG_Planet extends Entity implements IJG_Planet {
         mPopulationIncreasePerHour = pRealPlanet.populationIncreasePerHour();
         mProducingShipType = pRealPlanet.produceUnitDesign();
         mProducing = pRealPlanet.produceType();
+        mNumberToProduce = pRealPlanet.numberToProduce();
         mFaction = pRealPlanet.faction();
       }
       return;
-    } else if (pVisibility>=FLOS_Visibility.VIS_ID) {
+    } else if (pVisibility>= FLOS_Visibility.VIS_ID) {
       setPlanetToVisibility(FLOS_Visibility.VIS_NOT,this);
       mFaction = "";
       return;
-    } else if (pVisibility>=FLOS_Visibility.VIS_MINIMUM) {
+    } else if (pVisibility>= FLOS_Visibility.VIS_MINIMUM) {
       setPlanetToVisibility(FLOS_Visibility.VIS_NOT,this);
       return;
     }
@@ -341,6 +355,17 @@ public class JG_Planet extends Entity implements IJG_Planet {
   }
 
   @Override
+  public Double numberToProduce() {
+    return mNumberToProduce;
+  }
+
+  @Override
+  public void setNumberToProduce(Double pNumber) {
+    mNumberToProduce = pNumber;
+    return;
+  }
+
+  @Override
   public void setAnnotation(String pAnnotation) {
     mAnnotation = pAnnotation;
     return;
@@ -369,7 +394,7 @@ public class JG_Planet extends Entity implements IJG_Planet {
     return;
   }
 
-  private void producePhase( IJG_Game pGame, Duration pDuration) {
+  private void producePhase(IJG_Game pGame, Duration pDuration) {
     if (produceType()!=null) {
       var owner = pGame.getFactionById(mFaction);
       double ratio = pDuration.toDays()/(365.0*4.0);
@@ -443,7 +468,7 @@ public class JG_Planet extends Entity implements IJG_Planet {
    *   that can be produced is a tricky one.
    * SOURCE
    */
-  private void produceShip( IJG_Game pGame, double pIndustry ) {
+  private void produceShip(IJG_Game pGame, double pIndustry ) {
     IJG_Faction owner = pGame.getFactionById(mFaction);
     if (owner!=null) {
       var prodship = owner.getUnitDesignById(produceUnitDesign() );
@@ -482,6 +507,12 @@ public class JG_Planet extends Entity implements IJG_Planet {
         }
         pIndustry -= indForProduction + indForMaterials;
         mInprogress = pIndustry;
+        if (mNumberToProduce!=null) {
+          mNumberToProduce -= numberOfShips;
+          if (mNumberToProduce<=0) {
+            clearProduction();
+          }
+        }
 
         int id = owner.currentGroupCounterAndIncrement();
         IJG_Group group = JG_Group.of(""+id , "" + id );
@@ -597,6 +628,9 @@ public class JG_Planet extends Entity implements IJG_Planet {
     }
     if (produceUnitDesign()!=null) {
       planetnode.setAttribute("produceUnitDesign", produceUnitDesign() );
+    }
+    if (numberToProduce()!=null) {
+      planetnode.setAttribute("numberToProduce", ""+numberToProduce().doubleValue() );
     }
     if (capitals()>=0)    planetnode.setAttribute("capitals", ""+ capitals());
     if (materials()>=0)   planetnode.setAttribute("materials", ""+materials());

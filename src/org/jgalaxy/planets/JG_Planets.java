@@ -12,7 +12,7 @@ import java.util.Map;
 public class JG_Planets implements IJG_Planets {
 
   private final List<IJG_Planet> mPlanets = new ArrayList<>(8);
-  private final Map<String,IJG_Planet> mMapPlanets = new HashMap<>(256);
+  private final Map<String, IJG_Planet> mMapPlanets = new HashMap<>(256);
 
   public JG_Planets(List<IJG_Planet> pPlanets) {
     mPlanets.addAll(pPlanets);
@@ -79,6 +79,11 @@ public class JG_Planets implements IJG_Planets {
   @Override
   public IJG_Planet planetByIndex(int pIndex) {
     return mPlanets.get(pIndex);
+  }
+
+  @Override
+  public List<IJG_Planet> planetsInTheRange(IJG_Position pPosition, double pRange) {
+    return mPlanets.stream().filter( p ->GEN_Math.distance(pPosition,p)<=pRange ).toList();
   }
 
   @Override

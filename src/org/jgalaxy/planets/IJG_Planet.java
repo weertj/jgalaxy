@@ -7,7 +7,7 @@ import org.jgalaxy.engine.IJG_Player;
 
 import java.util.Locale;
 
-public interface IJG_Planet extends IFactionOwner,IEntity,ITimeProgression, IStorage, IJG_Position {
+public interface IJG_Planet extends IFactionOwner, IEntity, ITimeProgression, IStorage, IJG_Position {
 
   IJG_Planet copyOf();
 
@@ -36,13 +36,16 @@ public interface IJG_Planet extends IFactionOwner,IEntity,ITimeProgression, ISto
   double size();
   void setSize( double pSize );
 
-  void setProduceType( EProduceType pType, String pDesign );
+  void setProduceType(EProduceType pType, String pDesign );
+  void clearProduction();
 
   double resources();
   void setResources( double pResources );
 
   EProduceType produceType();
   String produceUnitDesign();
+  Double numberToProduce();
+  void setNumberToProduce( Double pNumber );
 
   double inProgress();
   void setInProgress( double pInProgress );
@@ -59,8 +62,8 @@ public interface IJG_Planet extends IFactionOwner,IEntity,ITimeProgression, ISto
   double populationIncreasePerHour();
   void setPopulationIncreasePerHour( double pPopulationIncreasePerHour );
 
-  double visibilityFor(IJG_Game pGame, IJG_Player   pPlayer);
-  double visibilityFor(IJG_Game pGame, IJG_Faction  pFaction);
+  double visibilityFor(IJG_Game pGame, IJG_Player pPlayer);
+  double visibilityFor(IJG_Game pGame, IJG_Faction pFaction);
 
   void setPlanetToVisibility( double pVisibility, IJG_Planet pRealPlanet );
 
@@ -70,7 +73,7 @@ public interface IJG_Planet extends IFactionOwner,IEntity,ITimeProgression, ISto
       position().x(), position().y(),
       size(),
       population()
-      );
+    );
   }
 
   String annotation();
