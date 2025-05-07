@@ -1,7 +1,6 @@
 package org.jgalaxy.engine;
 
 import org.jgalaxy.*;
-import org.jgalaxy.ai.IAI_Fleet;
 import org.jgalaxy.units.IJG_Groups;
 
 import java.time.ZoneId;
@@ -11,9 +10,6 @@ import java.util.List;
 
 
 public interface IJG_Game extends IEntity,ITimeProgression, IStorage {
-
-  void addFleetAIListener(IAI_Fleet pFleetAI);
-  void removeFleetAIListener(IAI_Fleet pFleetAI);
 
   long UTCTime();
   void setUTCTime( long pTime );
