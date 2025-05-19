@@ -44,7 +44,8 @@ public class SJG_OrderExecutor {
   static public void orderDESIGN( IJG_Game pGame, IJG_Faction pFaction,IJG_Order pOrder) throws OrderException {
     String name = pOrder.param(0 );
     if ("FLEET".equalsIgnoreCase(name)) {
-      pFaction.groups().addFleet(pOrder.param(1), pOrder.param(1));
+      var fleet = pFaction.groups().addFleet(pOrder.param(1), pOrder.param(1));
+      fleet.setFaction(pFaction.id());
     } else {
       IJG_UnitDesign design = JG_UnitDesign.of( name, name,
         Double.parseDouble(pOrder.param(1)),
@@ -180,6 +181,7 @@ public class SJG_OrderExecutor {
       }
     } else {
       // **** Move fleet
+      if (planets.findPlanetByPosition(fleet.position())==null) throw new OrderException(pFaction,pOrder,"Fleet " + fleet.name() + " in flight");
       fleet.groups().stream().forEach( g->g.toPosition().copyOf(planet.position()) );
     }
     return;

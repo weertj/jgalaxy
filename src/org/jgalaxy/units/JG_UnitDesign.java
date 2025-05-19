@@ -33,7 +33,7 @@ public class JG_UnitDesign extends Entity implements IJG_UnitDesign {
   }
 
   static public double shieldsImmuneForWeapons( double pShields ) {
-    return (Math.log(pShields)/Math.log(2));
+    return pShields/4.0;
   }
 
 

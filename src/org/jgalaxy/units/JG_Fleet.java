@@ -1,8 +1,6 @@
 package org.jgalaxy.units;
 
-import org.jgalaxy.Entity;
 import org.jgalaxy.IJG_Position;
-import org.jgalaxy.JG_Position;
 import org.jgalaxy.engine.IJG_Faction;
 import org.jgalaxy.engine.IJG_Game;
 import org.w3c.dom.Element;
@@ -11,6 +9,7 @@ import org.w3c.dom.Node;
 import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
 
 public class JG_Fleet extends JG_Group implements IJG_Fleet {
 
@@ -82,6 +81,20 @@ public class JG_Fleet extends JG_Group implements IJG_Fleet {
       return mGroups.getFirst().lastStaticPosition();
     }
     return super.lastStaticPosition();
+  }
+
+  @Override
+  public String loadType() {
+    return mGroups.stream()
+      .filter(g->g.loadType()!=null)
+      .map(IJG_Group::loadType )
+      .distinct()
+      .collect(Collectors.joining(","));
+  }
+
+  @Override
+  public double totalMass(IJG_Faction pFaction) {
+    return mGroups.stream().mapToDouble(g->g.totalMass(pFaction)).sum();
   }
 
   @Override

@@ -7,9 +7,7 @@ import org.jgalaxy.OrderException;
 import org.jgalaxy.ai.IAI_Faction;
 import org.jgalaxy.common.C_Message;
 import org.jgalaxy.common.IC_Message;
-import org.jgalaxy.los.FLOS_Visibility;
 import org.jgalaxy.orders.EJG_Order;
-import org.jgalaxy.orders.IJG_Order;
 import org.jgalaxy.orders.IJG_Orders;
 import org.jgalaxy.orders.SJG_OrderExecutor;
 import org.jgalaxy.planets.IJG_Planet;
@@ -457,12 +455,15 @@ public class JG_Faction extends Entity implements IJG_Faction {
     factionnode.setAttribute("tech.weapons", ""+tech().weapons());
     factionnode.setAttribute("tech.shields", ""+tech().shields());
     factionnode.setAttribute("tech.cargo", ""+tech().cargo());
-    factionnode.setAttribute("totalPop", ""+totalPop() );
-    factionnode.setAttribute("totalIndustry", ""+totalIndustry() );
     if (getAI()!=null) {
       factionnode.setAttribute("ai", getAI().getClass().getName());
     }
-    if (!isOtherfaction) {
+    if (isOtherfaction) {
+      factionnode.setAttribute("totalPop", ""+getReconTotalPop() );
+      factionnode.setAttribute("totalIndustry", ""+getReconTotalIndustry() );
+    } else {
+      factionnode.setAttribute("totalPop", ""+totalPop() );
+      factionnode.setAttribute("totalIndustry", ""+totalIndustry() );
       factionnode.setAttribute("currentGroupCounter", "" + currentGroupCounter());
     }
 

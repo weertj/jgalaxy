@@ -6,7 +6,8 @@ import org.jgalaxy.engine.IJG_Game;
 import org.jgalaxy.units.*;
 import org.jgalaxy.utils.GEN_Math;
 
-import java.util.*;
+import java.util.HashMap;
+import java.util.Map;
 import java.util.stream.Collectors;
 
 public class SB_BattleField implements ISB_BattleField {

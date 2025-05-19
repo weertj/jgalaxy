@@ -60,6 +60,9 @@ public interface IJG_Group extends IEntity, IStorage, IFactionOwner, IJG_Positio
   void  setNumberOf( int pNumber );
 
   String    unitDesign();
+  default String getUnitDesign() {
+    return unitDesign();
+  }
   void      setUnitDesign(String unitDesign);
   IJG_Tech  tech();
 

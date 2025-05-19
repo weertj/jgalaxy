@@ -1,6 +1,5 @@
 package org.jgalaxy.engine;
 
-import javafx.scene.image.Image;
 import org.jgalaxy.Entity;
 import org.jgalaxy.utils.GEN_Streams;
 import org.jgalaxy.utils.XML_Utils;
@@ -13,9 +12,7 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.nio.charset.Charset;
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 
 
 public class JG_GameInfo extends Entity implements IJG_GameInfo {

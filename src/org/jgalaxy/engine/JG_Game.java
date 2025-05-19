@@ -496,6 +496,9 @@ public class JG_Game extends Entity implements IJG_Game {
         if (otherfaction!=faction) {
           IJG_Faction visOtherFaction = visOtherFactions.computeIfAbsent(otherfaction.id(), k -> {
             IJG_Faction f = JG_Faction.of(this, otherfaction.id(),otherfaction.name());
+            f.tech().copyOf(otherfaction.tech());
+            f.setReconTotalPop(otherfaction.getReconTotalPop());
+            f.setReconTotalIndustry(otherfaction.getReconTotalIndustry());
             faction.addOtherFaction(f);
             return f;
           });
