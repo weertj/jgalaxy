@@ -4,7 +4,6 @@ import org.jgalaxy.engine.IJG_Faction;
 import org.jgalaxy.engine.IJG_Game;
 import org.jgalaxy.engine.JG_Game;
 import org.jgalaxy.utils.XML_Utils;
-import org.json.JSONObject;
 import org.json.XML;
 import org.w3c.dom.Document;
 import org.w3c.dom.Node;

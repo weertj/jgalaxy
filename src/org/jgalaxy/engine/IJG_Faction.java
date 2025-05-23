@@ -9,7 +9,10 @@ import org.jgalaxy.common.IC_Message;
 import org.jgalaxy.orders.IJG_Orders;
 import org.jgalaxy.planets.IJG_Planets;
 import org.jgalaxy.tech.IJG_Tech;
-import org.jgalaxy.units.*;
+import org.jgalaxy.units.IJG_Bombing;
+import org.jgalaxy.units.IJG_Groups;
+import org.jgalaxy.units.IJG_Incoming;
+import org.jgalaxy.units.IJG_UnitDesign;
 
 import java.util.List;
 

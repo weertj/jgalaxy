@@ -1,7 +1,5 @@
 package org.jgalaxy.engine;
 
-import java.util.TimerTask;
-
 public class RT_Main implements IRT_Main {
 
   private RT_Main() {

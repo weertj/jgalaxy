@@ -6,7 +6,10 @@ import org.jgalaxy.engine.IJG_Game;
 import org.jgalaxy.map.IMAP_Map;
 import org.jgalaxy.planets.IJG_Planet;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
+import java.util.Objects;
 import java.util.stream.Collectors;
 
 public class JG_Groups implements IJG_Groups {
@@ -257,7 +260,7 @@ public class JG_Groups implements IJG_Groups {
             IJG_Planet toplanet   = faction.planets().findPlanetByPosition(group.toPosition());
             IJG_Planet fromplanet = faction.planets().findPlanetByPosition(group.lastStaticPosition());
             if (toplanet!=null && fromplanet!=null && toplanet.faction()!=null && !toplanet.faction().equals(group.faction())) {
-              IJG_Incoming incoming = new JG_Incoming( group.lastStaticPosition(), group.position(), group.toPosition(), group.totalMass(pGame.getFactionById(group.faction())) );
+              IJG_Incoming incoming = new JG_Incoming( group.lastStaticPosition(), group.position(), group.toPosition(), fleet.totalMass(pGame.getFactionById(group.faction())) );
               var tofact = pGame.getFactionById(toplanet.faction());
               if (tofact!=null) {
                 tofact.addIncoming(incoming);

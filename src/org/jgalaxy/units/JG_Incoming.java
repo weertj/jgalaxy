@@ -3,7 +3,6 @@ package org.jgalaxy.units;
 import org.jgalaxy.IJG_Position;
 import org.jgalaxy.JG_Position;
 import org.jgalaxy.utils.XML_Utils;
-import org.json.XML;
 import org.w3c.dom.Element;
 import org.w3c.dom.Node;
 

@@ -1,8 +1,6 @@
 package org.jgalaxy.ai;
 
-import org.jgalaxy.Global;
 import org.jgalaxy.IJG_Position;
-import org.jgalaxy.JG_Position;
 import org.jgalaxy.engine.IJG_Faction;
 import org.jgalaxy.engine.IJG_Game;
 import org.jgalaxy.engine.IJG_GameInfo;
@@ -12,9 +10,7 @@ import org.jgalaxy.orders.JG_Orders;
 import org.jgalaxy.orders.SJG_LoadOrder;
 import org.jgalaxy.planets.EProduceType;
 import org.jgalaxy.planets.IJG_Planet;
-import org.jgalaxy.planets.JG_Planet;
 import org.jgalaxy.planets.JG_Planets;
-import org.jgalaxy.tech.JG_Tech;
 import org.jgalaxy.units.IJG_Group;
 import org.jgalaxy.units.IJG_UnitDesigns;
 import org.jgalaxy.units.JG_UnitDesign;

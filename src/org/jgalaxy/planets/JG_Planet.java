@@ -40,7 +40,11 @@ public class JG_Planet extends Entity implements IJG_Planet {
           planet.setProduceType( EProduceType.valueOf(produceType), produceUnitDesign );
         }
         String numberToProduce = XML_Utils.attr(pParent, "numberToProduce" );
-        planet.setNumberToProduce(Double.parseDouble(numberToProduce));
+        if (numberToProduce.isBlank()) {
+          planet.setNumberToProduce(null);
+        } else {
+          planet.setNumberToProduce(Double.parseDouble(numberToProduce));
+        }
       }
     }
     planet.setAnnotation(XML_Utils.attr(pParent, "annotation", "" ));

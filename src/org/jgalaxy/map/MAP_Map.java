@@ -1,7 +1,6 @@
 package org.jgalaxy.map;
 
 import org.jgalaxy.engine.IJG_Game;
-import org.jgalaxy.planets.IJG_Planet;
 import org.jgalaxy.planets.IJG_Planets;
 import org.jgalaxy.planets.JG_Planet;
 import org.jgalaxy.planets.JG_Planets;
@@ -11,7 +10,6 @@ import org.w3c.dom.Node;
 
 import java.io.File;
 import java.time.Duration;
-import java.util.ArrayList;
 import java.util.List;
 
 public class MAP_Map implements IMAP_Map {

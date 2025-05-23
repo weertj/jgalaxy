@@ -11,7 +11,6 @@ import org.jgalaxy.map.MAP_Map;
 import org.jgalaxy.planets.IJG_Planet;
 import org.jgalaxy.planets.IJG_Planets;
 import org.jgalaxy.planets.JG_Planet;
-import org.jgalaxy.planets.JG_Planets;
 import org.jgalaxy.utils.GEN_Math;
 import org.jgalaxy.utils.XML_Utils;
 import org.w3c.dom.Node;

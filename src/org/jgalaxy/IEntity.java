@@ -18,6 +18,9 @@ public interface IEntity extends Closeable {
   default void setName( String pName ) {
     throw new UnsupportedOperationException();
   }
+  default String getName() {
+    return name();
+  }
 
   default List<? extends IEntity> subEntities() {
     return List.of();
