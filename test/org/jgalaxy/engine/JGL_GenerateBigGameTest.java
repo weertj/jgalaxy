@@ -31,7 +31,7 @@ public class JGL_GenerateBigGameTest {
 
     String xml = """
     <root>
-        <game name="BigGame" timeProgressionDays="365" runWhenAllOrdersAreIn="false">
+        <game name="BigGame" timeProgressionDays="365" runWhenAllOrdersAreIn="false" turnHistory="-1" turnIntervalSecs="-1" minDistBetweenPlanets="2" minDistBetweenHomePlanets="15" maxDistBetweenHomePlanets="30">
           <map>
             <mapcol>
               <min x="0" y="0"/>
@@ -50,6 +50,8 @@ public class JGL_GenerateBigGameTest {
     IGalaxyTemplate template = GalaxyTemplate.of(XML_Utils.rootNodeBy(xml));
 
     IJG_Game game = GalaxyGenerator.generate(template);
+    game.roundUp();
+    game.reconPhase(true);
 
     IJG_GameInfo gameInfo = JG_GameInfo.of(new File("workdir/games/" + template.name() ));
     gameInfo.init();
